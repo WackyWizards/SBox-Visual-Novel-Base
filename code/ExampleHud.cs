@@ -5,6 +5,11 @@ using VNBase.UI;
 
 namespace Sandbox;
 
+/// <summary>
+/// This is our main Hud entity. It loops through all the classes marked with 
+/// the HudAttribute and creates them. Using this is completely optional, 
+/// but it's a good way to create a modular HUD.
+/// </summary>
 [Library]
 public partial class VNHud : HudEntity<RootPanel>
 {

@@ -92,7 +92,7 @@ public class Dialogue
         return Value.NoneValue.None;
     }
 
-	private Value CreateCharacter( IEnvironment environment, Value[] values )
+	private Value CreateCharacter(IEnvironment environment, Value[] values)
 	{
 		string characterVariableName = ((Value.StringValue)values[0]).Text;
 
@@ -227,7 +227,7 @@ public class Dialogue
         label.Text = s.Text;
     }
 
-	private static void LabelCharacterArgument( SParen argument, Label label )
+	private static void LabelCharacterArgument(SParen argument, Label label)
 	{
 		string characterName = ((Value.VariableReferenceValue)argument[1]).Name;
 		CharacterBase character = CreateCharacter(characterName);
