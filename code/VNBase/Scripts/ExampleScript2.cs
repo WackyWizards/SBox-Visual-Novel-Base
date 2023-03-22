@@ -1,6 +1,20 @@
 namespace VNBase;
 
 /// <summary>
+/// This is an example character definition.
+/// It is generally recommended to put this in a separate file.
+/// This is just for demonstration purposes.
+/// </summary>
+public class John : CharacterBase
+{
+	public override string Name => "John MacAvitch";
+	public override string Title => "The Great";
+	public override string Images => "/materials/vnbase/images/";
+	public override Color NameColor => Color.Red;
+	public override Color TitleColor => Color.White;
+}
+
+/// <summary>
 /// This is an example script.
 /// </summary>
 public class ExampleScript2 : ScriptBase
