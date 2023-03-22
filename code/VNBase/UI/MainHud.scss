@@ -1,0 +1,11 @@
+MainHud {
+    position: absolute;
+    pointer-events: all;
+    width: 100%;
+    height: 100%;
+
+    .centered {
+        justify-content: center;
+        align-items: center;
+    }
+}

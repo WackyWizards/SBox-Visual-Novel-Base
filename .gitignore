@@ -1,0 +1,28 @@
+# Ignore the default materials because these are
+# generated each time we load the tools for w/e reason
+
+# Source 2/Sandbox stuff
+*.vpk
+*.los
+*.vmap
+tools_*_*.bin
+accesslist.txt
+*bakeresourcecache*
+tools_asset_info.bin
+
+# Ignore compiled products
+*.generated.*
+*_c
+
+# Misc stuff
+*.csproj
+code/obj/
+code/obj/Debug/
+code/properties/
+.intermediate/
+.vs/
+code/.vs
+code/*.csproj
+tools_thumbnail_cache.bin
+code/Docs/GeneratedFiles
+code/Properties/launchSettings.json

@@ -1,0 +1,51 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet("/VNBase/UI/SubPanels/Choices.scss")]
+@inherits Panel
+
+<root>
+    @if ( DialogueChoices != null && DialogueChoices.Count > 0 && !IsTyping )
+    {
+        <div class="choicePanel">
+            @for (var i = 0; i < DialogueChoices.Count; i++)
+            {
+                var buttonIndex = i; // Create a copy of i that won't change
+                <button class="item-dialogue @(i == DialogueChoice ? "selected-text" : "")" onclick="@(() => ChooseDialogue(buttonIndex))">@DialogueChoices[i]</button>
+            }
+        </div>
+    }
+</root>
+
+@code {
+    private static Pawn Player => Game.LocalPawn as Pawn;
+
+    private string DialogueText { get; set; }
+    private IList<string> DialogueChoices { get; set; }
+    private bool IsTyping { get; set; }
+
+    private int DialogueChoice { get; set; } = 0;
+
+    private void ChooseDialogue(int index)
+    {
+        ScriptPlayer.DialogueChoice(index);
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+        DialogueChoices = Player.VNScriptPlayer.CurrentDialogueChoices;
+        DialogueChoice = Player.VNScriptPlayer.CurrentDialogueChoice;
+        IsTyping = Player.VNScriptPlayer.IsTyping;
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(IsTyping, DialogueChoices, DialogueChoice);
+    }
+}

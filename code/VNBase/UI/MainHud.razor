@@ -1,0 +1,18 @@
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+
+@namespace VNBase.UI
+
+<!--
+    The Hud attribute is added for convenience. 
+    If you create your UI in a different way, you may remove it. 
+-->
+@attribute [Hud]
+@attribute [StyleSheet("/VNBase/UI/MainHud.scss")]
+
+@inherits Panel
+
+<root @ref=MainPanel>
+    <Choices class="centered"></Choices>
+    <DialogBox></DialogBox>
+</root>
