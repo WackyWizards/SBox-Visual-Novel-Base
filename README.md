@@ -9,3 +9,8 @@ Creating a simple dialogue system or a visual novel is easy. The base includes m
 # Contributing
 
 Anyone is free to contribute to the base by creating a pull request. Contributions are always welcome if you have any improvements, bug fixes or just wish to add some cool new features to the base. Any and all help is appreciated.
+
+# SandLang
+
+The base SandLang language can be found here.
+https://github.com/kouta-kun/VNTest
