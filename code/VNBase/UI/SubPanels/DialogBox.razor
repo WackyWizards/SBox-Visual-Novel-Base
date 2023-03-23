@@ -16,7 +16,10 @@
         {
             <div class="characterPanel">
                 <label class="character">@Character.Name</label>
-                <label class="title">@Character.Title</label>
+                @if (Character.Title != null)
+                {
+                    <label class="title">@Character.Title</label>
+                }
             </div>
         }
 

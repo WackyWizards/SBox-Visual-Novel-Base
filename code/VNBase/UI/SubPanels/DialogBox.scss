@@ -13,7 +13,7 @@ DialogBox {
 
     .characterPanel {
         position: absolute;
-        width: 18%;
+        width: 420px;
         height: 30%;
         background-color: rgba(0,0,0,0.95);
         box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.95);
@@ -24,13 +24,13 @@ DialogBox {
             height: 70%;
             font-weight: bold;
             font-size: 36px;
-            margin: 5px 5px 0px 2px;
+            margin: 5px 5px 0px 0px;
         }
 
         .title {
             height: 100%;
             font-size: 26px;
-            margin: 5px 5px 0px 5px;
+            margin: 5px 5px 0px 2px;
         }
     }
 
