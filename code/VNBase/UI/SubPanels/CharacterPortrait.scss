@@ -1,0 +1,17 @@
+// Stylize this however you wish for your game.
+// What is here now is just an example.
+
+CharacterPortrait {
+    position: absolute;
+    width: 90%;
+    height: 80%;
+    bottom: 0;
+
+    img {
+        width: 600px;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+}

@@ -46,9 +46,14 @@ public partial class ScriptPlayer : BaseNetworkable
 	{
 		_currentLabel = label;
 		ActiveCharacter = label.Character;
+
+		if ( ActiveCharacter != null )
+			ActiveCharacter.ActivePortrait = label.CharacterExpression;
+
 		IsTyping = true;
-		await Typewriter.Play( label.Text, 75, ( text ) => CurrentDialogueText = text );
+		await Typewriter.Play( label.Text, 70, ( text ) => CurrentDialogueText = text );
 		IsTyping = false;
+
 		CurrentDialogueChoices = label.Choices != null
 			? label.Choices
 				.Where( p =>p.Condition == null ||

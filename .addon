@@ -2,12 +2,14 @@
   "Title": "Visual Novel Base",
   "Type": "game",
   "Org": "local",
-  "Ident": "visual_novel_base",
+  "Ident": "vnbase",
   "Tags": null,
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": [],
+  "ResourcePaths": [
+    "/materials/*"
+  ],
   "HasCode": true,
   "CodePath": "/code/",
   "Metadata": {
@@ -21,6 +23,7 @@
     "RankType": "None",
     "PerMapRanking": false,
     "LeaderboardType": "None",
-    "ProjectTemplate": null
+    "ProjectTemplate": null,
+    "CsProjName": ""
   }
 }

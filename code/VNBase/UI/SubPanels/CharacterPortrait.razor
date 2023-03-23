@@ -1,0 +1,41 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet("/VNBase/UI/SubPanels/CharacterPortrait.scss")]
+@inherits Panel
+
+<root>
+    @if (DialogueText != null)
+    {
+        if (Character != null && ActivePortrait != null)
+        {
+            <img class="character-portrait" src="@($"{Character.Images}/{ActivePortrait}.png")" />
+        }
+    }
+</root>
+
+@code {
+    private static Pawn Player => Game.LocalPawn as Pawn;
+
+    private string DialogueText { get; set; }
+    private CharacterBase Character { get; set; }
+    private string ActivePortrait { get; set; }
+
+    public override void Tick()
+    {
+        base.Tick();
+        DialogueText = Player.VNScriptPlayer.CurrentDialogueText;
+        Character = Player.VNScriptPlayer.ActiveCharacter;
+        ActivePortrait = Character?.ActivePortrait;
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(DialogueText, Character, ActivePortrait);
+    }
+}

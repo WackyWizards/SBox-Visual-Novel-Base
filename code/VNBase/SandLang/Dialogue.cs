@@ -37,6 +37,7 @@ public class Dialogue
     public class Label
     {
         public string Text { get; set; }
+		public string CharacterExpression { get; set; }
 		public CharacterBase Character { get; set; }
 		public List<Choice> Choices { get; set; }
         public AfterLabel AfterLabel { get; set; }
@@ -58,7 +59,7 @@ public class Dialogue
 
 		dialogueParsingFunctions.SetVariable( "label", new Value.FunctionValue( CreateLabel ) );
 		dialogueParsingFunctions.SetVariable( "start-dialogue", new Value.FunctionValue( SetStartDialogue ) );
-		dialogueParsingFunctions.SetVariable( "character", new Value.FunctionValue( CreateCharacter ) );
+		dialogueParsingFunctions.SetVariable( "character", new Value.FunctionValue( CreateCharacterLabel ) );
 
 		foreach ( var sParen in codeblocks )
 		{
@@ -92,7 +93,7 @@ public class Dialogue
         return Value.NoneValue.None;
     }
 
-	private Value CreateCharacter(IEnvironment environment, Value[] values)
+	private Value CreateCharacterLabel(IEnvironment environment, Value[] values)
 	{
 		string characterVariableName = ((Value.StringValue)values[0]).Text;
 
@@ -103,7 +104,7 @@ public class Dialogue
 		CharacterBase character = CreateCharacter(characterVariableName);
 
 		// Process the character arguments
-		for ( var i = 1; i < values.Length; i++ )
+		for ( var i = 2; i < values.Length; i++ )
 		{
 			var argument = ((Value.ListValue)values[i]).ValueList;
 			ProcessLabelArgument( argument, label );
@@ -143,7 +144,7 @@ public class Dialogue
     /// </summary>
     private delegate int AfterArgument(SParen argument, int index, AfterLabel after);
 
-	private delegate void CharacterArgument(SParen argument, Label label);
+	private delegate int CharacterArgument(SParen argument, int index, Label label);
 
 	private static void LabelAfterArgument(SParen argument, Label label)
     {
@@ -230,8 +231,30 @@ public class Dialogue
 	private static void LabelCharacterArgument(SParen argument, Label label)
 	{
 		string characterName = ((Value.VariableReferenceValue)argument[1]).Name;
-		CharacterBase character = CreateCharacter(characterName);
+		CharacterBase character = CreateCharacter( characterName );
 		label.Character = character;
+
+		for ( var i = 2; i < argument.Count; i++ )
+		{
+			if ( argument[i] is not Value.VariableReferenceValue variableReferenceValue )
+			{
+				throw new InvalidParameters( new[] { argument[i] } );
+			}
+
+			CharacterArgument characterArgument = variableReferenceValue.Name switch
+			{
+				"exp" => LabelCharacterExpressionArgument,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+
+			i += characterArgument( argument, i, label );
+		}
+	}
+
+	private static int LabelCharacterExpressionArgument( SParen argument, int index, Label label )
+	{
+		label.CharacterExpression = (argument[index + 1] as Value.VariableReferenceValue)!.Name;
+		return 1;
 	}
 
 	private static CharacterBase CreateCharacter(string characterName)
