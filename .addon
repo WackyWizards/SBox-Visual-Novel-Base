@@ -1,9 +1,9 @@
 {
   "Title": "Visual Novel Base",
   "Type": "game",
-  "Org": "local",
+  "Org": "spoonstuff",
   "Ident": "vnbase",
-  "Tags": null,
+  "Tags": "showcase visual visualnovel dialogue dialoguesystem dialogues opensource open",
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
@@ -24,6 +24,9 @@
     "PerMapRanking": false,
     "LeaderboardType": "None",
     "ProjectTemplate": null,
-    "CsProjName": ""
+    "CsProjName": "",
+    "Summary": "",
+    "Description": "",
+    "Public": true
   }
 }
