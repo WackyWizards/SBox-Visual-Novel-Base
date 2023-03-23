@@ -2,7 +2,7 @@ using Sandbox;
 using System.Linq;
 using System.Collections.Generic;
 using SandLang;
-using static VNBase.Effects.Effects;
+using static VNBase.Effects;
 
 namespace VNBase;
 

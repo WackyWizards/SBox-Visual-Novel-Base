@@ -1,9 +1,7 @@
-using Sandbox;
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 
-namespace VNBase.Effects;
+namespace VNBase;
 
 /// <summary>
 /// This class contains all the effects that can be used in the VNBase.
