@@ -28,6 +28,15 @@ partial class Pawn : AnimatedEntity
 		}
 	}
 
+	[Event.Client.BuildInput]
+	private void SkipEffects()
+	{
+		bool skipPressed = Input.Pressed( InputButton.Jump );
+		if ( !skipPressed ) return;
+
+		ScriptPlayer.SkipDialogue();
+	}
+
 	/// <summary>
 	/// Called every tick, clientside and serverside.
 	/// </summary>

@@ -1,5 +1,7 @@
 using Sandbox;
+using System;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using SandLang;
 using static VNBase.Effects;
@@ -18,6 +20,8 @@ public partial class ScriptPlayer : BaseNetworkable
 	// how to get network serialization of structs working :P
 	[Net] public string CurrentDialogueText { get; set; }
 	[Net] public bool IsTyping { get; set; }
+
+	private CancellationTokenSource _cancellationToken;
 
 	private Dialogue _dialogue = null;
 	private Dialogue.Label _currentLabel = null;
@@ -50,8 +54,17 @@ public partial class ScriptPlayer : BaseNetworkable
 		if ( ActiveCharacter != null )
 			ActiveCharacter.ActivePortrait = label.CharacterExpression;
 
+		_cancellationToken = new();
+
 		IsTyping = true;
-		await Typewriter.Play( label.Text, 70, ( text ) => CurrentDialogueText = text );
+		try
+		{
+			await Typewriter.Play( label.Text, 70, ( text ) => CurrentDialogueText = text, _cancellationToken.Token );
+		}
+		catch ( OperationCanceledException )
+		{
+			CurrentDialogueText = label.Text;
+		}
 		IsTyping = false;
 
 		CurrentDialogueChoices = label.Choices != null
@@ -64,6 +77,25 @@ public partial class ScriptPlayer : BaseNetworkable
 			: ContinueChoice;
 
 		CurrentDialogueChoice = 0;
+	}
+
+	[ConCmd.Server("dialogue_skip")]
+	public static void SkipDialogue()
+	{
+		var pawn = ConsoleSystem.Caller.Pawn as Pawn;
+
+		var scriptPlayer = pawn?.VNScriptPlayer;
+		if ( scriptPlayer == null ) 
+		{ 
+			ScriptLog( "Unable to skip, no script player found in caller!", SeverityLevel.Error );
+			return;
+		}
+
+		if ( scriptPlayer.IsTyping )
+		{
+			scriptPlayer._cancellationToken.Cancel();
+			ScriptLog( "Dialogue effect skipped." );
+		}
 	}
 
 	/// <summary>
