@@ -15,12 +15,12 @@ public partial class ScriptPlayer : BaseNetworkable
 {
 	[Net] public ScriptBase ActiveScript { get; set; }
 	[Net] public CharacterBase ActiveCharacter { get; set; }
-
-	// at the moment, dialogue attributes have to be networked as separate primitives because I couldn't figure out
-	// how to get network serialization of structs working :P
 	[Net] public string ActiveDialogueText { get; set; }
-
 	[Net] public bool IsTyping { get; set; }
+
+	// Change this to create whatever effect you want to use.
+	// You can also create your own effects by implementing the ITextEffect interface.
+	public ITextEffect ActiveTextEffect { get; set; } = new Typewriter();
 
 	private CancellationTokenSource _cancellationToken;
 
@@ -60,7 +60,7 @@ public partial class ScriptPlayer : BaseNetworkable
 		IsTyping = true;
 		try
 		{
-			await Typewriter.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
+			await ActiveTextEffect.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
 		}
 		catch ( OperationCanceledException )
 		{

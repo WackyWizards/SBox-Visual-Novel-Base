@@ -5,16 +5,21 @@ using System.Threading.Tasks;
 namespace VNBase;
 
 /// <summary>
-/// This class contains all the effects that can be used in the VNBase.
+/// This class contains all the base effects that can be used in the VNBase.
 /// </summary>
 public class Effects
 {
+	public interface ITextEffect
+	{
+		public Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken );
+	}
+
 	/// <summary>
 	/// A simple typewriter effect.
 	/// </summary>
-	public class Typewriter
+	public class Typewriter : ITextEffect
 	{
-		public static async Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken )
+		public async Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken )
 		{
 			string newText = "";
 			var tcs = new TaskCompletionSource<bool>();
