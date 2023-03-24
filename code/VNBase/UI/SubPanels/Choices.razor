@@ -25,6 +25,7 @@
 @code {
     private static Pawn Player => Game.LocalPawn as Pawn;
 
+    private string DialogueText { get; set; }
     private IList<string> DialogueChoices { get; set; }
     private bool IsTyping { get; set; }
 
@@ -38,6 +39,7 @@
     public override void Tick()
     {
         base.Tick();
+        DialogueText = Player.VNScriptPlayer.ActiveDialogueText;
         DialogueChoices = Player.VNScriptPlayer.ActiveDialogueChoices;
         DialogueChoice = Player.VNScriptPlayer.ActiveDialogueChoice;
         IsTyping = Player.VNScriptPlayer.IsTyping;
@@ -45,6 +47,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(IsTyping, DialogueChoices, DialogueChoice);
+        return HashCode.Combine(DialogueText, IsTyping, DialogueChoices, DialogueChoice);
     }
 }
