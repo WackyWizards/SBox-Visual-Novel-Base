@@ -1,5 +1,8 @@
+@using Sandbox;
 @using Sandbox.UI;
 @using Sandbox.UI.Construct;
+@using System;
+@using System.Collections.Generic;
 
 @namespace VNBase.UI
 
@@ -12,8 +15,27 @@
 
 @inherits Panel
 
-<root @ref=MainPanel>
-    <CharacterPortrait></CharacterPortrait>
-    <Choices class="centered"></Choices>
-    <DialogBox></DialogBox>
+<root>
+    @if (DialogueText != null)
+    {
+        <CharacterPortrait></CharacterPortrait>
+        <Choices class="centered"></Choices>
+        <DialogBox></DialogBox>
+    }
 </root>
+
+@code {
+    private static Pawn Player => Game.LocalPawn as Pawn;
+    private string DialogueText { get; set; }
+
+    public override void Tick()
+    {
+        base.Tick();
+        DialogueText = Player.VNScriptPlayer.ActiveDialogueText;
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(DialogueText);
+    }
+}

@@ -25,7 +25,6 @@
 @code {
     private static Pawn Player => Game.LocalPawn as Pawn;
 
-    private string DialogueText { get; set; }
     private IList<string> DialogueChoices { get; set; }
     private bool IsTyping { get; set; }
 
@@ -39,8 +38,8 @@
     public override void Tick()
     {
         base.Tick();
-        DialogueChoices = Player.VNScriptPlayer.CurrentDialogueChoices;
-        DialogueChoice = Player.VNScriptPlayer.CurrentDialogueChoice;
+        DialogueChoices = Player.VNScriptPlayer.ActiveDialogueChoices;
+        DialogueChoice = Player.VNScriptPlayer.ActiveDialogueChoice;
         IsTyping = Player.VNScriptPlayer.IsTyping;
     }
 

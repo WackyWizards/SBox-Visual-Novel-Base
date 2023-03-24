@@ -10,23 +10,20 @@
 @inherits Panel
 
 <root>
-    @if (DialogueText != null)
+    @if (Character != null)
     {
-        @if (Character != null)
-        {
-            <div class="characterPanel">
-                <label class="character">@Character.Name</label>
-                @if (Character.Title != null)
-                {
-                    <label class="title">@Character.Title</label>
-                }
-            </div>
-        }
-
-        <div class="dialoguePanel">
-            @(DialogueText)
+        <div class="characterPanel">
+            <label class="character">@Character.Name</label>
+            @if (Character.Title != null)
+            {
+                <label class="title">@Character.Title</label>
+            }
         </div>
     }
+
+    <div class="dialoguePanel">
+        @(DialogueText)
+    </div>
 </root>
 
 @code {
@@ -38,7 +35,7 @@
     public override void Tick()
     {
         base.Tick();
-        DialogueText = Player.VNScriptPlayer.CurrentDialogueText;
+        DialogueText = Player.VNScriptPlayer.ActiveDialogueText;
         Character = Player.VNScriptPlayer.ActiveCharacter;
     }
 
