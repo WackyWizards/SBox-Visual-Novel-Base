@@ -68,6 +68,6 @@ public class ExampleScript : ScriptBase
 	{
 		base.After();
 
-		Log.Error( "Script finished." );
+		Log.Info( "Script finished." );
 	}
 }

@@ -18,7 +18,8 @@ public partial class ScriptPlayer : BaseNetworkable
 
 	// at the moment, dialogue attributes have to be networked as separate primitives because I couldn't figure out
 	// how to get network serialization of structs working :P
-	[Net] public string CurrentDialogueText { get; set; }
+	[Net] public string ActiveDialogueText { get; set; }
+
 	[Net] public bool IsTyping { get; set; }
 
 	private CancellationTokenSource _cancellationToken;
@@ -59,15 +60,15 @@ public partial class ScriptPlayer : BaseNetworkable
 		IsTyping = true;
 		try
 		{
-			await Typewriter.Play( label.Text, 70, ( text ) => CurrentDialogueText = text, _cancellationToken.Token );
+			await Typewriter.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
 		}
 		catch ( OperationCanceledException )
 		{
-			CurrentDialogueText = label.Text;
+			ActiveDialogueText = label.Text;
 		}
 		IsTyping = false;
 
-		CurrentDialogueChoices = label.Choices != null
+		ActiveDialogueChoices = label.Choices != null
 			? label.Choices
 				.Where( p =>p.Condition == null ||
 					 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
@@ -76,7 +77,7 @@ public partial class ScriptPlayer : BaseNetworkable
 			// if no choices are available, we create "Continue..." which will just direct toward afterlabel
 			: ContinueChoice;
 
-		CurrentDialogueChoice = 0;
+		ActiveDialogueChoice = 0;
 	}
 
 	[ConCmd.Server("dialogue_skip")]

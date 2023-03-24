@@ -6,8 +6,8 @@ namespace VNBase;
 
 partial class ScriptPlayer
 {
-	[Net] public IList<string> CurrentDialogueChoices { get; set; }
-	public int CurrentDialogueChoice { get; set; }
+	[Net] public IList<string> ActiveDialogueChoices { get; set; }
+	public int ActiveDialogueChoice { get; set; }
 
 	// We use a command to trigger dialogue execution
 	[ConCmd.Server( "dialogue_choice" )]
@@ -36,8 +36,8 @@ partial class ScriptPlayer
 				if ( afterLabel.TargetLabel == null )
 				{
 					_currentLabel = null;
-					CurrentDialogueChoices = null;
-					CurrentDialogueText = null;
+					ActiveDialogueChoices = null;
+					ActiveDialogueText = null;
 					_dialogue = null;
 
 					ActiveScript?.After();
