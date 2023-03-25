@@ -13,6 +13,7 @@ namespace VNBase;
 /// </summary>
 public partial class ScriptPlayer : BaseNetworkable
 {
+	[Net] public Pawn Owner { get; set; }
 	[Net] public ScriptBase ActiveScript { get; set; }
 	[Net] public CharacterBase ActiveCharacter { get; set; }
 	[Net] public string ActiveDialogueText { get; set; }
@@ -54,6 +55,15 @@ public partial class ScriptPlayer : BaseNetworkable
 
 		if ( ActiveCharacter != null )
 			ActiveCharacter.ActivePortrait = label.CharacterExpression;
+
+		if ( label.SoundAssets != null )
+		{
+			foreach ( SoundAsset sound in label.SoundAssets )
+			{
+				ScriptLog( $"Playing sound: {sound}" );
+				Owner.PlaySound( sound.Path );
+			}
+		}
 
 		_cancellationToken = new();
 

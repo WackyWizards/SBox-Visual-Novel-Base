@@ -40,6 +40,7 @@ public class Dialogue
 		public string CharacterExpression { get; set; }
 		public CharacterBase Character { get; set; }
 		public List<Choice> Choices { get; set; }
+		public List<SoundAsset> SoundAssets { get; set; }
         public AfterLabel AfterLabel { get; set; }
     }
 
@@ -59,7 +60,6 @@ public class Dialogue
 
 		dialogueParsingFunctions.SetVariable( "label", new Value.FunctionValue( CreateLabel ) );
 		dialogueParsingFunctions.SetVariable( "start-dialogue", new Value.FunctionValue( SetStartDialogue ) );
-		dialogueParsingFunctions.SetVariable( "character", new Value.FunctionValue( CreateCharacterLabel ) );
 
 		foreach ( var sParen in codeblocks )
 		{
@@ -93,25 +93,22 @@ public class Dialogue
         return Value.NoneValue.None;
     }
 
-	private Value CreateCharacterLabel(IEnvironment environment, Value[] values)
+	private Value CreateSoundLabel(IEnvironment environment, Value[] values)
 	{
-		string characterVariableName = ((Value.StringValue)values[0]).Text;
+		string soundVariableName = ((Value.VariableReferenceValue)values[0])!.Name;
 
-		// Create a new Label for the character
+		// Create a new Label for the sound
 		var label = new Label();
-		DialogueLabels[characterVariableName] = label;
+		DialogueLabels[soundVariableName] = label;
 
-		CharacterBase character = CreateCharacter(characterVariableName);
-
-		// Process the character arguments
-		for ( var i = 2; i < values.Length; i++ )
+		// Process the sound arguments
+		for (var i = 1; i < values.Length; i++ )
 		{
 			var argument = ((Value.ListValue)values[i]).ValueList;
 			ProcessLabelArgument( argument, label );
 		}
 
-		// Return a wrapper value containing the character object
-		return new Value.WrapperValue<CharacterBase>( character );
+		return Value.NoneValue.None;
 	}
 
 	private static void ProcessLabelArgument(SParen argument, Label label)
@@ -127,6 +124,8 @@ public class Dialogue
                 LabelAfterArgument,
 			"character" =>
 				LabelCharacterArgument,
+			"sound" =>
+				LabelSoundArgument,
             _ => throw new ArgumentOutOfRangeException()
         });
         labelArgument(argument, label);
@@ -144,7 +143,15 @@ public class Dialogue
     /// </summary>
     private delegate int AfterArgument(SParen argument, int index, AfterLabel after);
 
+	/// <summary>
+	/// Returns consumed values in argument list
+	/// </summary>
 	private delegate int CharacterArgument(SParen argument, int index, Label label);
+
+	/// <summary>
+	/// Returns consumed values in argument list
+	/// </summary>
+	private delegate int SoundArgument(SParen argument, int index, Label label);
 
 	private static void LabelAfterArgument(SParen argument, Label label)
     {
@@ -257,12 +264,28 @@ public class Dialogue
 		return 1;
 	}
 
+	private static void LabelSoundArgument(SParen argument, Label label)
+	{
+		string soundName = ((Value.VariableReferenceValue)argument[1]).Name;
+		label.SoundAssets ??= new();
+		var soundAsset = new SoundAsset();
+		label.SoundAssets.Add( soundAsset );
+
+		if ( argument[1] is not Value.VariableReferenceValue s ) throw new InvalidParameters( new[] { argument[1] } );
+		soundAsset.Path = soundName;
+	}
+
 	private static CharacterBase CreateCharacter(string characterName)
 	{
 		var characterType = TypeLibrary.GetType( characterName )?.TargetType;
 		if ( characterType == null )
 		{
 			throw new ArgumentException( $"Can't find character with name {characterName}!" );
+		}
+
+		if ( !typeof( CharacterBase ).IsAssignableFrom( characterType ) )
+		{
+			throw new ArgumentException( $"Type {characterType} is not a character!" );
 		}
 
 		var character = TypeLibrary.Create<CharacterBase>( characterType );

@@ -8,12 +8,6 @@ namespace VNBase;
 public class ScriptBase : BaseNetworkable
 {
 	/// <summary>
-	/// The path to the background image to display.
-	/// If none, we assume the camera background.
-	/// </summary>
-	public string BgImage { get; set; }
-
-	/// <summary>
 	/// This is where you want to write your script.
 	/// </summary>
 	public virtual string Dialogue { get; set; }

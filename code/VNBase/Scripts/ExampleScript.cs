@@ -12,6 +12,7 @@ public class ExampleScript : ScriptBase
   (choice ""Look around your surroundings"" jump look-around)
   (choice ""Sit down in the grass to admire the day"" jump sit-down)
   (choice ""Spin around in a circle"" jump loop)
+  (sound purchase)
 )
 
 (label look-around
