@@ -4,7 +4,7 @@ using VNBase;
 
 namespace Sandbox;
 
-partial class Pawn : AnimatedEntity
+public partial class Pawn : AnimatedEntity
 {
 	[Net] public ScriptPlayer VNScriptPlayer { get; private set; }
 
@@ -23,7 +23,10 @@ partial class Pawn : AnimatedEntity
 
 		if ( Game.IsServer )
 		{
-			VNScriptPlayer = new ScriptPlayer();
+			VNScriptPlayer = new ScriptPlayer
+			{
+				Owner = this
+			};
 			VNScriptPlayer.LoadScript( new ExampleScript() );
 		}
 	}
