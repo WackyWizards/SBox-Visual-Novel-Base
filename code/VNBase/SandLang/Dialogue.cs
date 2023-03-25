@@ -93,24 +93,6 @@ public class Dialogue
         return Value.NoneValue.None;
     }
 
-	private Value CreateSoundLabel(IEnvironment environment, Value[] values)
-	{
-		string soundVariableName = ((Value.VariableReferenceValue)values[0])!.Name;
-
-		// Create a new Label for the sound
-		var label = new Label();
-		DialogueLabels[soundVariableName] = label;
-
-		// Process the sound arguments
-		for (var i = 1; i < values.Length; i++ )
-		{
-			var argument = ((Value.ListValue)values[i]).ValueList;
-			ProcessLabelArgument( argument, label );
-		}
-
-		return Value.NoneValue.None;
-	}
-
 	private static void ProcessLabelArgument(SParen argument, Label label)
     {
         var argumentType = ((Value.VariableReferenceValue)argument[0]).Name;
