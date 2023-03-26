@@ -8,7 +8,8 @@
   "HasAssets": true,
   "AssetsPath": "",
   "ResourcePaths": [
-    "/materials/*"
+    "/materials/*",
+    "/sounds/*"
   ],
   "HasCode": true,
   "CodePath": "/code/",
