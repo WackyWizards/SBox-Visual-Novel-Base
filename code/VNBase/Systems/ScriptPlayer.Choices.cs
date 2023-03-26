@@ -24,6 +24,9 @@ partial class ScriptPlayer
 		{
 			var choice = _currentLabel.Choices?[choiceIndex];
 			var dialogueEnvironment = GetEnvironment();
+
+			Sound.FromScreen( To.Single(Owner), "click" );
+
 			// when no choices are available, just "Continue" will be an option and it will execute "AfterLabel".
 			if ( choice == null && _currentLabel.Choices == null )
 			{

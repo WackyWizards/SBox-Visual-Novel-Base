@@ -1,0 +1,12 @@
+{
+  "UI": true,
+  "Volume": "1.00,1.00,0",
+  "Pitch": "1.00,1.00,0",
+  "Decibels": 90,
+  "SelectionMode": "Forward",
+  "Sounds": [
+    "sounds/vnbase/ui/click.vsnd"
+  ],
+  "MaximumDistance": 1870.0942,
+  "MinimumDistance": 93.504715
+}
