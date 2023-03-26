@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using SandLang;
-using static VNBase.Effects;
 
 namespace VNBase;
 
@@ -20,10 +19,17 @@ public partial class ScriptPlayer : BaseNetworkable
 	[Net] public string ActiveBackground { get; set; }
 	[Net] public bool IsTyping { get; set; }
 
+	public VNSettings Settings { get; set; }
+
 	private CancellationTokenSource _cancellationToken;
 
 	private Dialogue _dialogue = null;
 	private Dialogue.Label _currentLabel = null;
+
+	public ScriptPlayer()
+	{
+		Settings = new VNSettings();
+	}
 
 	public void LoadScript( ScriptBase script ) 
 	{
@@ -57,9 +63,10 @@ public partial class ScriptPlayer : BaseNetworkable
 		{
 			foreach ( SoundAsset sound in label.SoundAssets )
 			{
-				ScriptLog( $"Playing sound: {sound}" );
+				ScriptLog( $"Playing sound: {sound.Path}" );
 
-				Sound.FromEntity( sound.Path, Owner );
+				// Running To.Single() here doesn't work, why??
+				Sound.FromScreen( sound.Path );
 			}
 		}
 
@@ -73,7 +80,7 @@ public partial class ScriptPlayer : BaseNetworkable
 		IsTyping = true;
 		try
 		{
-			await VNSettings.ActiveTextEffect.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
+			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
 		}
 		catch ( OperationCanceledException )
 		{
@@ -123,6 +130,7 @@ public partial class ScriptPlayer : BaseNetworkable
 	{
 		return new EnvironmentMap( new Dictionary<string, Value>()
 		{
+			["self-pawn"] = new Value.WrapperValue<Pawn>( Owner ),
 			["iter-count"] = new Value.NumberValue( _iterationCount )
 		} );
 	}

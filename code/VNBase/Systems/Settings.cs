@@ -2,12 +2,14 @@ using static VNBase.Effects;
 
 namespace VNBase;
 
-public static class VNSettings
+public class VNSettings
 {
 	/// <summary>
 	/// The currently active text effect
 	/// </summary>
-	public static ITextEffect ActiveTextEffect { get; set; } = new Typewriter();
+	public ITextEffect ActiveTextEffect { get; set; } = new Typewriter();
+
+	public int TextEffectDelay { get; set; } = 70;
 
 	/// <summary>
 	/// Path to the background images
