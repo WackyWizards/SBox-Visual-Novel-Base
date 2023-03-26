@@ -17,11 +17,8 @@ public partial class ScriptPlayer : BaseNetworkable
 	[Net] public ScriptBase ActiveScript { get; set; }
 	[Net] public CharacterBase ActiveCharacter { get; set; }
 	[Net] public string ActiveDialogueText { get; set; }
+	[Net] public string ActiveBackground { get; set; }
 	[Net] public bool IsTyping { get; set; }
-
-	// Change this to create whatever effect you want to use.
-	// You can also create your own effects by implementing the ITextEffect interface.
-	public ITextEffect ActiveTextEffect { get; set; } = new Typewriter();
 
 	private CancellationTokenSource _cancellationToken;
 
@@ -61,16 +58,22 @@ public partial class ScriptPlayer : BaseNetworkable
 			foreach ( SoundAsset sound in label.SoundAssets )
 			{
 				ScriptLog( $"Playing sound: {sound}" );
-				Owner.PlaySound( sound.Path );
+
+				Sound.FromEntity( sound.Path, Owner );
 			}
 		}
+
+		if ( label.Background != null ) 
+			ActiveBackground = label.Background.Path;
+		else
+			ActiveBackground = null;
 
 		_cancellationToken = new();
 
 		IsTyping = true;
 		try
 		{
-			await ActiveTextEffect.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
+			await VNSettings.ActiveTextEffect.Play( label.Text, 70, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
 		}
 		catch ( OperationCanceledException )
 		{

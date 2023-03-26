@@ -39,6 +39,7 @@ public class Dialogue
         public string Text { get; set; }
 		public string CharacterExpression { get; set; }
 		public CharacterBase Character { get; set; }
+		public BackgroundAsset Background { get; set; }
 		public List<Choice> Choices { get; set; }
 		public List<SoundAsset> SoundAssets { get; set; }
         public AfterLabel AfterLabel { get; set; }
@@ -102,12 +103,14 @@ public class Dialogue
                 LabelTextArgument,
             "choice" =>
                 LabelChoiceArgument,
-            "after" =>
-                LabelAfterArgument,
 			"character" =>
 				LabelCharacterArgument,
 			"sound" =>
 				LabelSoundArgument,
+			"bg" =>
+				LabelBackgroundArgument,
+			"after" =>
+                LabelAfterArgument,
             _ => throw new ArgumentOutOfRangeException()
         });
         labelArgument(argument, label);
@@ -120,11 +123,6 @@ public class Dialogue
     /// </summary>
     private delegate int ChoiceArgument(SParen argument, int index, Choice choice);
 
-    /// <summary>
-    /// Returns consumed values in argument list
-    /// </summary>
-    private delegate int AfterArgument(SParen argument, int index, AfterLabel after);
-
 	/// <summary>
 	/// Returns consumed values in argument list
 	/// </summary>
@@ -134,6 +132,16 @@ public class Dialogue
 	/// Returns consumed values in argument list
 	/// </summary>
 	private delegate int SoundArgument(SParen argument, int index, Label label);
+
+	/// <summary>
+	/// Returns consumed values in argument list
+	/// </summary>
+	private delegate int BackgroundArgument(SParen argument, int index, Label label);
+
+	/// <summary>
+	/// Returns consumed values in argument list
+	/// </summary>
+	private delegate int AfterArgument(SParen argument, int index, AfterLabel after);
 
 	private static void LabelAfterArgument(SParen argument, Label label)
     {
@@ -255,6 +263,15 @@ public class Dialogue
 
 		if ( argument[1] is not Value.VariableReferenceValue s ) throw new InvalidParameters( new[] { argument[1] } );
 		soundAsset.Path = soundName;
+	}
+
+	private static void LabelBackgroundArgument(SParen argument, Label label)
+	{
+		string backgroundName = ((Value.VariableReferenceValue)argument[1]).Name;
+		label.Background = new BackgroundAsset
+		{
+			Path = $"{VNSettings.BackgroundsPath}/{backgroundName}"
+		};
 	}
 
 	private static CharacterBase CreateCharacter(string characterName)
