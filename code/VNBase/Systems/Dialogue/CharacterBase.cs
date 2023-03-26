@@ -16,7 +16,7 @@ public partial class CharacterBase : BaseNetworkable
 	public virtual string Title => "";
 
 	/// <summary>
-	/// Images path to the character's portraits.
+	/// Path to the folder containing character portraits.
 	/// </summary>
 	public virtual string Images => "/materials/vnbase/images";
 
