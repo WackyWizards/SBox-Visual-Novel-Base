@@ -7,10 +7,6 @@ DialogBox {
     height: 40%;
     bottom: 0;
 
-    .label {
-        color: white;
-    }
-
     .characterPanel {
         position: absolute;
         width: 420px;
@@ -44,6 +40,7 @@ DialogBox {
         bottom: 0;
 
         .label {
+            color: white;
             width: 80%;
             font-size: 38px;
         }

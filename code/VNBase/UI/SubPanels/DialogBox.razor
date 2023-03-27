@@ -13,10 +13,10 @@
     @if (Character != null)
     {
         <div class="characterPanel">
-            <label class="character">@Character.Name</label>
+            <label class="character" style="color: @Character.NameColor.Rgba">@Character.Name</label>
             @if (Character.Title != null)
             {
-                <label class="title">@Character.Title</label>
+                <label class="title" style="color: @Character.TitleColor.Rgba">@Character.Title</label>
             }
         </div>
     }

@@ -10,7 +10,7 @@ public class John : CharacterBase
 	public override string Name => "John MacAvitch";
 	public override string Title => "Office Employee";
 	public override string Images => "/materials/vnbase/images/John";
-	public override Color NameColor => Color.Red;
+	public override Color NameColor => Color.White;
 	public override Color TitleColor => Color.White;
 }
 
