@@ -15,7 +15,7 @@ public partial class ScriptPlayer : BaseNetworkable
 	[Net] public Pawn Owner { get; set; }
 	[Net] public ScriptBase ActiveScript { get; set; }
 	[Net] public CharacterBase ActiveCharacter { get; set; }
-	[Net] public string ActiveDialogueText { get; set; }
+	[Net, Change] public string ActiveDialogueText { get; set; }
 	[Net] public string ActiveBackground { get; set; }
 	[Net] public bool IsTyping { get; set; }
 
@@ -124,7 +124,7 @@ public partial class ScriptPlayer : BaseNetworkable
 	/// </summary>
 	private int _iterationCount = 0;
 
-	private static readonly List<string> ContinueChoice = new List<string>( new[] { "Continue..." } );
+	private static readonly List<string> ContinueChoice = new( new[] { "Continue..." } );
 
 	private IEnvironment GetEnvironment()
 	{
@@ -133,6 +133,20 @@ public partial class ScriptPlayer : BaseNetworkable
 			["self-pawn"] = new Value.WrapperValue<Pawn>( Owner ),
 			["iter-count"] = new Value.NumberValue( _iterationCount )
 		} );
+	}
+
+	private void OnActiveDialogueTextChanged( string oldText, string newText )
+	{
+		if ( IsTyping ) 
+			return;
+
+		if ( Owner.DialogHistory == null )
+			return;
+
+		if ( Owner.DialogHistory.Contains( oldText ) )
+			return;
+
+		Owner.DialogHistory.Add( oldText );
 	}
 
 	private static void ScriptLog( object msg, SeverityLevel level = SeverityLevel.Info )

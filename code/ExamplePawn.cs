@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using System;
+using System.Collections.Generic;
 using VNBase;
 
 namespace Sandbox;
@@ -7,6 +8,11 @@ namespace Sandbox;
 public partial class Pawn : AnimatedEntity
 {
 	[Net] public ScriptPlayer VNScriptPlayer { get; private set; }
+
+	/// <summary>
+	/// Exists on the client to store old dialogs the player has seen.
+	/// </summary>
+	public List<string> DialogHistory { get; set; }
 
 	/// <summary>
 	/// Called when the entity is first created 
@@ -29,6 +35,13 @@ public partial class Pawn : AnimatedEntity
 			};
 			VNScriptPlayer.LoadScript( new ExampleScript() );
 		}
+	}
+
+	public override void ClientSpawn()
+	{
+		base.ClientSpawn();
+
+		DialogHistory = new List<string>();
 	}
 
 	[Event.Client.BuildInput]

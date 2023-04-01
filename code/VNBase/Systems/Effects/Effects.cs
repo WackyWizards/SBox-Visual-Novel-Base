@@ -22,14 +22,12 @@ public class Effects
 		public async Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken )
 		{
 			string newText = "";
-			var tcs = new TaskCompletionSource<bool>();
 
 			for ( int i = 0; i < text.Length; i++ )
 			{
 				if ( cancellationToken.IsCancellationRequested )
 				{
-					tcs.SetCanceled( cancellationToken );
-					return tcs.Task.Result;
+					return false;
 				}
 
 				newText += text[i];
@@ -37,8 +35,7 @@ public class Effects
 				await Task.Delay( delay, cancellationToken );
 			}
 
-			tcs.SetResult( true );
-			return tcs.Task.Result;
+			return true;
 		}
 	}
 }

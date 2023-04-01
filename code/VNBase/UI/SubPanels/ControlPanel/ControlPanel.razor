@@ -1,0 +1,44 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.UI.Construct;
+@using System;
+@using System.Linq;
+@using SandLang;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet("/VNBase/UI/SubPanels/ControlPanel/ControlPanel.scss")]
+@inherits Panel
+
+<root>
+    <div class="buttons" @ref=ControlButtons>
+        <button id="DialogHistory">History</button>
+    </div>
+
+    <DialogHistory class="centered"></DialogHistory>
+</root>
+
+@code {
+    public Panel ControlButtons { get; set; }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        if ( !firstTime ) return;
+
+        foreach ( Button button in ControlButtons.ChildrenOfType<Button>() )
+        {
+            ControlSubPanel panel = GetPanelFromId( button.Id );
+
+            button.AddEventListener("onclick", () =>
+            {
+                panel.TogglePanel();
+                button.SetClass("toggled", panel.Open);
+            });
+        }
+    }
+
+    private ControlSubPanel GetPanelFromId( string id )
+    {
+        return this.ChildrenOfType<ControlSubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
+    }
+}
