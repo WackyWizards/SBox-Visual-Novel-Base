@@ -64,8 +64,6 @@ public partial class ScriptPlayer : BaseNetworkable
 			foreach ( SoundAsset sound in label.SoundAssets )
 			{
 				ScriptLog( $"Playing sound: {sound.Path}" );
-
-				// Running To.Single() here doesn't work, why??
 				Sound.FromScreen( sound.Path );
 			}
 		}
