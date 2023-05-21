@@ -28,7 +28,7 @@ public partial class ScriptPlayer : BaseNetworkable
 
 	public ScriptPlayer()
 	{
-		Settings = new VNSettings();
+		Settings = new();
 	}
 
 	public void LoadScript( ScriptBase script ) 
@@ -59,19 +59,31 @@ public partial class ScriptPlayer : BaseNetworkable
 		if ( ActiveCharacter != null )
 			ActiveCharacter.ActivePortrait = label.CharacterExpression;
 
-		if ( label.SoundAssets != null )
+		if ( label.Assets.OfType<SoundAsset>().Any() )
 		{
-			foreach ( SoundAsset sound in label.SoundAssets )
+			foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 			{
 				ScriptLog( $"Playing sound: {sound.Path}" );
 				Sound.FromScreen( sound.Path );
 			}
 		}
 
-		if ( label.Background != null ) 
-			ActiveBackground = label.Background.Path;
+		if ( label.Assets.OfType<BackgroundAsset>().Any() )
+		{
+			try
+			{
+				ActiveBackground = label.Assets.OfType<BackgroundAsset>().SingleOrDefault().Path;
+			}
+			catch ( InvalidOperationException )
+			{
+				Log.Error( $"There can only be one BackgroundAsset in a Label!" );
+			}
+		}
 		else
+		{
 			ActiveBackground = null;
+		}
+
 
 		_cancellationToken = new();
 

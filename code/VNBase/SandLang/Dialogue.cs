@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using VNBase;
 
 namespace SandLang;
@@ -13,39 +10,43 @@ namespace SandLang;
 public class Dialogue
 {
 	/// <summary>
-	/// Represents a choice by the player, possible required conditions for it to be a viable choice, and the new label to direct towards
-	/// </summary>
-    public class Choice
-    {
-        public string ChoiceText { get; set; }
-        public string TargetLabel { get; set; }
-        public SParen Condition { get; set; }
-    }
-	
-	/// <summary>
-	/// In labels that do not have choices, represents code to execute as well as the new label to direct towards
-	/// </summary>
-    public class AfterLabel
-    {
-        public List<SParen> CodeBlocks { get; set; } = new();
-        public string TargetLabel { get; set; }
-    }
-
-	/// <summary>
-	/// Represents a dialogue step by the other character + options for the player to take
+	/// Represents a dialogue step by the other character + options for the player to take.
 	/// </summary>
     public class Label
     {
         public string Text { get; set; }
 		public string CharacterExpression { get; set; }
 		public CharacterBase Character { get; set; }
-		public BackgroundAsset Background { get; set; }
 		public List<Choice> Choices { get; set; }
-		public List<SoundAsset> SoundAssets { get; set; }
+		public List<AssetBase> Assets { get; set; }
         public AfterLabel AfterLabel { get; set; }
+
+		public Label()
+		{
+			Assets = new();
+		}
     }
 
-    public Dictionary<string, Label> DialogueLabels { get; } = new();
+	/// <summary>
+	/// Represents a choice by the player, possible required conditions for it to be a viable choice, and the new label to direct towards.
+	/// </summary>
+	public class Choice
+	{
+		public string ChoiceText { get; set; }
+		public string TargetLabel { get; set; }
+		public SParen Condition { get; set; }
+	}
+
+	/// <summary>
+	/// In labels that do not have choices, represents code to execute as well as the new label to direct towards.
+	/// </summary>
+	public class AfterLabel
+	{
+		public List<SParen> CodeBlocks { get; set; } = new();
+		public string TargetLabel { get; set; }
+	}
+
+	public Dictionary<string, Label> DialogueLabels { get; } = new();
     public Label InitialLabel { get; private set; }
 
     public static Dialogue ParseDialogue(List<SParen> codeBlocks)
@@ -257,9 +258,8 @@ public class Dialogue
 	private static void LabelSoundArgument(SParen argument, Label label)
 	{
 		string soundName = ((Value.VariableReferenceValue)argument[1]).Name;
-		label.SoundAssets ??= new();
 		var soundAsset = new SoundAsset();
-		label.SoundAssets.Add( soundAsset );
+		label.Assets.Add( soundAsset );
 
 		if ( argument[1] is not Value.VariableReferenceValue s ) throw new InvalidParameters( new[] { argument[1] } );
 		soundAsset.Path = soundName;
@@ -268,10 +268,7 @@ public class Dialogue
 	private static void LabelBackgroundArgument(SParen argument, Label label)
 	{
 		string backgroundName = ((Value.VariableReferenceValue)argument[1]).Name;
-		label.Background = new BackgroundAsset
-		{
-			Path = $"{VNSettings.BackgroundsPath}/{backgroundName}"
-		};
+		label.Assets.Add( new BackgroundAsset { Path = $"{VNSettings.BackgroundsPath}/{backgroundName}" } );
 	}
 
 	private static CharacterBase CreateCharacter(string characterName)
