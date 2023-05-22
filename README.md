@@ -2,9 +2,9 @@
 
 VNBase is a base for creating visual novels or dialogue systems for S&Box Games.
 
-It uses a base-networkable Script Player object for each pawn to load and play dialogue scripts from, where scripts are written using a LISP-styled language called SandLang.
+It uses a base-networkable Script Player for each pawn to load and play dialogue scripts from, where scripts are written using a LISP-styled language called SandLang.
 
-Creating a simple dialogue system or a visual novel is easy. The base includes multiple example scripts. However, it is modular enough for anyone proficient to make custom functions and calculations if they so require.
+Creating a simple dialogue system or a visual novel is easy, with the base including multiple example scripts. However, it is modular enough for anyone proficient to make custom functions and calculations if they so require, straight inside of SandLang, with little programming knowledge required.
 
 # Showcase
 
