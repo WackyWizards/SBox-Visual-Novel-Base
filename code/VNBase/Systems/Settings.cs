@@ -12,6 +12,12 @@ public class VNSettings
 	public int TextEffectDelay { get; set; } = 70;
 
 	/// <summary>
+	/// The action to skip the currently active text effect. You could define your own action in your project
+	/// settings and use that here, but we'll bind it to jump for simplicity's sake.
+	/// </summary>
+	public string SkipAction { get; set; } = "jump";
+
+	/// <summary>
 	/// Path to the background images
 	/// </summary>
 	public static string BackgroundsPath { get; set; } = "/materials/vnbase/images/backgrounds";

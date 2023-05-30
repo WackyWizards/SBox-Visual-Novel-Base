@@ -12,7 +12,7 @@ public partial class Pawn : AnimatedEntity
 	/// <summary>
 	/// Exists on the client to store old dialogs the player has seen.
 	/// </summary>
-	public List<string> DialogHistory { get; set; }
+	public List<string> DialogHistory { get; private set; }
 
 	/// <summary>
 	/// Called when the entity is first created 
@@ -41,13 +41,13 @@ public partial class Pawn : AnimatedEntity
 	{
 		base.ClientSpawn();
 
-		DialogHistory = new List<string>();
+		DialogHistory = new();
 	}
 
-	[Event.Client.BuildInput]
+	[GameEvent.Client.BuildInput]
 	private void SkipEffects()
 	{
-		bool skipPressed = Input.Pressed( InputButton.Jump );
+		bool skipPressed = Input.Pressed( VNScriptPlayer.Settings.SkipAction );
 		if ( !skipPressed ) return;
 
 		ScriptPlayer.SkipDialogue();
