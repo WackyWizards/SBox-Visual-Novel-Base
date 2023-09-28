@@ -7,10 +7,8 @@
   "Schema": 1,
   "HasAssets": true,
   "AssetsPath": "",
-  "ResourcePaths": [
-    "/materials/*",
-    "/sounds/*"
-  ],
+  "Resources": null,
+  "MenuResources": null,
   "HasCode": true,
   "CodePath": "/code/",
   "PackageReferences": [],
@@ -31,6 +29,7 @@
     "Summary": "System for creating Visual Novels or Dialogue Systems for S\u0026Box Games",
     "Description": "# Visual Novel Base (VNBase)\n\nVNBase is a base for creating visual novels or dialogue systems for S\u0026Box Games.\n\nIt uses a base-networkable Script Player for each pawn to load and play dialogue scripts from, where scripts are written using a LISP-styled language called SandLang.\n\nCreating a simple dialogue system or a visual novel is easy, with the base including multiple example scripts. However, it is modular enough for anyone proficient to make custom functions and calculations if they so require, straight inside of SandLang, with little programming knowledge required.\n\n# Project Source\n\nVNBase is completely open source and free for you to use for any project, as long as proper credits are given. You may get the source code along with examples from this github repository.\n\nhttps://github.com/Sp00n3xJR/SBox-Visual-Novel-Base",
     "Public": true,
-    "HttpAllowList": null
+    "HttpAllowList": null,
+    "TickRate": 50
   }
 }
