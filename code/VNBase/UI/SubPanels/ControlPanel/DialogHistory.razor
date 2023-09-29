@@ -8,7 +8,7 @@
 
 @namespace VNBase.UI
 
-@attribute [StyleSheet("/VNBase/UI/SubPanels/ControlPanel/DialogHistory.scss")]
+@attribute [StyleSheet]
 @inherits ControlSubPanel
 
 <root>
@@ -17,10 +17,10 @@
     @if (Player.DialogHistory != null)
     {
         <div class="history">
-            @for (var i = 0; i < Player.DialogHistory.Count; i++)
+            @foreach (var dialog in Player.DialogHistory)
             {
                 <div class="dialogue">
-                    <div class="text">@Player.DialogHistory[i]</div>
+                    <div class="text">@dialog</div>
                 </div>
             }
         </div>
