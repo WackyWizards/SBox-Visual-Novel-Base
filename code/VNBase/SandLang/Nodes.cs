@@ -260,17 +260,3 @@ public class SParen : IReadOnlyList<Value>
 		return new Value.ListValue( this ).Evaluate( environment );
 	}
 }
-
-// public class MainClass
-// {
-//     public static void Main(string[] args)
-//     {
-//         var sparen = SParen.ParseText(@"
-// (set* dist (defun (x1 y1 x2 y2) (sqrt (+ (pow (- x1 x2) 2) (pow (- y1 y2) 2)))))
-// (set* d (dist 3 5 7 1))
-// ").ToList();
-//         var environmentMap = new EnvironmentMap();
-//         Console.WriteLine(sparen.Select(s => s.Execute(environmentMap)).ToArray());
-//         Console.WriteLine(environmentMap);
-//     }
-// }

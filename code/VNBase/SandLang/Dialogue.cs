@@ -52,11 +52,11 @@ public class Dialogue
     public static Dialogue ParseDialogue(List<SParen> codeBlocks)
     {
         var dialogue = new Dialogue();
-        dialogue._parseDialogue(codeBlocks);
+        dialogue.Parse(codeBlocks);
         return dialogue;
     }
 
-	private void _parseDialogue( List<SParen> codeblocks )
+	private void Parse(List<SParen> codeblocks)
 	{
 		var dialogueParsingFunctions = new EnvironmentMap();
 
@@ -98,7 +98,7 @@ public class Dialogue
 	private static void ProcessLabelArgument(SParen argument, Label label)
     {
         var argumentType = ((Value.VariableReferenceValue)argument[0]).Name;
-        LabelArgument labelArgument = (argumentType switch
+        LabelArgument labelArgument = argumentType switch
         {
             "text" =>
                 LabelTextArgument,
@@ -113,7 +113,7 @@ public class Dialogue
 			"after" =>
                 LabelAfterArgument,
             _ => throw new ArgumentOutOfRangeException()
-        });
+        };
         labelArgument(argument, label);
     }
 
