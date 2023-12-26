@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VNBase;
 
 namespace SandLang;
@@ -15,13 +16,13 @@ public class Dialogue
     public class Label
     {
         public string Text { get; set; }
-		public string CharacterExpression { get; set; }
-		public CharacterBase Character { get; set; }
+		public CharacterBase SpeakingCharacter { get; set; }
+		public List<CharacterBase> Characters { get; set; }
 		public List<Choice> Choices { get; set; }
 		public List<AssetBase> Assets { get; set; }
         public AfterLabel AfterLabel { get; set; }
 
-		public Label()
+		public Label() 
 		{
 			Assets = new();
 		}
@@ -56,14 +57,14 @@ public class Dialogue
         return dialogue;
     }
 
-	private void Parse(List<SParen> codeblocks)
+	private void Parse(List<SParen> codeBlocks)
 	{
 		var dialogueParsingFunctions = new EnvironmentMap();
 
 		dialogueParsingFunctions.SetVariable( "label", new Value.FunctionValue( CreateLabel ) );
 		dialogueParsingFunctions.SetVariable( "start-dialogue", new Value.FunctionValue( SetStartDialogue ) );
 
-		foreach ( var sParen in codeblocks )
+		foreach ( var sParen in codeBlocks )
 		{
 			sParen.Execute( dialogueParsingFunctions );
 		}
@@ -119,6 +120,11 @@ public class Dialogue
 
     private delegate void LabelArgument(SParen argument, Label label);
 
+	/// <summary>
+	/// Returns consumed values in argument list
+	/// </summary>
+	private delegate int TextArgument(SParen argument, int index, Label label);
+
     /// <summary>
     /// Returns consumed values in argument list
     /// </summary>
@@ -127,7 +133,7 @@ public class Dialogue
 	/// <summary>
 	/// Returns consumed values in argument list
 	/// </summary>
-	private delegate int CharacterArgument(SParen argument, int index, Label label);
+	private delegate int CharacterArgument(SParen argument, int index, Label label, CharacterBase character);
 
 	/// <summary>
 	/// Returns consumed values in argument list
@@ -170,13 +176,13 @@ public class Dialogue
         }
     }
 
-    private static int AfterJumpArgument(SParen paren, int index, AfterLabel after)
+    private static int AfterJumpArgument(SParen sParen, int index, AfterLabel after)
     {
-        after.TargetLabel = (paren[index + 1] as Value.VariableReferenceValue)!.Name;
+        after.TargetLabel = (sParen[index + 1] as Value.VariableReferenceValue)!.Name;
         return 1;
     }
 
-    private static int AfterEndDialogueArgument(SParen sParen, int i, AfterLabel after)
+    private static int AfterEndDialogueArgument(SParen sParen, int index, AfterLabel after)
     {
         after.TargetLabel = null;
         return 0;
@@ -214,9 +220,9 @@ public class Dialogue
         return 1;
     }
 
-    private static int ChoiceJumpArgument(SParen arg, int index, Choice ch)
+    private static int ChoiceJumpArgument(SParen argument, int index, Choice ch)
     {
-        ch.TargetLabel = (arg[index + 1] as Value.VariableReferenceValue)!.Name;
+        ch.TargetLabel = (argument[index + 1] as Value.VariableReferenceValue)!.Name;
         return 1;
     }
 
@@ -224,13 +230,39 @@ public class Dialogue
     {
         if (argument[1] is not Value.StringValue s) throw new InvalidParameters(new[] { argument[1] });
         label.Text = s.Text;
-    }
+
+		for ( var i = 2; i < argument.Count; i++ )
+		{
+			if ( argument[i] is not Value.VariableReferenceValue variableReferenceValue )
+			{
+				throw new InvalidParameters( new[] { argument[i] } );
+			}
+
+			TextArgument textArgument = variableReferenceValue.Name switch
+			{
+				"say" => TextSayArgument,
+				_ => throw new NotImplementedException()
+			};
+
+			i += textArgument( argument, i, label );
+		}
+	}
+
+	private static int TextSayArgument(SParen argument, int index, Label label)
+	{
+		string characterName = ((Value.VariableReferenceValue)argument[3]).Name;
+		CharacterBase character = CreateCharacter( characterName );
+		label.SpeakingCharacter = character;
+
+		return 1;
+	}
 
 	private static void LabelCharacterArgument(SParen argument, Label label)
 	{
-		string characterName = ((Value.VariableReferenceValue)argument[1]).Name;
+		string characterName = ((Value.VariableReferenceValue)argument[1])!.Name;
+		label.Characters ??= new();
 		CharacterBase character = CreateCharacter( characterName );
-		label.Character = character;
+		label.Characters.Add( character );
 
 		for ( var i = 2; i < argument.Count; i++ )
 		{
@@ -245,29 +277,27 @@ public class Dialogue
 				_ => throw new ArgumentOutOfRangeException()
 			};
 
-			i += characterArgument( argument, i, label );
+			i += characterArgument( argument, i, label, character );
 		}
 	}
 
-	private static int LabelCharacterExpressionArgument( SParen argument, int index, Label label )
+	private static int LabelCharacterExpressionArgument( SParen argument, int index, Label label, CharacterBase character )
 	{
-		label.CharacterExpression = (argument[index + 1] as Value.VariableReferenceValue)!.Name;
+		character.ActivePortrait = (argument[index + 1] as Value.VariableReferenceValue)!.Name;
 		return 1;
 	}
 
 	private static void LabelSoundArgument(SParen argument, Label label)
 	{
-		string soundName = ((Value.VariableReferenceValue)argument[1]).Name;
-		var soundAsset = new SoundAsset();
-		label.Assets.Add( soundAsset );
+		string soundName = ((Value.VariableReferenceValue)argument[1])!.Name;
+		label.Assets.Add( new SoundAsset { Path = soundName } );
 
 		if ( argument[1] is not Value.VariableReferenceValue s ) throw new InvalidParameters( new[] { argument[1] } );
-		soundAsset.Path = soundName;
 	}
 
 	private static void LabelBackgroundArgument(SParen argument, Label label)
 	{
-		string backgroundName = ((Value.VariableReferenceValue)argument[1]).Name;
+		string backgroundName = ((Value.VariableReferenceValue)argument[1])!.Name;
 		label.Assets.Add( new BackgroundAsset { Path = $"{VNSettings.BackgroundsPath}/{backgroundName}" } );
 	}
 
