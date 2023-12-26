@@ -1,0 +1,33 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@using System.Collections.Generic;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet]
+@inherits SubPanel
+
+<root>
+    @if (Player.SpeakingCharacter != null)
+    {
+        <div class="characterPanel">
+            <label class="character" style="color: @Player.SpeakingCharacter.NameColor.Rgba">@Player.SpeakingCharacter.Name</label>
+            @if (Player.SpeakingCharacter.Title != null)
+            {
+                <label class="title" style="color: @Player.SpeakingCharacter.TitleColor.Rgba">@Player.SpeakingCharacter.Title</label>
+            }
+        </div>
+    }
+
+    <div class="dialoguePanel">
+        @(Player.ActiveDialogueText)
+    </div>
+</root>
+
+@code {
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Player.ActiveDialogueText, Player.TextEffectPlaying);
+    }
+}

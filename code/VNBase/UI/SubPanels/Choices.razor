@@ -1,24 +1,22 @@
 @using Sandbox;
 @using Sandbox.UI;
-@using Sandbox.UI.Construct;
 @using System;
-@using System.Collections.Generic;
+@using System.Linq;
 
 @namespace VNBase.UI
 
 @attribute [StyleSheet]
-@inherits Panel
+@inherits SubPanel
 
 <root>
-    @if ( DialogueChoices != null && DialogueChoices.Count > 0 && !IsTyping )
+    @if ( Player.ActiveDialogueChoices.Any() && !Player.TextEffectPlaying )
     {
         <div class="choicePanel">
-            @for (var i = 0; i < DialogueChoices.Count; i++)
+            @for (var i = 0; i < Player.ActiveDialogueChoices.Count; i++)
             {
-                var buttonIndex = i; // Create a copy of i that won't change
-                <button class="item-dialogue @(i == DialogueChoice ? "selected-text" : "")" onclick="@(() => ChooseDialogue(buttonIndex))"
-                        onmouseover="@(() => HoverChoice())">
-                    @DialogueChoices[i]
+                var buttonIndex = i;
+                <button class="choice" onclick="@(() => Player.ExecuteChoice(buttonIndex))">
+                    @Player.ActiveDialogueChoices[i]
                 </button>
             }
         </div>
@@ -26,36 +24,8 @@
 </root>
 
 @code {
-    private static Pawn Player => Game.LocalPawn as Pawn;
-
-    private string DialogueText { get; set; }
-    private IList<string> DialogueChoices { get; set; }
-    private bool IsTyping { get; set; }
-
-    private int DialogueChoice { get; set; } = 0;
-
-    private void HoverChoice()
-    {
-        Sound.FromScreen("ui-hover");
-    }
-
-    private void ChooseDialogue(int index)
-    {
-        Sound.FromScreen("ui-click");
-        ScriptPlayer.DialogueChoice(index);
-    }
-
-    public override void Tick()
-    {
-        base.Tick();
-        DialogueText = Player.VNScriptPlayer.ActiveDialogueText;
-        DialogueChoices = Player.VNScriptPlayer.ActiveDialogueChoices;
-        DialogueChoice = Player.VNScriptPlayer.ActiveDialogueChoice;
-        IsTyping = Player.VNScriptPlayer.IsTyping;
-    }
-
     protected override int BuildHash()
     {
-        return HashCode.Combine(DialogueText, IsTyping, DialogueChoices, DialogueChoice);
+        return HashCode.Combine(Player.ActiveDialogueText, Player.ActiveDialogueChoices);
     }
 }

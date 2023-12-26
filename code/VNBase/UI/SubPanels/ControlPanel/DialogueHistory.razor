@@ -1,0 +1,25 @@
+@using Sandbox.UI;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet]
+@inherits SubPanel
+
+<root>
+    <label class="title">History</label>
+    <div class="history">
+        @foreach (var dialogue in Player.DialogueHistory)
+        {
+            <div class="dialogue">
+                <div class="text">@dialogue</div>
+            </div>
+        }
+    </div>
+</root>
+
+@code {
+    protected override int BuildHash()
+    {
+        return Player.ActiveCharacters.Count;
+    }
+}

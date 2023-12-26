@@ -1,0 +1,20 @@
+@using Sandbox.UI;
+
+@namespace VNBase.UI
+
+@attribute [StyleSheet]
+@inherits SubPanel
+
+<root>
+    @foreach (var character in Player.ActiveCharacters)
+    {
+        <img class="character-portrait" src="@($"{character.Images}/{character.ActivePortrait}")" />
+    }
+</root>
+
+@code {
+    protected override int BuildHash()
+    {
+        return Player.ActiveCharacters.Count;
+    }
+}

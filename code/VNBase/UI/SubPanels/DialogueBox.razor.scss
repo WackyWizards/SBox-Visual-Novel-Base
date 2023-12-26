@@ -1,32 +1,31 @@
-// Stylize this however you wish for your game.
-// What is here now is just an example.
-
-DialogBox {
+DialogueBox {
     position: absolute;
+    pointer-events: none;
     width: 100%;
-    height: 40%;
+    height: 45%;
     bottom: 0;
 
     .characterPanel {
-        position: absolute;
-        width: 420px;
-        height: 30%;
+        width: 450px;
+        height: 150px;
         background-color: rgba(0,0,0,0.95);
         box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.95);
         flex-direction: column;
         left: 10%;
 
+        .label {
+            margin-left: 10px;
+        }
+
         .character {
-            height: 70%;
+            height: 75px;
             font-weight: bold;
-            font-size: 36px;
-            margin: 5px 5px 0px 0px;
+            font-size: 38px;
         }
 
         .title {
             height: 100%;
-            font-size: 26px;
-            margin: 5px 5px 0px 2px;
+            font-size: 30px;
         }
     }
 

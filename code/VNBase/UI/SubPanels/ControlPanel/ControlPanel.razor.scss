@@ -1,47 +1,35 @@
-// Stylize this however you wish for your game.
-// What is here now is just an example.
-
 ControlPanel {
     pointer-events: none;
     position: absolute;
     width: 100%;
     height: 100%;
+    align-items: center;
+    justify-content: center;
     z-index: 1;
 
     .buttons {
         position: absolute;
         pointer-events: all;
         width: 100%;
-        height: 40px;
-        flex-direction: row-reverse;
+        height: 50px;
         bottom: 0;
+        flex-direction: row-reverse;
 
         .button {
             width: 150px;
             color: white;
             font-size: 24px;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.1s linear;
 
-            .label {
-                position: absolute;
-                margin-left: 5px;
-                margin-bottom: 5px;
-                bottom: 0;
+            &:hover {
+                color: red;
+            }
+
+            &.toggled {
+                color: red;
             }
         }
-
-        .button:hover {
-            color: red;
-        }
-
-        .toggled {
-            color: red;
-        }
-    }
-
-    .centered {
-        position: absolute;
-        align-self: center;
-        left: 50%;
-        transform: translateX(-50%);
     }
 }

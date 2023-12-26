@@ -4,31 +4,46 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using SandLang;
+using VNBase.Util;
 
 namespace VNBase;
 
 /// <summary>
 /// Responsible for handling visual novel base scripts.
 /// </summary>
-public partial class ScriptPlayer : BaseNetworkable
+[Title("VN Script Player")]
+public partial class ScriptPlayer : Component
 {
-	[Net] public Pawn Owner { get; set; }
-	[Net] public ScriptBase ActiveScript { get; set; }
-	[Net] public CharacterBase ActiveCharacter { get; set; }
-	[Net, Change] public string ActiveDialogueText { get; set; }
-	[Net] public string ActiveBackground { get; set; }
-	[Net] public bool IsTyping { get; set; }
+	[Property] public ScriptBase ActiveScript { get; private set; }
 
-	public VNSettings Settings { get; set; }
+	[Property] public CharacterBase SpeakingCharacter { get; set; }
 
-	private CancellationTokenSource _cancellationToken;
+	[Property] public string ActiveDialogueText { get; set; }
 
-	private Dialogue _dialogue = null;
-	private Dialogue.Label _currentLabel = null;
+	[Property] public string ActiveBackground { get; set; }
 
-	public ScriptPlayer()
+	[Property] public bool TextEffectPlaying { get; set; }
+
+	[Property] public List<CharacterBase> ActiveCharacters { get; set; }
+
+	[Property] public List<string> DialogueHistory { get; set; }
+
+	public VNSettings Settings { get; private set; } = new();
+
+	private Dialogue _dialogue;
+	private Dialogue.Label _currentLabel;
+
+	private CancellationTokenSource _cancellationTokenSource;
+
+	protected override void OnStart()
 	{
-		Settings = new();
+		LoadScript( new ExampleScript() );
+	}
+
+	protected override void OnUpdate()
+	{
+		if ( Input.Pressed(Settings.SkipAction) )
+			SkipDialogue();
 	}
 
 	public void LoadScript( ScriptBase script ) 
@@ -42,7 +57,7 @@ public partial class ScriptPlayer : BaseNetworkable
 		ScriptLog( $"Loading script: {script.GetType().Name}" );
 
 		ActiveScript = script;
-		script.Before();
+		script.OnLoad();
 
 		_dialogue = Dialogue.ParseDialogue(
 			SParen.ParseText( script.Dialogue ).ToList()
@@ -54,17 +69,27 @@ public partial class ScriptPlayer : BaseNetworkable
 	private async void SetCurrentLabel( Dialogue.Label label )
 	{
 		_currentLabel = label;
-		ActiveCharacter = label.Character;
 
-		if ( ActiveCharacter != null )
-			ActiveCharacter.ActivePortrait = label.CharacterExpression;
+		ActiveCharacters.Clear();
+		if ( !label.Characters.IsNullOrEmpty() )
+		{
+			label.Characters.ForEach( ActiveCharacters.Add );
+		}
+
+		if ( label.SpeakingCharacter != null )
+		{
+			SpeakingCharacter = label.SpeakingCharacter;
+		}
+		else
+		{
+			SpeakingCharacter = null;
+		}
 
 		if ( label.Assets.OfType<SoundAsset>().Any() )
 		{
 			foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 			{
-				ScriptLog( $"Playing sound: {sound.Path}" );
-				Sound.FromScreen( sound.Path );
+				//Sound.FromScreen( sound.Path );
 			}
 		}
 
@@ -84,79 +109,54 @@ public partial class ScriptPlayer : BaseNetworkable
 			ActiveBackground = null;
 		}
 
+		_cancellationTokenSource = new();
 
-		_cancellationToken = new();
-
-		IsTyping = true;
+		TextEffectPlaying = true;
 		try
 		{
-			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
+			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => ActiveDialogueText = text, _cancellationTokenSource.Token );
 		}
 		catch ( OperationCanceledException )
 		{
 			ActiveDialogueText = label.Text;
 		}
-		IsTyping = false;
+		TextEffectPlaying = false;
 
+		AddHistory( label.Text );
+
+		// Load our choices.
 		ActiveDialogueChoices = label.Choices != null
 			? label.Choices
-				.Where( p =>p.Condition == null ||
+				.Where( p => p.Condition == null ||
 					 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
 				.Select( p => p.ChoiceText )
 				.ToList()
-			// if no choices are available, we create "Continue..." which will just direct toward afterlabel
 			: ContinueChoice;
-
-		ActiveDialogueChoice = 0;
 	}
 
-	[ConCmd.Server("dialogue_skip")]
-	public static void SkipDialogue()
+	public void SkipDialogue()
 	{
-		var pawn = ConsoleSystem.Caller.Pawn as Pawn;
-
-		var scriptPlayer = pawn?.VNScriptPlayer;
-		if ( scriptPlayer == null ) 
-		{ 
-			ScriptLog( "Unable to skip, no script player found in caller!", SeverityLevel.Error );
-			return;
-		}
-
-		if ( scriptPlayer.IsTyping )
+		if ( TextEffectPlaying )
 		{
-			scriptPlayer._cancellationToken.Cancel();
-			ScriptLog( "Dialogue effect skipped." );
+			_cancellationTokenSource.Cancel();
 		}
 	}
-
-	/// <summary>
-	/// Example of a variable read and written using IEnvironment
-	/// </summary>
-	private int _iterationCount = 0;
-
-	private static readonly List<string> ContinueChoice = new( new[] { "Continue..." } );
 
 	private IEnvironment GetEnvironment()
 	{
+		// We use an EnvironmentMap to map unique variables for use in S-Expression code.
 		return new EnvironmentMap( new Dictionary<string, Value>()
 		{
-			["self-pawn"] = new Value.WrapperValue<Pawn>( Owner ),
-			["iter-count"] = new Value.NumberValue( _iterationCount )
-		} );
+
+		});
 	}
 
-	private void OnActiveDialogueTextChanged( string oldText, string newText )
+	protected void AddHistory( string dialogue )
 	{
-		if ( IsTyping ) 
-			return;
-
-		if ( Owner.DialogHistory == null )
-			return;
-
-		if ( Owner.DialogHistory.Contains( oldText ) )
-			return;
-
-		Owner.DialogHistory.Add( oldText );
+		if ( !DialogueHistory.Contains( dialogue ) )
+		{
+			DialogueHistory.Add( dialogue );
+		}
 	}
 
 	private static void ScriptLog( object msg, SeverityLevel level = SeverityLevel.Info )

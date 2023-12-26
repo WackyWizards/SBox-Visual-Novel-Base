@@ -6,21 +6,13 @@ namespace VNBase;
 
 partial class ScriptPlayer
 {
-	[Net] public IList<string> ActiveDialogueChoices { get; set; }
-	public int ActiveDialogueChoice { get; set; }
+	[Property] public List<string> ActiveDialogueChoices { get; private set; }
 
-	// We use a command to trigger dialogue execution
-	[ConCmd.Server( "dialogue_choice" )]
-	public static void DialogueChoice( int choice )
+	public static readonly List<string> ContinueChoice = new( new[] { "Continue" } );
+
+	public void ExecuteChoice( int choiceIndex )
 	{
-		var pawn = ConsoleSystem.Caller.Pawn as Pawn;
-
-		pawn!.VNScriptPlayer.ExecuteChoice( choice );
-	}
-
-	private void ExecuteChoice( int choiceIndex )
-	{
-		if ( !Game.IsServer ) return;
+		if ( _currentLabel == null ) return;
 
 		var choice = _currentLabel.Choices?[choiceIndex];
 		var dialogueEnvironment = GetEnvironment();
