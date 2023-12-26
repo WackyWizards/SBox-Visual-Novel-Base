@@ -1,0 +1,84 @@
+namespace VNBase;
+
+/// <summary>
+/// This is an example script.
+/// </summary>
+public class ExampleScript : ScriptBase
+{
+	// We will write our script here.
+	public override string Dialogue { get; set; } = @"
+(label breezing-wind
+	(text ""The wind is breezing nicely through your hair, the birds are chirping and the sun is out. It's a beautiful day."")
+	(choice ""Look around your surroundings"" jump look-around)
+	(choice ""Sit down in the grass to admire the day"" jump sit-down)
+	(choice ""Spin around in a circle"" jump loop)
+	(sound purchase)
+	(bg meadow.jpg)
+)
+
+(label look-around
+	(text ""Infront of you is a path, to your right is the road. It appears that you are in the countryside."")
+	(choice ""Follow the path"" jump follow-the-path)
+	(bg meadow.jpg)
+)
+
+(label follow-the-path
+	(text ""You follow the pathway for a while, until you come across a small village. You see a small house in the distance. It looks abandoned, perhaps there's loot to be found?"")
+	(choice ""Head towards the house"" jump head-towards-house)
+	(choice ""Continue on the path"" jump continue-on-the-path)
+	(bg meadow.jpg)
+)
+
+(label head-towards-house
+	(text ""You head towards the house, it's a bit run down, but it looks like it's been abandoned for a while. You see a small window on the second floor, perhaps you can climb up and loot the place?"")
+	(choice ""Climb up the house"" jump climb-up-house)
+	(choice ""Continue on the path"" jump continue-on-the-path)
+	(bg meadow.jpg)
+)
+
+(label climb-up-house
+	(text ""You climb up the house, and find a small chest. You open it, and find a few coins and a rusty sword."")
+	(choice ""Take the coins and sword"" jump sit-down)
+	(choice ""Leave the house and continue on the path"" jump continue-on-the-path)
+	(bg meadow.jpg)
+	(after end-dialogue)
+)
+
+(label continue-on-the-path
+	(text ""You decide that the house might not be worth your time, and decide to continue alongside the pathway."")
+	(bg meadow.jpg)
+	(after end-dialogue)
+)
+
+(label sit-down
+	(text ""You decide to sit down to admire your surroundings. It's truly beautiful. You decide to rest your eyes, laying on the bare grass and taking shade underneath the leaves of a big tree."")
+	(bg meadow.jpg)
+	(after end-dialogue)
+)
+
+(label loop
+	(text ""You decide to do a quick spin in place. Move on now?"")
+	(choice ""Return to the start"" jump breezing-wind)
+	(choice ""Continue"" jump loop)
+	(bg meadow.jpg)
+)
+
+(start-dialogue breezing-wind)
+	";
+
+	public override ScriptBase NextScript => new ExampleCharacterScript();
+
+	public override void OnLoad()
+	{
+		base.OnLoad();
+
+		Log.Info( "Script started." );
+	}
+
+	public override void After()
+	{
+		base.After();
+
+		Log.Info( "Script finished." );
+	}
+}
