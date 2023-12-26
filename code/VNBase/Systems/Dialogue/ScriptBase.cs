@@ -1,11 +1,10 @@
-using Sandbox;
 
 namespace VNBase;
 
 /// <summary>
-/// Defines a script that can be run.
+/// Defines a VNBase script.
 /// </summary>
-public class ScriptBase : BaseNetworkable
+public class ScriptBase
 {
 	/// <summary>
 	/// This is where you want to write your script.
@@ -20,7 +19,7 @@ public class ScriptBase : BaseNetworkable
 	/// <summary>
 	/// This is called when the script is run.
 	/// </summary>
-	public virtual void Before()
+	public virtual void OnLoad()
 	{
 
 	}

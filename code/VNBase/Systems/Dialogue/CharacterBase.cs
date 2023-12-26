@@ -2,7 +2,7 @@ using Sandbox;
 
 namespace VNBase;
 
-public partial class CharacterBase : BaseNetworkable
+public class CharacterBase
 {
 	/// <summary>
 	/// The name of the character.
@@ -31,8 +31,8 @@ public partial class CharacterBase : BaseNetworkable
 	public virtual Color TitleColor => Color.White;
 
 	/// <summary>
-	/// The name of the active portrait.
-	/// If blank, we assume no portrait.
+	/// The name of the active portrait image.
+	/// Includes extension.
 	/// </summary>
-	[Net] public string ActivePortrait { get; set; } = "";
+	public string ActivePortrait { get; set; }
 }
