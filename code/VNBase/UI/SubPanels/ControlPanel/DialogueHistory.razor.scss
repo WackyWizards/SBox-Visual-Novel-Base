@@ -1,6 +1,6 @@
 DialogueHistory {
-    width: 50%;
-    height: 75%;
+    width: 75%;
+    height: 85%;
     background-color: rgba(0,0,0,0.99);
     box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.99);
     flex-direction: column;
@@ -28,6 +28,11 @@ DialogueHistory {
             background-color: rgba(35,35,35,0.9);
             box-shadow: 0px 0px 10px 2px rgba(35,35,35,0.9);
             margin-top: 10px;
+            flex-direction: column;
+
+            .character {
+                font-weight: bold;
+            }
 
             .label {
                 width: 100%;

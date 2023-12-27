@@ -11,7 +11,11 @@
         @foreach (var dialogue in Player.DialogueHistory)
         {
             <div class="dialogue">
-                <div class="text">@dialogue</div>
+                @if ( dialogue.SpeakingCharacter is not null )
+                {
+                    <div class="character">@(dialogue.SpeakingCharacter.Name):</div>
+                }
+                <div class="text">@dialogue.Text</div>
             </div>
         }
     </div>
