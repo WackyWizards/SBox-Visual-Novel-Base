@@ -18,13 +18,13 @@ public partial class ScriptPlayer : Component
 
 	[Property] public CharacterBase SpeakingCharacter { get; set; }
 
-	[Property] public string ActiveDialogueText { get; set; }
+	[Property] public string DialogueText { get; set; }
 
-	[Property] public string ActiveBackground { get; set; }
+	[Property] public string Background { get; set; }
 
-	[Property] public bool TextEffectPlaying { get; set; }
+	[Property] public bool DialogueFinished { get; set; }
 
-	[Property] public List<CharacterBase> ActiveCharacters { get; set; }
+	[Property] public List<CharacterBase> Characters { get; set; }
 
 	[Property] public List<string> DialogueHistory { get; set; }
 
@@ -40,10 +40,17 @@ public partial class ScriptPlayer : Component
 		LoadScript( new ExampleScript() );
 	}
 
-	protected override void OnUpdate()
+	protected override void OnFixedUpdate()
 	{
-		if ( Input.Pressed(Settings.SkipAction) )
-			SkipDialogue();
+		if ( Input.Pressed( Settings.SkipAction ) )
+		{
+			if ( !DialogueFinished )
+			{
+				SkipDialogue();
+			}
+			else if ( ActiveDialogueChoices.IsNullOrEmpty() )
+				UnloadScript();
+		}
 	}
 
 	public void LoadScript( ScriptBase script ) 
@@ -66,14 +73,46 @@ public partial class ScriptPlayer : Component
 		SetCurrentLabel( _dialogue.InitialLabel );
 	}
 
+	/// <summary>
+	/// Unloads the currently active script.
+	/// </summary>
+	public void UnloadScript()
+	{
+		if ( ActiveScript is null )
+		{
+			return;
+		}
+
+		_dialogue = null;
+		_currentLabel = null;
+
+		ActiveDialogueChoices = null;
+		DialogueText = null;
+		SpeakingCharacter = null;
+		Background = null;
+
+		ActiveScript.After();
+		if ( ActiveScript.NextScript != null )
+		{
+			LoadScript( ActiveScript.NextScript );
+		}
+		else
+		{
+			ActiveScript = null;
+		}
+
+		ScriptLog( $"Unloaded active script." );
+	}
+
 	private async void SetCurrentLabel( Dialogue.Label label )
 	{
 		_currentLabel = label;
+		DialogueFinished = false;
 
-		ActiveCharacters.Clear();
+		Characters.Clear();
 		if ( !label.Characters.IsNullOrEmpty() )
 		{
-			label.Characters.ForEach( ActiveCharacters.Add );
+			label.Characters.ForEach( Characters.Add );
 		}
 
 		if ( label.SpeakingCharacter != null )
@@ -89,7 +128,7 @@ public partial class ScriptPlayer : Component
 		{
 			foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 			{
-				//Sound.FromScreen( sound.Path );
+				Sound.Play( sound.Path );
 			}
 		}
 
@@ -97,7 +136,7 @@ public partial class ScriptPlayer : Component
 		{
 			try
 			{
-				ActiveBackground = label.Assets.OfType<BackgroundAsset>().SingleOrDefault().Path;
+				Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault().Path;
 			}
 			catch ( InvalidOperationException )
 			{
@@ -106,37 +145,41 @@ public partial class ScriptPlayer : Component
 		}
 		else
 		{
-			ActiveBackground = null;
+			Background = null;
 		}
 
 		_cancellationTokenSource = new();
 
-		TextEffectPlaying = true;
 		try
 		{
-			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => ActiveDialogueText = text, _cancellationTokenSource.Token );
+			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cancellationTokenSource.Token );
 		}
 		catch ( OperationCanceledException )
 		{
-			ActiveDialogueText = label.Text;
+			DialogueText = label.Text;
 		}
-		TextEffectPlaying = false;
 
 		AddHistory( label.Text );
+		DialogueFinished = true;
 
-		// Load our choices.
-		ActiveDialogueChoices = label.Choices != null
-			? label.Choices
-				.Where( p => p.Condition == null ||
-					 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
-				.Select( p => p.ChoiceText )
-				.ToList()
-			: ContinueChoice;
+		ActiveDialogueChoices = null;
+		if ( label.Choices != null )
+		{
+			// Load our choices, or create a continue choice,
+			// if we don't have any valid ones.
+			ActiveDialogueChoices = label.Choices != null
+				? label.Choices
+					.Where( p => p.Condition == null ||
+						 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
+					.Select( p => p.ChoiceText )
+					.ToList()
+				: ContinueChoice;
+		}
 	}
 
 	public void SkipDialogue()
 	{
-		if ( TextEffectPlaying )
+		if ( !DialogueFinished )
 		{
 			_cancellationTokenSource.Cancel();
 		}
@@ -157,28 +200,5 @@ public partial class ScriptPlayer : Component
 		{
 			DialogueHistory.Add( dialogue );
 		}
-	}
-
-	private static void ScriptLog( object msg, SeverityLevel level = SeverityLevel.Info )
-	{
-		switch ( level ) 
-		{
-			case SeverityLevel.Error:
-				Log.Error( $"[VNBASE] {msg}" );
-				break;
-			case SeverityLevel.Warning:
-				Log.Warning( $"[VNBASE] {msg}" );
-				break;
-			default:
-				Log.Info($"[VNBASE] {msg}" );
-				break;
-		}
-	}
-
-	private enum SeverityLevel
-	{
-		Info,
-		Warning,
-		Error
 	}
 }

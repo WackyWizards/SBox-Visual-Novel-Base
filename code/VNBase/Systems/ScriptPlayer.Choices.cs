@@ -6,8 +6,7 @@ namespace VNBase;
 
 partial class ScriptPlayer
 {
-	[Property] public List<string> ActiveDialogueChoices { get; private set; }
-
+	[Property] public List<string> ActiveDialogueChoices { get; private set; } = new();
 	public static readonly List<string> ContinueChoice = new( new[] { "Continue" } );
 
 	public void ExecuteChoice( int choiceIndex )
@@ -37,20 +36,7 @@ partial class ScriptPlayer
 
 		if ( afterLabel.TargetLabel == null )
 		{
-			_currentLabel = null;
-			ActiveDialogueChoices = null;
-			ActiveDialogueText = null;
-			_dialogue = null;
-
-			ActiveScript.After();
-			if ( ActiveScript.NextScript != null )
-			{
-				LoadScript( ActiveScript.NextScript );
-			}
-			else
-			{
-				ActiveScript = null;
-			}
+			UnloadScript();
 		}
 		else
 		{
