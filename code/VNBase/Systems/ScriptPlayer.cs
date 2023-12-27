@@ -26,7 +26,7 @@ public partial class ScriptPlayer : Component
 
 	[Property] public List<CharacterBase> Characters { get; set; }
 
-	[Property] public List<string> DialogueHistory { get; set; }
+	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
 
 	public VNSettings Settings { get; private set; } = new();
 
@@ -159,7 +159,7 @@ public partial class ScriptPlayer : Component
 			DialogueText = label.Text;
 		}
 
-		AddHistory( label.Text );
+		AddHistory( label );
 		DialogueFinished = true;
 
 		ActiveDialogueChoices = null;
@@ -194,7 +194,7 @@ public partial class ScriptPlayer : Component
 		});
 	}
 
-	protected void AddHistory( string dialogue )
+	protected void AddHistory( Dialogue.Label dialogue )
 	{
 		if ( !DialogueHistory.Contains( dialogue ) )
 		{
