@@ -2,6 +2,7 @@
 @using Sandbox.UI;
 @using System;
 @using System.Linq;
+@using VNBase.Util;
 
 @namespace VNBase.UI
 
@@ -9,7 +10,7 @@
 @inherits SubPanel
 
 <root>
-    @if ( Player.ActiveDialogueChoices.Any() && !Player.TextEffectPlaying )
+    @if (!Player.ActiveDialogueChoices.IsNullOrEmpty() && Player.DialogueFinished)
     {
         <div class="choicePanel">
             @for (var i = 0; i < Player.ActiveDialogueChoices.Count; i++)
@@ -23,9 +24,10 @@
     }
 </root>
 
+
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.ActiveDialogueText, Player.ActiveDialogueChoices);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.ActiveDialogueChoices?.Count);
     }
 }

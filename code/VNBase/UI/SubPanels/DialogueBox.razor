@@ -21,13 +21,13 @@
     }
 
     <div class="dialoguePanel">
-        @(Player.ActiveDialogueText)
+        @(Player.DialogueText)
     </div>
 </root>
 
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.ActiveDialogueText, Player.TextEffectPlaying);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished);
     }
 }
