@@ -13,7 +13,7 @@
             <div class="dialogue">
                 @if ( dialogue.SpeakingCharacter is not null )
                 {
-                    <div class="character">@(dialogue.SpeakingCharacter.Name):</div>
+                    <div class="character" style="color: @dialogue.SpeakingCharacter.NameColor.Rgba">@(dialogue.SpeakingCharacter.Name):</div>
                 }
                 <div class="text">@dialogue.Text</div>
             </div>
