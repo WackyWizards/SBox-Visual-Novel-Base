@@ -12,7 +12,7 @@ namespace VNBase;
 /// Responsible for handling visual novel base scripts.
 /// </summary>
 [Title("VN Script Player")]
-public partial class ScriptPlayer : Component
+public sealed partial class ScriptPlayer : Component
 {
 	[Property] public ScriptBase ActiveScript { get; private set; }
 
@@ -110,41 +110,22 @@ public partial class ScriptPlayer : Component
 		DialogueFinished = false;
 
 		Characters.Clear();
-		if ( !label.Characters.IsNullOrEmpty() )
+		label.Characters?.ForEach( Characters.Add );
+
+		SpeakingCharacter = label.SpeakingCharacter;
+
+		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 		{
-			label.Characters.ForEach( Characters.Add );
+			Sound.Play( sound.Path );
 		}
 
-		if ( label.SpeakingCharacter != null )
+		try
 		{
-			SpeakingCharacter = label.SpeakingCharacter;
+			Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault()?.Path;
 		}
-		else
+		catch ( InvalidOperationException )
 		{
-			SpeakingCharacter = null;
-		}
-
-		if ( label.Assets.OfType<SoundAsset>().Any() )
-		{
-			foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
-			{
-				Sound.Play( sound.Path );
-			}
-		}
-
-		if ( label.Assets.OfType<BackgroundAsset>().Any() )
-		{
-			try
-			{
-				Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault().Path;
-			}
-			catch ( InvalidOperationException )
-			{
-				Log.Error( $"There can only be one BackgroundAsset in a Label!" );
-			}
-		}
-		else
-		{
+			Log.Error( $"There can only be one BackgroundAsset in a Label!" );
 			Background = null;
 		}
 
@@ -162,19 +143,18 @@ public partial class ScriptPlayer : Component
 		AddHistory( label );
 		DialogueFinished = true;
 
-		ActiveDialogueChoices = null;
-		if ( label.Choices != null )
+		ActiveDialogueChoices = label.Choices?.Where( x => x.IsAvailable( GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+	}
+
+	private void ExecuteAfterLabel()
+	{
+		var afterLabel = _currentLabel.AfterLabel;
+		foreach ( var codeBlock in afterLabel.CodeBlocks ?? Enumerable.Empty<SParen>() )
 		{
-			// Load our choices, or create a continue choice,
-			// if we don't have any valid ones.
-			ActiveDialogueChoices = label.Choices != null
-				? label.Choices
-					.Where( p => p.Condition == null ||
-						 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
-					.Select( p => p.ChoiceText )
-					.ToList()
-				: ContinueChoice;
+			codeBlock.Execute( GetEnvironment() );
 		}
+
+		SetCurrentLabel( _dialogue.DialogueLabels[afterLabel.TargetLabel ?? ""] );
 	}
 
 	public void SkipDialogue()
@@ -194,7 +174,7 @@ public partial class ScriptPlayer : Component
 		});
 	}
 
-	protected void AddHistory( Dialogue.Label dialogue )
+	private void AddHistory( Dialogue.Label dialogue )
 	{
 		if ( !DialogueHistory.Contains( dialogue ) )
 		{
