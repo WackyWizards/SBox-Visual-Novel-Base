@@ -35,6 +35,11 @@ public class Dialogue
 		public string ChoiceText { get; set; }
 		public string TargetLabel { get; set; }
 		public SParen Condition { get; set; }
+
+		public bool IsAvailable( IEnvironment environment )
+		{
+			return Condition == null || Condition.Execute( environment ) is Value.NumberValue { Number: > 0 };
+		}
 	}
 
 	/// <summary>
