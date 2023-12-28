@@ -1,6 +1,6 @@
 ﻿namespace VNBase;
 
-partial class ScriptPlayer
+sealed partial class ScriptPlayer
 {
 	private static void ScriptLog( object msg, SeverityLevel level = SeverityLevel.Info )
 	{
