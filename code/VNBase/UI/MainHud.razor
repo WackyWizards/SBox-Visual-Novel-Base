@@ -1,45 +1,27 @@
 @using Sandbox;
-@using Sandbox.UI;
-@using Sandbox.UI.Construct;
 @using System;
-@using System.Collections.Generic;
+@using System.Linq;
 
 @namespace VNBase.UI
 
-<!--
-    The Hud attribute is added for convenience. 
-    If you create your UI in a different way, you may remove it. 
--->
-@attribute [Hud]
-@attribute [StyleSheet]
+@attribute [Title("VN Main Hud")]
+@inherits PanelComponent
 
-@inherits Panel
-
-<root style="background-image: url('@($"{BackgroundImage})")')">
-    @if (DialogueText != null)
-    {
-        <ControlPanel></ControlPanel>
-
-        <CharacterPortrait></CharacterPortrait>
-        <Choices class="centered"></Choices>
-        <DialogBox></DialogBox>
-    }
-</root>
+@if ( Player.ActiveScript != null )
+{
+    <root style="background-image: url('@(Player.Background)')">
+        <CharacterPortraits Player="@Player"/>
+        <Choices class="centered" Player="@Player"/>
+        <DialogueBox Player="@Player"/>
+        <ControlPanel Player="@Player"/>
+    </root> 
+}
 
 @code {
-    private static Pawn Player => Game.LocalPawn as Pawn;
-    private string DialogueText { get; set; }
-    private string BackgroundImage { get; set; }
-
-    public override void Tick()
-    {
-        base.Tick();
-        DialogueText = Player.VNScriptPlayer.ActiveDialogueText;
-        BackgroundImage = Player.VNScriptPlayer.ActiveBackground;
-    }
+    [Property] public ScriptPlayer Player => Scene.GetAllComponents<ScriptPlayer>().First();
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(DialogueText, BackgroundImage);
+        return HashCode.Combine(Player.Background);
     }
 }

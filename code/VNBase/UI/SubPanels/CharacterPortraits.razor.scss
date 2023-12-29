@@ -1,0 +1,12 @@
+CharacterPortraits {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    bottom: 0;
+
+    .character-portrait {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom;
+    }
+}

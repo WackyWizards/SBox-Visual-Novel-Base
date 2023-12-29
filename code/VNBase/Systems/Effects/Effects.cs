@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace VNBase;
 
 /// <summary>
-/// This class contains all the base effects that can be used in the VNBase.
+/// This class contains all the base effects that can be used in VNBase.
 /// </summary>
 public class Effects
 {

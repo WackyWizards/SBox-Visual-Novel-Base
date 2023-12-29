@@ -4,31 +4,53 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using SandLang;
+using VNBase.Util;
 
 namespace VNBase;
 
 /// <summary>
 /// Responsible for handling visual novel base scripts.
 /// </summary>
-public partial class ScriptPlayer : BaseNetworkable
+[Title("VN Script Player")]
+public sealed partial class ScriptPlayer : Component
 {
-	[Net] public Pawn Owner { get; set; }
-	[Net] public ScriptBase ActiveScript { get; set; }
-	[Net] public CharacterBase ActiveCharacter { get; set; }
-	[Net, Change] public string ActiveDialogueText { get; set; }
-	[Net] public string ActiveBackground { get; set; }
-	[Net] public bool IsTyping { get; set; }
+	[Property] public ScriptBase ActiveScript { get; private set; }
 
-	public VNSettings Settings { get; set; }
+	[Property] public CharacterBase SpeakingCharacter { get; set; }
 
-	private CancellationTokenSource _cancellationToken;
+	[Property] public string DialogueText { get; set; }
 
-	private Dialogue _dialogue = null;
-	private Dialogue.Label _currentLabel = null;
+	[Property] public string Background { get; set; }
 
-	public ScriptPlayer()
+	[Property] public bool DialogueFinished { get; set; }
+
+	[Property] public List<CharacterBase> Characters { get; set; }
+
+	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
+
+	public VNSettings Settings { get; private set; } = new();
+
+	private Dialogue _dialogue;
+	private Dialogue.Label _currentLabel;
+
+	private CancellationTokenSource _cancellationTokenSource;
+
+	protected override void OnStart()
 	{
-		Settings = new();
+		LoadScript( new ExampleScript() );
+	}
+
+	protected override void OnFixedUpdate()
+	{
+		if ( Input.Pressed( Settings.SkipAction ) )
+		{
+			if ( !DialogueFinished )
+			{
+				SkipDialogue();
+			}
+			else if ( ActiveDialogueChoices.IsNullOrEmpty() )
+				UnloadScript();
+		}
 	}
 
 	public void LoadScript( ScriptBase script ) 
@@ -42,7 +64,7 @@ public partial class ScriptPlayer : BaseNetworkable
 		ScriptLog( $"Loading script: {script.GetType().Name}" );
 
 		ActiveScript = script;
-		script.Before();
+		script.OnLoad();
 
 		_dialogue = Dialogue.ParseDialogue(
 			SParen.ParseText( script.Dialogue ).ToList()
@@ -51,134 +73,112 @@ public partial class ScriptPlayer : BaseNetworkable
 		SetCurrentLabel( _dialogue.InitialLabel );
 	}
 
-	private async void SetCurrentLabel( Dialogue.Label label )
+	/// <summary>
+	/// Unloads the currently active script.
+	/// </summary>
+	public void UnloadScript()
 	{
-		_currentLabel = label;
-		ActiveCharacter = label.Character;
-
-		if ( ActiveCharacter != null )
-			ActiveCharacter.ActivePortrait = label.CharacterExpression;
-
-		if ( label.Assets.OfType<SoundAsset>().Any() )
+		if ( ActiveScript is null )
 		{
-			foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
-			{
-				ScriptLog( $"Playing sound: {sound.Path}" );
-				Sound.FromScreen( sound.Path );
-			}
+			return;
 		}
 
-		if ( label.Assets.OfType<BackgroundAsset>().Any() )
+		_dialogue = null;
+		_currentLabel = null;
+
+		ActiveDialogueChoices = null;
+		DialogueText = null;
+		SpeakingCharacter = null;
+		Background = null;
+
+		ActiveScript.After();
+		if ( ActiveScript.NextScript != null )
 		{
-			try
-			{
-				ActiveBackground = label.Assets.OfType<BackgroundAsset>().SingleOrDefault().Path;
-			}
-			catch ( InvalidOperationException )
-			{
-				Log.Error( $"There can only be one BackgroundAsset in a Label!" );
-			}
+			LoadScript( ActiveScript.NextScript );
 		}
 		else
 		{
-			ActiveBackground = null;
+			ActiveScript = null;
 		}
 
+		ScriptLog( $"Unloaded active script." );
+	}
 
-		_cancellationToken = new();
+	private async void SetCurrentLabel( Dialogue.Label label )
+	{
+		_currentLabel = label;
+		DialogueFinished = false;
 
-		IsTyping = true;
+		Characters.Clear();
+		label.Characters?.ForEach( Characters.Add );
+
+		SpeakingCharacter = label.SpeakingCharacter;
+
+		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
+		{
+			Sound.Play( sound.Path );
+		}
+
 		try
 		{
-			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => ActiveDialogueText = text, _cancellationToken.Token );
+			Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault()?.Path;
+		}
+		catch ( InvalidOperationException )
+		{
+			Log.Error( $"There can only be one BackgroundAsset in a Label!" );
+			Background = null;
+		}
+
+		_cancellationTokenSource = new();
+
+		try
+		{
+			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cancellationTokenSource.Token );
 		}
 		catch ( OperationCanceledException )
 		{
-			ActiveDialogueText = label.Text;
+			DialogueText = label.Text;
 		}
-		IsTyping = false;
 
-		ActiveDialogueChoices = label.Choices != null
-			? label.Choices
-				.Where( p =>p.Condition == null ||
-					 p.Condition.Execute( GetEnvironment() ) is Value.NumberValue { Number: > 0 } )
-				.Select( p => p.ChoiceText )
-				.ToList()
-			// if no choices are available, we create "Continue..." which will just direct toward afterlabel
-			: ContinueChoice;
+		AddHistory( label );
+		DialogueFinished = true;
 
-		ActiveDialogueChoice = 0;
+		ActiveDialogueChoices = label.Choices?.Where( x => x.IsAvailable( GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
 	}
 
-	[ConCmd.Server("dialogue_skip")]
-	public static void SkipDialogue()
+	private void ExecuteAfterLabel()
 	{
-		var pawn = ConsoleSystem.Caller.Pawn as Pawn;
-
-		var scriptPlayer = pawn?.VNScriptPlayer;
-		if ( scriptPlayer == null ) 
-		{ 
-			ScriptLog( "Unable to skip, no script player found in caller!", SeverityLevel.Error );
-			return;
-		}
-
-		if ( scriptPlayer.IsTyping )
+		var afterLabel = _currentLabel.AfterLabel;
+		foreach ( var codeBlock in afterLabel.CodeBlocks ?? Enumerable.Empty<SParen>() )
 		{
-			scriptPlayer._cancellationToken.Cancel();
-			ScriptLog( "Dialogue effect skipped." );
+			codeBlock.Execute( GetEnvironment() );
 		}
+
+		SetCurrentLabel( _dialogue.DialogueLabels[afterLabel.TargetLabel ?? ""] );
 	}
 
-	/// <summary>
-	/// Example of a variable read and written using IEnvironment
-	/// </summary>
-	private int _iterationCount = 0;
-
-	private static readonly List<string> ContinueChoice = new( new[] { "Continue..." } );
+	public void SkipDialogue()
+	{
+		if ( !DialogueFinished )
+		{
+			_cancellationTokenSource.Cancel();
+		}
+	}
 
 	private IEnvironment GetEnvironment()
 	{
+		// We use an EnvironmentMap to map unique variables for use in S-Expression code.
 		return new EnvironmentMap( new Dictionary<string, Value>()
 		{
-			["self-pawn"] = new Value.WrapperValue<Pawn>( Owner ),
-			["iter-count"] = new Value.NumberValue( _iterationCount )
-		} );
+
+		});
 	}
 
-	private void OnActiveDialogueTextChanged( string oldText, string newText )
+	private void AddHistory( Dialogue.Label dialogue )
 	{
-		if ( IsTyping ) 
-			return;
-
-		if ( Owner.DialogHistory == null )
-			return;
-
-		if ( Owner.DialogHistory.Contains( oldText ) )
-			return;
-
-		Owner.DialogHistory.Add( oldText );
-	}
-
-	private static void ScriptLog( object msg, SeverityLevel level = SeverityLevel.Info )
-	{
-		switch ( level ) 
+		if ( !DialogueHistory.Contains( dialogue ) )
 		{
-			case SeverityLevel.Error:
-				Log.Error( $"[VNBASE] {msg}" );
-				break;
-			case SeverityLevel.Warning:
-				Log.Warning( $"[VNBASE] {msg}" );
-				break;
-			default:
-				Log.Info($"[VNBASE] {msg}" );
-				break;
+			DialogueHistory.Add( dialogue );
 		}
-	}
-
-	private enum SeverityLevel
-	{
-		Info,
-		Warning,
-		Error
 	}
 }
