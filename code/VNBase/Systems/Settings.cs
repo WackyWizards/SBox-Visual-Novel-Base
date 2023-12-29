@@ -23,5 +23,5 @@ public class VNSettings
 	/// <summary>
 	/// Path to the background images.
 	/// </summary>
-	public static string BackgroundsPath { get; set; } = "/materials/vnbase/images/backgrounds";
+	public static string BackgroundsPath { get; set; } = "/materials/vnbase/scripts/backgrounds";
 }
