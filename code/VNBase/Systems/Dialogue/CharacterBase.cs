@@ -18,7 +18,7 @@ public class CharacterBase
 	/// <summary>
 	/// Path to the folder containing character portraits.
 	/// </summary>
-	public virtual string Images => "/materials/vnbase/images";
+	public virtual string Images => "/materials/vnbase/scripts";
 
 	/// <summary>
 	/// The color of the character's name.
