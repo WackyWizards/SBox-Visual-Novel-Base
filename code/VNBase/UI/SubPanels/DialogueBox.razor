@@ -22,6 +22,11 @@
 
     <div class="dialoguePanel">
         @(Player.DialogueText)
+
+        @if (Player.DialogueFinished)
+        {
+            <img class="finished-icon" src="/materials/vnbase/ui/icons/dialoguefinished.png"/>
+        }
     </div>
 </root>
 

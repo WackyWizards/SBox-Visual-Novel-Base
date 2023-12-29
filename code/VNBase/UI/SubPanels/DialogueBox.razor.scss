@@ -1,3 +1,17 @@
+@keyframes blink {
+    10% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 1;
+    }
+}
+
 DialogueBox {
     position: absolute;
     pointer-events: none;
@@ -36,12 +50,24 @@ DialogueBox {
         background-color: rgba(0,0,0,0.95);
         box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.95);
         justify-content: center;
+        align-items: center;
+        flex-direction: column;
         bottom: 0;
+
+        .finished-icon {
+            position: absolute;
+            bottom: 15px;
+            width: 20px;
+            height: 20px;
+            animation: blink infinite linear;
+        }
+
 
         .label {
             color: white;
             width: 80%;
-            font-size: 38px;
+            align-self: center;
+            font-size: 32px;
         }
     }
 }
