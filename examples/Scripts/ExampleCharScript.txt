@@ -1,0 +1,23 @@
+(label moving-on
+	(text "So in the end it wasn't you, huh." say Unknown)
+	(choice "Why didn't you believe me?" jump questioning)
+	(choice "Yeah, I told you." jump cocky)
+	(character John exp Smile.png)
+	(bg Meadow.jpg)
+)
+
+(label questioning
+	(text "My apologies, I wasn't expecting it. Hopefully we can learn from our mistakes." say John)
+	(character John exp Thinking.png)
+	(bg Meadow.jpg)
+	(after end-dialogue)
+)
+
+(label cocky
+	(text "I should've believed you from the start.. I sincerely apologize." say John)
+	(character John exp Thinking.png)
+	(bg Meadow.jpg)
+	(after end-dialogue)
+)
+
+(start-dialogue moving-on)
