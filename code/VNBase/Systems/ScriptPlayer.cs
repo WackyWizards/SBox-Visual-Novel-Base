@@ -11,7 +11,7 @@ namespace VNBase;
 /// <summary>
 /// Responsible for handling visual novel base scripts.
 /// </summary>
-[Title("VN Script Player")]
+[Title( "VN Script Player" )]
 public sealed partial class ScriptPlayer : Component
 {
 	[Property] public ScriptBase ActiveScript { get; private set; }
@@ -37,7 +37,7 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		LoadScript( new ExampleScript() );
+		LoadScript( "examples/scripts/ExampleScript.txt" );
 	}
 
 	protected override void OnFixedUpdate()
@@ -53,11 +53,36 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
-	public void LoadScript( ScriptBase script ) 
+	public void LoadScript( string path )
 	{
-		if ( script == null ) 
+		var dialogue = FileSystem.Mounted.ReadAllText( path );
+
+		if ( dialogue is null )
 		{
-			ScriptLog( "Unable to load script! No script found.", SeverityLevel.Error );
+			ScriptLog( $"Unable to load script! Script file couldn't be found by path: {path}", SeverityLevel.Error );
+			return;
+		}
+
+		if ( !string.IsNullOrEmpty( dialogue ) )
+		{
+			ScriptBase script = new()
+			{
+				Dialogue = dialogue
+			};
+			LoadScript( script );
+		}
+		else
+		{
+			ScriptLog( "Unable to load script! The script file is empty.", SeverityLevel.Error );
+		}
+	}
+
+
+	public void LoadScript( ScriptBase script )
+	{
+		if ( script is null )
+		{
+			ScriptLog( "Unable to load script! Script is null!", SeverityLevel.Error );
 			return;
 		}
 
@@ -125,7 +150,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		catch ( InvalidOperationException )
 		{
-			Log.Error( $"There can only be one BackgroundAsset in a Label!" );
+			ScriptLog( $"There can only be one BackgroundAsset in a Label!", SeverityLevel.Error );
 			Background = null;
 		}
 
@@ -171,7 +196,7 @@ public sealed partial class ScriptPlayer : Component
 		return new EnvironmentMap( new Dictionary<string, Value>()
 		{
 
-		});
+		} );
 	}
 
 	private void AddHistory( Dialogue.Label dialogue )

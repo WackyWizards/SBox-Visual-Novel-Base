@@ -12,7 +12,7 @@ public class VNSettings
 	/// <summary>
 	/// Time used for the active text effect to determine text delays.
 	/// </summary>
-	public int TextEffectDelay { get; set; } = 55;
+	public int TextEffectDelay { get; set; } = 75;
 
 	/// <summary>
 	/// The action to skip the currently active text effect. You could define your own action in your project
