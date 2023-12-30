@@ -22,6 +22,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.Background);
+        return HashCode.Combine(Player.ActiveScript, Player.Background);
     }
 }
