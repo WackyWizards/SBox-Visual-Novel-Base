@@ -1,4 +1,5 @@
 {
+  "Id": "800a9c09-5b4a-421a-9eef-b4edec90e3c3",
   "GameObjects": [
     {
       "Id": "fce5c909-8be0-488e-acff-32f949690577",
@@ -7,6 +8,16 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
+          "__type": "ScreenPanel",
+          "__enabled": true,
+          "AutoScreenScale": true,
+          "Opacity": 1,
+          "Scale": 1,
+          "ZIndex": 100
+        },
+        {
+          "__version": 0,
           "__type": "ScriptPlayer",
           "__enabled": true,
           "ActiveDialogueChoices": [],
@@ -19,14 +30,7 @@
           "SpeakingCharacter": null
         },
         {
-          "__type": "ScreenPanel",
-          "__enabled": true,
-          "AutoScreenScale": true,
-          "Opacity": 1,
-          "Scale": 1,
-          "ZIndex": 100
-        },
-        {
+          "__version": 0,
           "__type": "MainHud",
           "__enabled": true,
           "Player": "fce5c909-8be0-488e-acff-32f949690577"
@@ -40,6 +44,7 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "CameraComponent",
           "__enabled": true,
           "BackgroundColor": "0.33333,0.46275,0.52157,1",
@@ -55,6 +60,24 @@
           "Viewport": "0,0,1,1",
           "ZFar": 10000,
           "ZNear": 10
+        }
+      ]
+    },
+    {
+      "Id": "65dd06e9-88b6-4026-ba50-dc87ee35f31f",
+      "Name": "Sun",
+      "Position": "300,0,0",
+      "Enabled": true,
+      "Components": [
+        {
+          "__version": 0,
+          "__type": "DirectionalLight",
+          "__enabled": true,
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "0.91373,0.98039,1,1",
+          "Shadows": true,
+          "SkyColor": "0.05882,0.07451,0.08235,1"
         }
       ]
     }
