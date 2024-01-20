@@ -12,6 +12,7 @@ namespace VNBase;
 /// Responsible for handling visual novel base scripts.
 /// </summary>
 [Title( "VN Script Player" )]
+[Category("VNBase")]
 public sealed partial class ScriptPlayer : Component
 {
 	[Property] public ScriptBase ActiveScript { get; private set; }
@@ -37,7 +38,7 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		LoadScript( "examples/scripts/ExampleScript.txt" );
+		LoadScript( "examples/scripts/ExampleScript.vnscript" );
 	}
 
 	protected override void OnFixedUpdate()
@@ -76,7 +77,6 @@ public sealed partial class ScriptPlayer : Component
 			ScriptLog( "Unable to load script! The script file is empty.", SeverityLevel.Error );
 		}
 	}
-
 
 	public void LoadScript( ScriptBase script )
 	{
