@@ -2,6 +2,7 @@
 @using Sandbox.UI;
 @using System;
 @using System.Collections.Generic;
+@using VNBase.Util;
 
 @namespace VNBase.UI
 
@@ -23,7 +24,7 @@
     <div class="dialoguePanel">
         @(Player.DialogueText)
 
-        @if (Player.DialogueFinished)
+        @if (Player.DialogueFinished && Player.ActiveDialogueChoices.IsNullOrEmpty())
         {
             <img class="finished-icon" src="/materials/vnbase/ui/icons/dialoguefinished.png"/>
         }
