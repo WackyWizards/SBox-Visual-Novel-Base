@@ -8,32 +8,36 @@
       "Enabled": true,
       "Components": [
         {
-          "__version": 0,
           "__type": "ScreenPanel",
-          "__enabled": true,
           "AutoScreenScale": true,
           "Opacity": 1,
           "Scale": 1,
           "ZIndex": 100
         },
         {
-          "__version": 0,
           "__type": "ScriptPlayer",
-          "__enabled": true,
           "ActiveDialogueChoices": [],
-          "ActiveScript": null,
+          "ActiveScript": {},
           "Background": null,
           "Characters": [],
           "DialogueFinished": false,
           "DialogueHistory": [],
           "DialogueText": null,
-          "SpeakingCharacter": null
+          "SpeakingCharacter": {
+            "Name": "No Name",
+            "Title": "",
+            "Images": "/materials/vnbase/scripts",
+            "NameColor": "1,1,1,1",
+            "TitleColor": "1,1,1,1"
+          }
         },
         {
-          "__version": 0,
-          "__type": "MainHud",
-          "__enabled": true,
-          "Player": "fce5c909-8be0-488e-acff-32f949690577"
+          "__type": "VNHud",
+          "Player": {
+            "_type": "component",
+            "go": "fce5c909-8be0-488e-acff-32f949690577",
+            "component_type": "ScriptPlayer"
+          }
         }
       ]
     },
@@ -44,9 +48,7 @@
       "Enabled": true,
       "Components": [
         {
-          "__version": 0,
           "__type": "CameraComponent",
-          "__enabled": true,
           "BackgroundColor": "0.33333,0.46275,0.52157,1",
           "ClearFlags": "All",
           "FieldOfView": 60,
@@ -70,9 +72,7 @@
       "Enabled": true,
       "Components": [
         {
-          "__version": 0,
           "__type": "DirectionalLight",
-          "__enabled": true,
           "FogMode": "Enabled",
           "FogStrength": 1,
           "LightColor": "0.91373,0.98039,1,1",
@@ -93,5 +93,6 @@
   },
   "Title": "example",
   "Description": "",
+  "LastSaved": "2024-01-29T17:16:07.3889156\u002B02:00",
   "__references": []
 }
