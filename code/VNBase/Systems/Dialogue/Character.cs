@@ -2,7 +2,7 @@ using Sandbox;
 
 namespace VNBase;
 
-public class CharacterBase
+public class Character
 {
 	/// <summary>
 	/// The name of the character.

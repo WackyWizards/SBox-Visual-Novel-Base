@@ -15,8 +15,8 @@ public class Dialogue
     public class Label
     {
         public string Text { get; set; }
-		public CharacterBase SpeakingCharacter { get; set; }
-		public List<CharacterBase> Characters { get; set; }
+		public Character SpeakingCharacter { get; set; }
+		public List<Character> Characters { get; set; }
 		public List<Choice> Choices { get; set; }
 		public List<AssetBase> Assets { get; set; }
         public AfterLabel AfterLabel { get; set; }
@@ -137,7 +137,7 @@ public class Dialogue
 	/// <summary>
 	/// Returns consumed values in argument list
 	/// </summary>
-	private delegate int CharacterArgument(SParen argument, int index, Label label, CharacterBase character);
+	private delegate int CharacterArgument(SParen argument, int index, Label label, Character character);
 
 	/// <summary>
 	/// Returns consumed values in argument list
@@ -255,7 +255,7 @@ public class Dialogue
 	private static int TextSayArgument(SParen argument, int index, Label label)
 	{
 		string characterName = ((Value.VariableReferenceValue)argument[3]).Name;
-		CharacterBase character = CreateCharacter( characterName );
+		Character character = CreateCharacter( characterName );
 		label.SpeakingCharacter = character;
 
 		return 1;
@@ -265,7 +265,7 @@ public class Dialogue
 	{
 		string characterName = ((Value.VariableReferenceValue)argument[1])!.Name;
 		label.Characters ??= new();
-		CharacterBase character = CreateCharacter( characterName );
+		Character character = CreateCharacter( characterName );
 		label.Characters.Add( character );
 
 		for ( var i = 2; i < argument.Count; i++ )
@@ -285,7 +285,7 @@ public class Dialogue
 		}
 	}
 
-	private static int LabelCharacterExpressionArgument( SParen argument, int index, Label label, CharacterBase character )
+	private static int LabelCharacterExpressionArgument( SParen argument, int index, Label label, Character character )
 	{
 		character.ActivePortrait = (argument[index + 1] as Value.VariableReferenceValue)!.Name;
 		return 1;
@@ -305,7 +305,7 @@ public class Dialogue
 		label.Assets.Add( new BackgroundAsset { Path = $"{VNSettings.BackgroundsPath}/{backgroundName}" } );
 	}
 
-	private static CharacterBase CreateCharacter(string characterName)
+	private static Character CreateCharacter(string characterName)
 	{
 		var characterType = TypeLibrary.GetType( characterName )?.TargetType;
 		if ( characterType == null )
@@ -313,12 +313,12 @@ public class Dialogue
 			throw new ArgumentException( $"Can't find character with name {characterName}!" );
 		}
 
-		if ( !typeof( CharacterBase ).IsAssignableFrom( characterType ) )
+		if ( !typeof( Character ).IsAssignableFrom( characterType ) )
 		{
 			throw new ArgumentException( $"Type {characterType} is not a character!" );
 		}
 
-		var character = TypeLibrary.Create<CharacterBase>( characterType );
+		var character = TypeLibrary.Create<Character>( characterType );
 		return character;
 	}
 }

@@ -4,7 +4,7 @@ namespace VNBase;
 /// <summary>
 /// Defines a VNBase script.
 /// </summary>
-public class ScriptBase
+public class Script
 {
 	/// <summary>
 	/// This is where you want to write your script.
@@ -14,7 +14,7 @@ public class ScriptBase
 	/// <summary>
 	/// The script to run after this one.
 	/// </summary>
-	public virtual ScriptBase NextScript { get; set; }
+	public virtual Script NextScript { get; set; }
 
 	/// <summary>
 	/// This is called when the script is run.

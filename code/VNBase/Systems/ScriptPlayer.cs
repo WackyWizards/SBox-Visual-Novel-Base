@@ -15,9 +15,9 @@ namespace VNBase;
 [Category("VNBase")]
 public sealed partial class ScriptPlayer : Component
 {
-	[Property] public ScriptBase ActiveScript { get; private set; }
+	[Property] public Script ActiveScript { get; private set; }
 
-	[Property] public CharacterBase SpeakingCharacter { get; set; }
+	[Property] public Character SpeakingCharacter { get; set; }
 
 	[Property] public string DialogueText { get; set; }
 
@@ -25,7 +25,7 @@ public sealed partial class ScriptPlayer : Component
 
 	[Property] public bool DialogueFinished { get; set; }
 
-	[Property] public List<CharacterBase> Characters { get; set; }
+	[Property] public List<Character> Characters { get; set; }
 
 	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
 
@@ -38,7 +38,7 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		LoadScript( "examples/scripts/ExampleScript.vnscript" );
+		LoadScript( "examples/scripts/ExampleLongScript.vnscript" );
 	}
 
 	protected override void OnFixedUpdate()
@@ -66,7 +66,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			ScriptBase script = new()
+			Script script = new()
 			{
 				Dialogue = dialogue
 			};
@@ -78,7 +78,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
-	public void LoadScript( ScriptBase script )
+	public void LoadScript( Script script )
 	{
 		if ( script is null )
 		{
@@ -109,9 +109,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 
 		_dialogue = null;
-		_currentLabel = null;
-
-		ActiveDialogueChoices = null;
+		ActiveDialogueChoices?.Clear();
 		DialogueText = null;
 		SpeakingCharacter = null;
 		Background = null;

@@ -50,7 +50,7 @@
 (label loop
 	(text "You decide to do a quick spin in place. Move on now?")
 	(choice "Return to the start" jump breezing-wind)
-	(choice "Continue" jump loop)
+	(choice "Spin Again" jump loop)
 	(bg meadow.jpg)
 )
 
