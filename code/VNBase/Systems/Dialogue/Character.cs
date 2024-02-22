@@ -7,28 +7,28 @@ public class Character
 	/// <summary>
 	/// The name of the character.
 	/// </summary>
-	public virtual string Name => "No Name";
+	public virtual string Name { get; set; } = "No Name";
 
 	/// <summary>
 	/// The title of the character.
 	/// If blank, we assume no title.
 	/// </summary>
-	public virtual string Title => "";
+	public virtual string Title { get; set; }
 
 	/// <summary>
 	/// Path to the folder containing character portraits.
 	/// </summary>
-	public virtual string Images => "/materials/vnbase/scripts";
+	public virtual string Images { get; set; } = "/materials/vnbase/scripts";
 
 	/// <summary>
 	/// The color of the character's name.
 	/// </summary>
-	public virtual Color NameColor => Color.White;
+	public virtual Color NameColor { get; set; } = Color.White;
 
 	/// <summary>
 	/// The color of the character's title.
 	/// </summary>
-	public virtual Color TitleColor => Color.White;
+	public virtual Color TitleColor { get; set; } = Color.White;
 
 	/// <summary>
 	/// The name of the active portrait image.

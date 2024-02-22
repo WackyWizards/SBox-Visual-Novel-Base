@@ -118,6 +118,7 @@ internal static class BuiltinFunctions
 
 		var value = values[1].Evaluate( environment );
 		environment.SetVariable( vrv.Name, value );
+
 		return value;
 	}
 

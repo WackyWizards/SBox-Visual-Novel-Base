@@ -7,7 +7,7 @@ namespace SandLang;
 
 public class UndefinedVariable : Exception
 {
-	public UndefinedVariable( string name ) : base( "Failed to find variable!" )
+	public UndefinedVariable( string name ) : base( $"Failed to find variable {name}!" )
 	{
 		base.Data["Missing Variable"] = name;
 	}
@@ -30,7 +30,7 @@ public interface IEnvironment
 
 public class EnvironmentMap : IEnvironment
 {
-	private Dictionary<string, Value> _variables;
+	private readonly Dictionary<string, Value> _variables;
 
 	public EnvironmentMap( Dictionary<string, Value> variables )
 	{
