@@ -166,18 +166,25 @@ public sealed partial class ScriptPlayer : Component
 		AddHistory( label );
 		DialogueFinished = true;
 
-		ActiveDialogueChoices = label.Choices?.Where( x => x.IsAvailable( GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+		ActiveDialogueChoices = label.Choices?.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
 	}
 
 	private void ExecuteAfterLabel()
 	{
 		var afterLabel = _currentLabel.AfterLabel;
-		foreach ( var codeBlock in afterLabel.CodeBlocks ?? Enumerable.Empty<SParen>() )
-		{
-			codeBlock.Execute( GetEnvironment() );
-		}
 
-		SetCurrentLabel( _dialogue.DialogueLabels[afterLabel.TargetLabel ?? ""] );
+		if ( afterLabel != null )
+		{
+			foreach ( var codeBlock in afterLabel.CodeBlocks )
+			{
+				codeBlock.Execute( ActiveScript.GetEnvironment() );
+			}
+
+			if ( afterLabel.TargetLabel != null )
+			{
+				SetCurrentLabel( _dialogue.DialogueLabels[afterLabel.TargetLabel] );
+			}
+		}
 	}
 
 	public void SkipDialogue()
@@ -186,15 +193,6 @@ public sealed partial class ScriptPlayer : Component
 		{
 			_cancellationTokenSource.Cancel();
 		}
-	}
-
-	private IEnvironment GetEnvironment()
-	{
-		// We use an EnvironmentMap to map unique variables for use in S-Expression code.
-		return new EnvironmentMap( new Dictionary<string, Value>()
-		{
-
-		} );
 	}
 
 	private void AddHistory( Dialogue.Label dialogue )

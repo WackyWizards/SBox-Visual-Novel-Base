@@ -1,3 +1,5 @@
+using SandLang;
+using System.Collections.Generic;
 
 namespace VNBase;
 
@@ -30,5 +32,16 @@ public class Script
 	public virtual void After()
 	{
 
+	}
+
+	/// <summary>
+	/// Get this scripts local environment map.
+	/// </summary>
+	public virtual IEnvironment GetEnvironment()
+	{
+		return new EnvironmentMap( new Dictionary<string, Value>()
+		{
+			// Assign unique script variables here.
+		} );
 	}
 }

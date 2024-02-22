@@ -35,6 +35,7 @@ public abstract record Value
 		{
 			if ( environment.VariableSet().Contains( Name ) )
 				return environment.GetVariable( Name );
+
 			if ( BuiltinFunctions.Builtins.TryGetValue( Name, out var builtin ) )
 			{
 				return builtin;

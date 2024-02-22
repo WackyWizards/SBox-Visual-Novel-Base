@@ -11,13 +11,11 @@ sealed partial class ScriptPlayer
 	public void ExecuteChoice( int choiceIndex )
 	{
 		var choice = _currentLabel?.Choices?[choiceIndex];
-		if ( choice == null )
-		{
-			ExecuteAfterLabel();
-		}
-		else if ( choice.IsAvailable( GetEnvironment() ) )
+		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
 			SetCurrentLabel( _dialogue.DialogueLabels[choice.TargetLabel] );
 		}
+
+		ExecuteAfterLabel();
 	}
 }
