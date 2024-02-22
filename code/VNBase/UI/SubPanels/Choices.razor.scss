@@ -5,7 +5,7 @@ Choices {
 
     .choicePanel {
         width: 650px;
-        height: 50%;
+        //height: 50%;
         color: white;
         flex-direction: column;
         justify-content: center;
@@ -16,7 +16,7 @@ Choices {
             cursor: pointer;
             font-size: 24px;
             background-color: rgba(0,0,0,0.85);
-            box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.85);
+            //box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.85);
             align-items: center;
             justify-content: center;
             margin-top: 10px;
@@ -29,7 +29,7 @@ Choices {
             &:hover {
                 color: red;
                 background-color: rgba(0,0,0,0.95);
-                box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.95);
+                //box-shadow: 0px 0px 8px 3px rgba(0,0,0,0.95);
             }
         }
     }
