@@ -16,20 +16,22 @@
         },
         {
           "__type": "ScriptPlayer",
-          "ActiveDialogueChoices": [],
-          "ActiveScript": {},
+          "ActiveScript": {
+            "NextScript": {
+              "NextScript": {}
+            }
+          },
           "Background": null,
           "Characters": [],
+          "DialogueChoices": [],
           "DialogueFinished": false,
           "DialogueHistory": [],
           "DialogueText": null,
-          "SpeakingCharacter": {
-            "Name": "No Name",
-            "Title": "",
-            "Images": "/materials/vnbase/scripts",
-            "NameColor": "1,1,1,1",
-            "TitleColor": "1,1,1,1"
-          }
+          "Settings": {
+            "TextEffectDelay": 55,
+            "SkipAction": "jump"
+          },
+          "SpeakingCharacter": null,
         },
         {
           "__type": "VNHud",
@@ -69,6 +71,7 @@
       "Id": "65dd06e9-88b6-4026-ba50-dc87ee35f31f",
       "Name": "Sun",
       "Position": "300,0,0",
+      "Tags": "light_directional,light",
       "Enabled": true,
       "Components": [
         {
@@ -89,10 +92,22 @@
     "NetworkFrequency": 30,
     "ThreadedAnimation": true,
     "TimeScale": 1,
-    "UseFixedUpdate": true
+    "UseFixedUpdate": true,
+    "NavMesh": {
+      "Enabled": false,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "",
+      "IncludedBodies": ""
+    }
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-01-29T17:16:07.3889156\u002B02:00",
+  "LastSaved": "2024-03-08T23:31:40.5208081\u002B02:00",
   "__references": []
 }
