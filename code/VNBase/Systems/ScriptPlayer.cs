@@ -36,7 +36,7 @@ public sealed partial class ScriptPlayer : Component
 	private Dialogue _dialogue;
 	private Dialogue.Label _currentLabel;
 
-	private CancellationTokenSource _cancellationTokenSource;
+	private CancellationTokenSource _cts;
 
 	protected override void OnStart()
 	{
@@ -52,6 +52,9 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( Input.Pressed( Settings.SkipAction ) )
 		{
+			if ( ActiveScript is null )
+				return;
+
 			if ( !DialogueFinished )
 			{
 				SkipDialogue();
@@ -158,11 +161,11 @@ public sealed partial class ScriptPlayer : Component
 			Background = null;
 		}
 
-		_cancellationTokenSource = new();
+		_cts = new();
 
 		try
 		{
-			await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cancellationTokenSource.Token );
+			await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
 		}
 		catch ( OperationCanceledException )
 		{
@@ -197,7 +200,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( !DialogueFinished )
 		{
-			_cancellationTokenSource.Cancel();
+			_cts.Cancel();
 		}
 	}
 
