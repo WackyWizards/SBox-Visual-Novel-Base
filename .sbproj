@@ -8,7 +8,7 @@
   "HasAssets": true,
   "AssetsPath": "",
   "Resources": null,
-  "MenuResources": null,
+  "MenuResources": "/examples/*\n/materials/*\n/fonts/*\n/sounds/*",
   "HasCode": true,
   "CodePath": "/code/",
   "PackageReferences": [],
