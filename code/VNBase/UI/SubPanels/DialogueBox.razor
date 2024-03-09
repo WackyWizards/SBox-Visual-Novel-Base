@@ -10,7 +10,7 @@
 @inherits SubPanel
 
 <root>
-    @if (Player.SpeakingCharacter != null)
+    @if (Player.SpeakingCharacter != null && Player.SpeakingCharacter.Name != null)
     {
         <div class="characterPanel">
             <label class="character" style="color: @Player.SpeakingCharacter.NameColor.Rgba">@Player.SpeakingCharacter.Name</label>
@@ -24,7 +24,7 @@
     <div class="dialoguePanel">
         @(Player.DialogueText)
 
-        @if (Player.DialogueFinished && Player.ActiveDialogueChoices.IsNullOrEmpty())
+        @if (Player.DialogueFinished && Player.DialogueChoices.IsNullOrEmpty())
         {
             <img class="finished-icon" src="/materials/vnbase/ui/icons/dialoguefinished.png"/>
         }

@@ -7,6 +7,9 @@
   "Sounds": [
     "sounds/vnbase/ui/ui-click.vsnd"
   ],
-  "MaximumDistance": 1143.9335,
-  "MinimumDistance": 57.196674
+  "Occlusion": false,
+  "Reflections": false,
+  "OcclusionRadius": 64,
+  "DistanceAttenuation": false,
+  "__references": []
 }

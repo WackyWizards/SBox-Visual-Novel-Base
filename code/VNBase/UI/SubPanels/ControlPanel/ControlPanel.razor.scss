@@ -25,10 +25,11 @@ ControlPanel {
 
             &:hover {
                 color: red;
+                sound-in: "ui-hover";
             }
 
-            &.toggled {
-                color: red;
+            &:active {
+                sound-in: "ui-click";
             }
         }
     }

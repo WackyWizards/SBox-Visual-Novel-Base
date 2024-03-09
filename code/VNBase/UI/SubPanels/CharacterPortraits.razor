@@ -9,13 +9,13 @@
 <root>
     @foreach (var character in Player.Characters)
     {
-        <img class="character-portrait" src="@($"{character.Images}/{character.ActivePortrait}")" />
+        <CharacterPortrait Character="@character" />
     }
 </root>
 
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.Characters?.Count);
+        return HashCode.Combine(Player.DialogueText, Player.Characters.Count);
     }
 }

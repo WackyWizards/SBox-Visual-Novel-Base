@@ -27,8 +27,7 @@
 
             button.AddEventListener("onclick", () =>
             {
-                panel.TogglePanel();
-                button.SetClass("toggled", !panel.IsVisible);
+                panel.ToggleVisibility();
             });
         }
     }

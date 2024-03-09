@@ -10,14 +10,14 @@
 @inherits SubPanel
 
 <root>
-    @if (!Player.ActiveDialogueChoices.IsNullOrEmpty() && Player.DialogueFinished)
+    @if (!Player.DialogueChoices.IsNullOrEmpty() && Player.DialogueFinished)
     {
         <div class="choicePanel">
-            @for (var i = 0; i < Player.ActiveDialogueChoices.Count; i++)
+            @for (var i = 0; i < Player.DialogueChoices.Count; i++)
             {
                 var buttonIndex = i;
                 <button class="choice" onclick="@(() => Player.ExecuteChoice(buttonIndex))">
-                    @Player.ActiveDialogueChoices[i]
+                    @Player.DialogueChoices[i]
                 </button>
             }
         </div>
@@ -28,6 +28,6 @@
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.ActiveDialogueChoices?.Count);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices?.Count);
     }
 }
