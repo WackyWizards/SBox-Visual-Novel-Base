@@ -55,14 +55,17 @@ public abstract record Value
 	{
 		public override Value Evaluate( IEnvironment environment )
 		{
-			if ( ValueList.Count <= 0 ) return this;
-			var value0 = ValueList[0];
-			if ( value0 is VariableReferenceValue variableReferenceValue )
+			if ( ValueList.Count <= 0 ) 
+				return this;
+
+			var firstValue = ValueList[0];
+
+			if ( firstValue is VariableReferenceValue variableRefValue )
 			{
-				value0 = variableReferenceValue.Evaluate( environment );
+				firstValue = variableRefValue.Evaluate( environment );
 			}
 
-			if ( value0 is FunctionValue functionValue )
+			if ( firstValue is FunctionValue functionValue )
 			{
 				return functionValue.Function( environment, ValueList.Skip( 1 ).ToArray() ) ?? NoneValue.None;
 			}

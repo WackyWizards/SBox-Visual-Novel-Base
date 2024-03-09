@@ -35,7 +35,6 @@ internal static class BuiltinFunctions
 		return lastValue;
 	}
 
-
 	private static Value IfFunction( IEnvironment environment, Value[] values )
 	{
 		var cond = values[0].Evaluate( environment ) as Value.NumberValue;

@@ -15,7 +15,7 @@ public class UndefinedVariable : Exception
 
 public class InvalidParameters : Exception
 {
-	public InvalidParameters( IEnumerable<Value> values ) : base( "Parameters were of invalid types!" )
+	public InvalidParameters( IEnumerable<Value> values ) : base( "Invalid parameter types!" )
 	{
 		base.Data["Values"] = values;
 	}
