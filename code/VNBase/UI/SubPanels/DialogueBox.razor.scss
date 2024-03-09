@@ -12,6 +12,8 @@
     }
 }
 
+@import "/VNBase/UI/Styles/Dialogue.scss";
+
 DialogueBox {
     position: absolute;
     pointer-events: none;
@@ -61,14 +63,6 @@ DialogueBox {
             width: 20px;
             height: 20px;
             animation: blink infinite linear;
-        }
-
-
-        .label {
-            color: white;
-            width: 80%;
-            align-self: center;
-            font-size: 32px;
         }
     }
 }

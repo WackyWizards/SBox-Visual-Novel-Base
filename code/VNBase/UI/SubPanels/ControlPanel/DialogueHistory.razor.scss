@@ -1,3 +1,6 @@
+@import "/VNBase/UI/Styles/Buttons.scss";
+@import "/VNBase/UI/Styles/Dialogue.scss";
+
 DialogueHistory {
     width: 100%;
     height: 100%;
@@ -11,6 +14,7 @@ DialogueHistory {
         width: 100%;
         height: 35px;
         color: white;
+        font-family: $text-font;
         font-size: 36px;
         font-weight: bold;
         text-align: center;
@@ -26,6 +30,7 @@ DialogueHistory {
         overflow: scroll;
 
         .dialogue {
+            font-family: $dialogue-font;
             background-color: rgba(35,35,35,0.9);
             box-shadow: 0px 0px 10px 2px rgba(35,35,35,0.9);
             margin-top: 10px;
@@ -33,40 +38,18 @@ DialogueHistory {
 
             .character {
                 font-weight: bold;
-                font-size: 24px;
+                font-size: $text-font-size;
             }
 
             .text {
-                color: white;
-                font-size: 22px;
+                color: $dialogue-color;
+                font-size: $text-font-size-small;
             }
 
             .label {
                 text-shadow: 0px 0px 5px black;
                 margin: 5px 5px 5px 10px;
             }
-        }
-    }
-
-    .button {
-        width: 100%;
-        height: 50px;
-        margin: 10px 0px 10px 0px;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(35,35,35,0.9);
-        box-shadow: 0px 0px 10px 2px rgba(35,35,35,0.9);
-        color: white;
-        font-size: 24px;
-        transition: all 0.1s linear;
-
-        &:hover {
-            color: red;
-            sound-in: "ui-hover";
-        }
-
-        &:active {
-            sound-in: "ui-click";
         }
     }
 

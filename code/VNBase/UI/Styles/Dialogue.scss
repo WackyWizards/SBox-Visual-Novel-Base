@@ -1,0 +1,15 @@
+@import "Colors.scss";
+@import "Fonts.scss";
+
+$dialogue-color: white;
+$dialogue-font: $text-font;
+$dialogue-font-size: 32px;
+
+.dialoguePanel {
+    .label {
+        width: 80%;
+        color: $dialogue-color;
+        font-family: $text-font;
+        font-size: $dialogue-font-size;
+    }
+}

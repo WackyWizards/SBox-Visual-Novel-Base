@@ -1,3 +1,5 @@
+@import "/VNBase/UI/Styles/Buttons.scss";
+
 ControlPanel {
     pointer-events: none;
     position: absolute;
@@ -14,23 +16,5 @@ ControlPanel {
         height: 50px;
         bottom: 0;
         flex-direction: row-reverse;
-
-        .button {
-            width: 150px;
-            color: white;
-            font-size: 24px;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.1s linear;
-
-            &:hover {
-                color: red;
-                sound-in: "ui-hover";
-            }
-
-            &:active {
-                sound-in: "ui-click";
-            }
-        }
     }
 }
