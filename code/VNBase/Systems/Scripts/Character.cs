@@ -7,7 +7,7 @@ public class Character
 	/// <summary>
 	/// The name of the character.
 	/// </summary>
-	public virtual string Name { get; set; } = "No Name";
+	public virtual string Name { get; set; }
 
 	/// <summary>
 	/// The title of the character.
@@ -18,7 +18,7 @@ public class Character
 	/// <summary>
 	/// Path to the folder containing character portraits.
 	/// </summary>
-	public virtual string Images { get; set; } = "/materials/vnbase/scripts";
+	public virtual string Images { get; set; } = "/materials/vnbase/scripts/";
 
 	/// <summary>
 	/// The color of the character's name.
@@ -35,4 +35,9 @@ public class Character
 	/// Includes extension.
 	/// </summary>
 	public string ActivePortrait { get; set; }
+
+	/// <summary>
+	/// Path to the active portrait.
+	/// </summary>
+	public string ActivePortraitPath => Images + ActivePortrait;
 }

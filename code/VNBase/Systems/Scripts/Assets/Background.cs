@@ -1,11 +1,11 @@
 using Sandbox;
 
-namespace VNBase;
+namespace VNBase.Assets;
 
 /// <summary>
 /// A background image asset from a dialog.
 /// </summary>
-public class BackgroundAsset : AssetBase, AssetBase.IAsset
+public class BackgroundAsset : Asset, Asset.IAsset
 {
 	/// <summary>
 	/// Path to the background image asset.

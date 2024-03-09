@@ -1,11 +1,11 @@
 using Sandbox;
 
-namespace VNBase;
+namespace VNBase.Assets;
 
 /// <summary>
 /// An asset that can be used in VNBase scripts.
 /// </summary>
-public class AssetBase
+public class Asset
 {
 	public interface IAsset
 	{

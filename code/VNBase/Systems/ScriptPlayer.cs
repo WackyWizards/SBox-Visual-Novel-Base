@@ -3,8 +3,10 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
-using SandLang;
+using VNBase.Assets;
 using VNBase.Util;
+using VNBase.UI;
+using SandLang;
 
 namespace VNBase;
 
@@ -17,19 +19,19 @@ public sealed partial class ScriptPlayer : Component
 {
 	[Property] public Script ActiveScript { get; private set; }
 
-	[Property] public Character SpeakingCharacter { get; set; }
-
 	[Property] public string DialogueText { get; set; }
 
 	[Property] public string Background { get; set; }
 
 	[Property] public bool DialogueFinished { get; set; }
 
+	[Property] public Character SpeakingCharacter { get; set; }
+
 	[Property] public List<Character> Characters { get; set; }
 
 	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
 
-	public VNSettings Settings { get; private set; } = new();
+	[Property] public VNSettings Settings { get; private set; } = new();
 
 	private Dialogue _dialogue;
 	private Dialogue.Label _currentLabel;
@@ -39,6 +41,11 @@ public sealed partial class ScriptPlayer : Component
 	protected override void OnStart()
 	{
 		LoadScript( "examples/scripts/ExampleLongScript.vnscript" );
+
+		if ( Scene.GetAllComponents<VNHud>().IsNullOrEmpty() )
+		{
+			ScriptLog( "No VNHud Component found, ScriptPlayer will not be immediately visible!", SeverityLevel.Warning );
+		}
 	}
 
 	protected override void OnFixedUpdate()
@@ -49,7 +56,7 @@ public sealed partial class ScriptPlayer : Component
 			{
 				SkipDialogue();
 			}
-			else if ( ActiveDialogueChoices.IsNullOrEmpty() )
+			else if ( DialogueChoices.IsNullOrEmpty() )
 				UnloadScript();
 		}
 	}
@@ -109,7 +116,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 
 		_dialogue = null;
-		ActiveDialogueChoices?.Clear();
+		DialogueChoices?.Clear();
 		DialogueText = null;
 		SpeakingCharacter = null;
 		Background = null;
@@ -133,8 +140,7 @@ public sealed partial class ScriptPlayer : Component
 		DialogueFinished = false;
 
 		Characters.Clear();
-		label.Characters?.ForEach( Characters.Add );
-
+		label.Characters.ForEach( Characters.Add );
 		SpeakingCharacter = label.SpeakingCharacter;
 
 		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
@@ -156,7 +162,7 @@ public sealed partial class ScriptPlayer : Component
 
 		try
 		{
-			await Settings.ActiveTextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cancellationTokenSource.Token );
+			await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cancellationTokenSource.Token );
 		}
 		catch ( OperationCanceledException )
 		{
@@ -166,7 +172,7 @@ public sealed partial class ScriptPlayer : Component
 		AddHistory( label );
 		DialogueFinished = true;
 
-		ActiveDialogueChoices = label.Choices?.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+		DialogueChoices = label.Choices.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
 	}
 
 	private void ExecuteAfterLabel()
@@ -182,7 +188,7 @@ public sealed partial class ScriptPlayer : Component
 
 			if ( afterLabel.TargetLabel != null )
 			{
-				SetCurrentLabel( _dialogue.DialogueLabels[afterLabel.TargetLabel] );
+				SetCurrentLabel( _dialogue.Labels[afterLabel.TargetLabel] );
 			}
 		}
 	}

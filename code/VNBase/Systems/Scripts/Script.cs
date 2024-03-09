@@ -9,12 +9,12 @@ namespace VNBase;
 public class Script
 {
 	/// <summary>
-	/// This is where you want to write your script.
+	/// This is where you want to write your script dialogue.
 	/// </summary>
 	public virtual string Dialogue { get; set; }
 
 	/// <summary>
-	/// The script to run after this one.
+	/// The script to run after this one has ended.
 	/// </summary>
 	public virtual Script NextScript { get; set; }
 

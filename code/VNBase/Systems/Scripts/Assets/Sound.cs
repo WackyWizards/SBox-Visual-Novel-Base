@@ -1,11 +1,11 @@
 using Sandbox;
 
-namespace VNBase;
+namespace VNBase.Assets;
 
 /// <summary>
-/// A playable sound asset from a dialog.
+/// A playable sound asset.
 /// </summary>
-public class SoundAsset : AssetBase, AssetBase.IAsset
+public class SoundAsset : Asset, Asset.IAsset
 {
 	/// <summary>
 	/// Path to the sound asset.
