@@ -1,10 +1,9 @@
 {
-  "Id": "800a9c09-5b4a-421a-9eef-b4edec90e3c3",
+  "Id": "6529fcee-4392-4f1e-9662-d81008878eb6",
   "GameObjects": [
     {
-      "Id": "fce5c909-8be0-488e-acff-32f949690577",
+      "Id": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
       "Name": "Player",
-      "Position": "150,150,150",
       "Enabled": true,
       "Components": [
         {
@@ -16,11 +15,7 @@
         },
         {
           "__type": "ScriptPlayer",
-          "ActiveScript": {
-            "NextScript": {
-              "NextScript": {}
-            }
-          },
+          "ActiveScript": {},
           "Background": null,
           "Characters": [],
           "DialogueChoices": [],
@@ -31,56 +26,20 @@
             "TextEffectDelay": 55,
             "SkipAction": "jump"
           },
-          "SpeakingCharacter": null,
+          "SpeakingCharacter": {
+            "Images": "/materials/vnbase/scripts/",
+            "NameColor": "1,1,1,1",
+            "TitleColor": "1,1,1,1",
+            "ActivePortraitPath": "/materials/vnbase/scripts/"
+          }
         },
         {
           "__type": "VNHud",
           "Player": {
             "_type": "component",
-            "go": "fce5c909-8be0-488e-acff-32f949690577",
+            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "ScriptPlayer"
           }
-        }
-      ]
-    },
-    {
-      "Id": "24cadb11-72e9-42b4-82c1-33861992abea",
-      "Name": "Camera",
-      "Tags": "maincamera",
-      "Enabled": true,
-      "Components": [
-        {
-          "__type": "CameraComponent",
-          "BackgroundColor": "0.33333,0.46275,0.52157,1",
-          "ClearFlags": "All",
-          "FieldOfView": 60,
-          "IsMainCamera": true,
-          "Orthographic": false,
-          "OrthographicHeight": 1204,
-          "Priority": 1,
-          "RenderExcludeTags": "",
-          "RenderTags": "",
-          "TargetEye": "None",
-          "Viewport": "0,0,1,1",
-          "ZFar": 10000,
-          "ZNear": 10
-        }
-      ]
-    },
-    {
-      "Id": "65dd06e9-88b6-4026-ba50-dc87ee35f31f",
-      "Name": "Sun",
-      "Position": "300,0,0",
-      "Tags": "light_directional,light",
-      "Enabled": true,
-      "Components": [
-        {
-          "__type": "DirectionalLight",
-          "FogMode": "Enabled",
-          "FogStrength": 1,
-          "LightColor": "0.91373,0.98039,1,1",
-          "Shadows": true,
-          "SkyColor": "0.05882,0.07451,0.08235,1"
         }
       ]
     }
@@ -108,6 +67,6 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-03-08T23:31:40.5208081\u002B02:00",
+  "LastSaved": "2024-03-09T17:50:25.3582509\u002B02:00",
   "__references": []
 }
