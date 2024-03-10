@@ -17,18 +17,44 @@ namespace VNBase;
 [Category("VNBase")]
 public sealed partial class ScriptPlayer : Component
 {
+	/// <summary>
+	/// If not empty, will load the script at this path on initial component start.
+	/// </summary>
+	[Property] public string InitialScript { get; set; }
+
+	/// <summary>
+	/// The currently active script.
+	/// </summary>
 	[Property] public Script ActiveScript { get; private set; }
 
+	/// <summary>
+	/// The currently active script label text.
+	/// </summary>
 	[Property] public string DialogueText { get; set; }
 
+	/// <summary>
+	/// Path to the currently active background.
+	/// </summary>
 	[Property] public string Background { get; set; }
 
+	/// <summary>
+	/// If the dialogue has finished writing text.
+	/// </summary>
 	[Property] public bool DialogueFinished { get; set; }
 
+	/// <summary>
+	/// The currently active speaking character.
+	/// </summary>
 	[Property] public Character SpeakingCharacter { get; set; }
 
+	/// <summary>
+	/// Characters to display for this label.
+	/// </summary>
 	[Property] public List<Character> Characters { get; set; }
 
+	/// <summary>
+	/// History of all previously shown labels.
+	/// </summary>
 	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
 
 	[Property] public VNSettings Settings { get; private set; } = new();
@@ -40,7 +66,10 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		LoadScript( "examples/scripts/ExampleLongScript.vnscript" );
+		if ( InitialScript is not null )
+		{
+			LoadScript( InitialScript );
+		}
 
 		if ( Scene.GetAllComponents<VNHud>().IsNullOrEmpty() )
 		{
@@ -64,6 +93,10 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
+	/// <summary>
+	/// Read and Load the script at the provided path.
+	/// </summary>
+	/// <param name="path">Path to the script to load.</param>
 	public void LoadScript( string path )
 	{
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
@@ -88,6 +121,10 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
+	/// <summary>
+	/// Load the provided Script object.
+	/// </summary>
+	/// <param name="script">Script to load.</param>
 	public void LoadScript( Script script )
 	{
 		if ( script is null )
@@ -196,6 +233,9 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
+	/// <summary>
+	/// Skip the currently active text effect.
+	/// </summary>
 	public void SkipDialogue()
 	{
 		if ( !DialogueFinished )
