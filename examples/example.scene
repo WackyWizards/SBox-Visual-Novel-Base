@@ -16,12 +16,11 @@
         {
           "__type": "ScriptPlayer",
           "ActiveScript": {},
-          "Background": null,
           "Characters": [],
           "DialogueChoices": [],
           "DialogueFinished": false,
           "DialogueHistory": [],
-          "DialogueText": null,
+          "InitialScript": "examples/scripts/examplelongscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump"
@@ -67,6 +66,6 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-03-09T17:50:25.3582509\u002B02:00",
+  "LastSaved": "2024-03-10T15:00:49.6148004\u002B02:00",
   "__references": []
 }
