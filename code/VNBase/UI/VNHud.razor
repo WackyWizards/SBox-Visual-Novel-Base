@@ -8,7 +8,7 @@
 @attribute [Category("VNBase")]
 @inherits PanelComponent
 
-@if ( Player.ActiveScript != null )
+@if ( Player != null && Player.ActiveScript != null )
 {
     <root style="background-image: url('@(Player.Background)')">
         <CharacterPortraits Player="@Player"/>
@@ -19,10 +19,25 @@
 }
 
 @code {
-    [Property] public ScriptPlayer Player => Scene.GetAllComponents<ScriptPlayer>().First();
+    [Property] public ScriptPlayer Player { get; set; }
+
+    protected override void OnStart()
+    {
+        if (Player == null)
+        {
+            try
+            {
+                Player = Scene.GetAllComponents<ScriptPlayer>().First();
+            }
+            catch(InvalidOperationException)
+            {
+                Log.Warning("[VNBase] No Player assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!");
+            }
+        }
+    }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.ActiveScript, Player.Background);
+        return HashCode.Combine(Player, Player?.ActiveScript, Player?.Background);
     }
 }

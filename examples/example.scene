@@ -5,6 +5,7 @@
       "Id": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
       "Name": "Player",
       "Enabled": true,
+      "NetworkMode": 2,
       "Components": [
         {
           "__type": "ScreenPanel",
@@ -66,6 +67,6 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-03-10T15:00:49.6148004\u002B02:00",
+  "LastSaved": "2024-03-11T22:04:27.0231997\u002B02:00",
   "__references": []
 }
