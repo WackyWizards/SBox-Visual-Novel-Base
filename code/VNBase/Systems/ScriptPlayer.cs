@@ -66,7 +66,7 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		if ( InitialScript is not null )
+		if ( InitialScript != null )
 		{
 			LoadScript( InitialScript );
 		}
@@ -81,7 +81,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( Input.Pressed( Settings.SkipAction ) )
 		{
-			if ( ActiveScript is null )
+			if ( ActiveScript == null )
 				return;
 
 			if ( !DialogueFinished )
@@ -101,7 +101,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
 
-		if ( dialogue is null )
+		if ( dialogue == null )
 		{
 			ScriptLog( $"Unable to load script! Script file couldn't be found by path: {path}", SeverityLevel.Error );
 			return;
@@ -127,7 +127,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <param name="script">Script to load.</param>
 	public void LoadScript( Script script )
 	{
-		if ( script is null )
+		if ( script == null )
 		{
 			ScriptLog( "Unable to load script! Script is null!", SeverityLevel.Error );
 			return;
@@ -150,7 +150,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public void UnloadScript()
 	{
-		if ( ActiveScript is null )
+		if ( ActiveScript == null )
 		{
 			return;
 		}
@@ -238,7 +238,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public void SkipDialogue()
 	{
-		if ( !DialogueFinished )
+		if ( !DialogueFinished && _cts != null )
 		{
 			_cts.Cancel();
 		}
