@@ -9,6 +9,7 @@
 <root>
     <div class="buttons" @ref=ControlButtons>
         <button class="control-button" id="DialogueHistory">History</button>
+        <button class="control-button" onclick="@HideUI">@(_uiVisible ? "Hide UI" : "Show UI")</button>
     </div>
 
     <DialogueHistory class="hidden" Player="@Player"/>
@@ -17,18 +18,32 @@
 @code {
     public Panel ControlButtons { get; set; }
 
+    private bool _uiVisible = true;
+
+    private void HideUI()
+    {
+        foreach (var panel in Parent.ChildrenOfType<SubPanel>().Skip(1))
+        {
+            panel.ToggleVisibility();
+            _uiVisible = !_uiVisible;
+        }
+    }
+
     protected override void OnAfterTreeRender( bool firstTime )
     {
         if ( !firstTime ) return;
 
         foreach ( Button button in ControlButtons.ChildrenOfType<Button>() )
         {
-            SubPanel panel = GetSubPanelFromId( button.Id );
-
-            button.AddEventListener("onclick", () =>
+            if ( button.Id != null)
             {
-                panel.ToggleVisibility();
-            });
+                SubPanel panel = GetSubPanelFromId(button.Id);
+
+                button.AddEventListener("onclick", () =>
+                {
+                    panel.ToggleVisibility();
+                });
+            }
         }
     }
 

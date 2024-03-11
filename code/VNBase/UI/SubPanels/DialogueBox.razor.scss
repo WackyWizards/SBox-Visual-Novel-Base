@@ -65,4 +65,8 @@ DialogueBox {
             animation: blink infinite linear;
         }
     }
+
+    &.hidden {
+        opacity: 0;
+    }
 }

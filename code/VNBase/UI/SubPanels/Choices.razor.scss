@@ -12,4 +12,8 @@ Choices {
         flex-direction: column;
         justify-content: center;
     }
+
+    &.hidden {
+        opacity: 0;
+    }
 }
