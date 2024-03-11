@@ -22,7 +22,11 @@
 
     private void HideUI()
     {
-        foreach (var panel in Parent.ChildrenOfType<SubPanel>().Skip(1))
+        var panelsToHide = Parent.ChildrenOfType<SubPanel>()
+            .Skip(1)
+            .Where(x => x.GetType() != typeof(CharacterPortraits));
+
+        foreach (var panel in panelsToHide)
         {
             panel.ToggleVisibility();
             _uiVisible = !_uiVisible;
