@@ -11,6 +11,7 @@ $button-font-size: $text-font-size;
     color: $button-primary-color;
     font-family: $button-font;
     font-size: $button-font-size;
+    text-shadow: 0px 0px 2px 5px black;
     margin: 10px 0px 10px 0px;
     align-items: center;
     justify-content: center;
@@ -36,8 +37,8 @@ $button-font-size: $text-font-size;
     font-family: $button-font;
     font-size: $button-font-size;
     margin: 0 0 0 0;
-    background-color: black;
-    box-shadow: 0px 0px 0px 0px black;
+    background-color: rgba(35,35,35,0);
+    box-shadow: 0px 0px 10px 2px rgba(35,35,35,0);
     transition: all 0.1s linear;
 
     &:hover {
@@ -57,6 +58,7 @@ $button-font-size: $text-font-size;
     color: $button-primary-color;
     font-family: $button-font;
     font-size: $button-font-size;
+    text-shadow: 0px 0px 2px 2px black;
     cursor: pointer;
     background-color: rgba(0,0,0,0.85);
     box-shadow: 0px 0px 8px 2px rgba(0,0,0,0.85);
