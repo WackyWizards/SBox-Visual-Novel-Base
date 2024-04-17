@@ -5,12 +5,7 @@
   "Ident": "vnbase",
   "Tags": "showcase visual visualnovel dialogue dialoguesystem dialogues opensource open",
   "Schema": 1,
-  "HasAssets": true,
-  "AssetsPath": "",
-  "Resources": null,
-  "MenuResources": "/examples/*\n/vnbase/ui/*\n/materials/*\n/fonts/*\n/sounds/*",
-  "HasCode": true,
-  "CodePath": "/code/",
+  "Resources": "*",
   "PackageReferences": [],
   "EditorReferences": null,
   "Metadata": {
@@ -30,6 +25,7 @@
     "Summary": "System for creating Visual Novels or Dialogue Systems for S\u0026Box Games",
     "Public": true,
     "HttpAllowList": null,
-    "TickRate": 50
+    "TickRate": 50,
+    "LaunchMode": "Normal"
   }
 }
