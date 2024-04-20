@@ -71,13 +71,13 @@ public sealed partial class ScriptPlayer : Component
 			LoadScript( InitialScript );
 		}
 
-		if ( Scene.GetAllComponents<VNHud>().IsNullOrEmpty() )
+		if ( Scene.GetAllComponents<UI.VNHud>().IsNullOrEmpty() )
 		{
-			ScriptLog( "No VNHud Component found, ScriptPlayer will not be immediately visible!", SeverityLevel.Warning );
+			Log.Warning( "No VNHud Component found, ScriptPlayer will not be immediately visible!");
 		}
 	}
 
-	protected override void OnFixedUpdate()
+	protected override void OnUpdate()
 	{
 		if ( Input.Pressed( Settings.SkipAction ) )
 		{
@@ -103,7 +103,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( dialogue == null )
 		{
-			ScriptLog( $"Unable to load script! Script file couldn't be found by path: {path}", SeverityLevel.Error );
+			Log.Error( $"Unable to load script! Script file couldn't be found by path: {path}" );
 			return;
 		}
 
@@ -117,7 +117,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		else
 		{
-			ScriptLog( "Unable to load script! The script file is empty.", SeverityLevel.Error );
+			Log.Error("Unable to load script! The script file is empty.");
 		}
 	}
 
@@ -129,11 +129,11 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( script == null )
 		{
-			ScriptLog( "Unable to load script! Script is null!", SeverityLevel.Error );
+			Log.Error("Unable to load script! Script is null!");
 			return;
 		}
 
-		ScriptLog( $"Loading script: {script.GetType().Name}" );
+		Log.Info( $"Loading script: {script.GetType().Name}" );
 
 		ActiveScript = script;
 		script.OnLoad();
@@ -171,7 +171,7 @@ public sealed partial class ScriptPlayer : Component
 			ActiveScript = null;
 		}
 
-		ScriptLog( $"Unloaded active script." );
+		Log.Info( $"Unloaded active script." );
 	}
 
 	private async void SetCurrentLabel( Dialogue.Label label )
@@ -194,7 +194,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		catch ( InvalidOperationException )
 		{
-			ScriptLog( $"There can only be one BackgroundAsset in a Label!", SeverityLevel.Error );
+			Log.Error($"There can only be one BackgroundAsset in a Label!");
 			Background = null;
 		}
 
