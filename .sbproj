@@ -26,6 +26,20 @@
     "Public": true,
     "HttpAllowList": null,
     "TickRate": 50,
-    "LaunchMode": "Normal"
+    "LaunchMode": "Normal",
+    "Compiler": {
+      "RootNamespace": "Sandbox",
+      "DefineConstants": "SANDBOX;ADDON;DEBUG",
+      "NoWarn": "1701;1702;1591;",
+      "WarningsAsErrors": "",
+      "Nullables": true,
+      "Whitelist": true,
+      "AssemblyReferences": [],
+      "IgnoreFolders": [
+        "editor",
+        "unittest"
+      ],
+      "DistinctAssemblyReferences": []
+    }
   }
 }
