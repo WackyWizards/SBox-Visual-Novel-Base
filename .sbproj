@@ -5,7 +5,7 @@
   "Ident": "vnbase",
   "Tags": "showcase visual visualnovel dialogue dialoguesystem dialogues opensource open",
   "Schema": 1,
-  "Resources": "/Assets/*\n/Code/*",
+  "Resources": "/Assets/*\n/Code/*\n*.vnscript",
   "PackageReferences": [],
   "EditorReferences": null,
   "Metadata": {

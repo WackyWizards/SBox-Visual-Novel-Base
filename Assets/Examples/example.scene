@@ -1,5 +1,5 @@
 {
-  "__guid": "6529fcee-4392-4f1e-9662-d81008878eb6",
+  "__guid": "4565dcd9-edfe-44f5-9250-62f7c897d435",
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
@@ -20,7 +20,7 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "InitialScript": "examples/scripts/examplelongscript.vnscript",
+          "InitialScript": "/examples/scripts/examplelongscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump"
@@ -62,7 +62,7 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-05-02T23:26:03.0960916\u002B03:00",
+  "LastSaved": "2024-05-03T00:00:02.967126\u002B03:00",
   "ResourceVersion": 1,
   "__version": 1,
   "__references": []
