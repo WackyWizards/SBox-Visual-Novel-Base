@@ -20,22 +20,22 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// If not empty, will load the script at this path on initial component start.
 	/// </summary>
-	[Property] public string InitialScript { get; set; }
+	[Property] public string? InitialScript { get; set; }
 
 	/// <summary>
 	/// The currently active script.
 	/// </summary>
-	[Property] public Script ActiveScript { get; private set; }
+	public Script? ActiveScript { get; private set; }
 
 	/// <summary>
 	/// The currently active script label text.
 	/// </summary>
-	[Property] public string DialogueText { get; set; }
+	[Property] public string? DialogueText { get; set; }
 
 	/// <summary>
 	/// Path to the currently active background.
 	/// </summary>
-	[Property] public string Background { get; set; }
+	[Property] public string? Background { get; set; }
 
 	/// <summary>
 	/// If the dialogue has finished writing text.
@@ -45,28 +45,28 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The currently active speaking character.
 	/// </summary>
-	[Property] public Character SpeakingCharacter { get; set; }
+	public Character? SpeakingCharacter { get; set; }
 
 	/// <summary>
 	/// Characters to display for this label.
 	/// </summary>
-	[Property] public List<Character> Characters { get; set; }
+	public List<Character> Characters { get; set; } = new();
 
 	/// <summary>
 	/// History of all previously shown labels.
 	/// </summary>
-	[Property] public List<Dialogue.Label> DialogueHistory { get; set; }
+	public List<Dialogue.Label> DialogueHistory { get; set; } = new();
 
 	[Property] public VNSettings Settings { get; private set; } = new();
 
-	private Dialogue _dialogue;
-	private Dialogue.Label _currentLabel;
+	private Dialogue? _dialogue;
+	private Dialogue.Label? _currentLabel;
 
-	private CancellationTokenSource _cts;
+	private CancellationTokenSource? _cts;
 
 	protected override void OnStart()
 	{
-		if ( InitialScript != null )
+		if ( !string.IsNullOrEmpty(InitialScript) )
 		{
 			LoadScript( InitialScript );
 		}
@@ -81,7 +81,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( Input.Pressed( Settings.SkipAction ) )
 		{
-			if ( ActiveScript == null )
+			if ( ActiveScript is null )
 				return;
 
 			if ( !DialogueFinished )
@@ -101,7 +101,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
 
-		if ( dialogue == null )
+		if ( dialogue is null )
 		{
 			Log.Error( $"Unable to load script! Script file couldn't be found by path: {path}" );
 			return;
@@ -127,7 +127,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <param name="script">Script to load.</param>
 	public void LoadScript( Script script )
 	{
-		if ( script == null )
+		if ( script is null )
 		{
 			Log.Error("Unable to load script! Script is null!");
 			return;
@@ -150,7 +150,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public void UnloadScript()
 	{
-		if ( ActiveScript == null )
+		if ( ActiveScript is null )
 		{
 			return;
 		}
@@ -162,7 +162,7 @@ public sealed partial class ScriptPlayer : Component
 		Background = null;
 
 		ActiveScript.After();
-		if ( ActiveScript.NextScript != null )
+		if ( ActiveScript.NextScript is not null )
 		{
 			LoadScript( ActiveScript.NextScript );
 		}
@@ -212,22 +212,36 @@ public sealed partial class ScriptPlayer : Component
 		AddHistory( label );
 		DialogueFinished = true;
 
-		DialogueChoices = label.Choices.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+		if ( ActiveScript is not null )
+		{
+			DialogueChoices = label.Choices.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+		}
 	}
 
 	private void ExecuteAfterLabel()
 	{
+		if ( ActiveScript is null || _currentLabel is null )
+		{
+			Log.Error( "Unable to execute the AfterLabel, there is either no active script or label!" );
+			return;
+		}
+
 		var afterLabel = _currentLabel.AfterLabel;
 
-		if ( afterLabel != null )
+		if ( afterLabel is not null )
 		{
 			foreach ( var codeBlock in afterLabel.CodeBlocks )
 			{
 				codeBlock.Execute( ActiveScript.GetEnvironment() );
 			}
 
-			if ( afterLabel.TargetLabel != null )
+			if ( afterLabel.TargetLabel is not null )
 			{
+				if ( _dialogue is null )
+				{
+					return;
+				}
+
 				SetCurrentLabel( _dialogue.Labels[afterLabel.TargetLabel] );
 			}
 		}
@@ -238,7 +252,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public void SkipDialogue()
 	{
-		if ( !DialogueFinished && _cts != null )
+		if ( !DialogueFinished && _cts is not null )
 		{
 			_cts.Cancel();
 		}

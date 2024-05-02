@@ -17,8 +17,7 @@ public class VNSettings
 	public int TextEffectDelay { get; set; } = 55;
 
 	/// <summary>
-	/// The action to skip the currently active text effect. You could define your own action in your project
-	/// settings and use that here, but we'll bind it to jump for simplicity's sake.
+	/// The action to skip the currently active text effect.
 	/// </summary>
 	public string SkipAction { get; set; } = "jump";
 

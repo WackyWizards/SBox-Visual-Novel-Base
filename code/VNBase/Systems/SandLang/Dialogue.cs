@@ -12,16 +12,16 @@ public class Dialogue
 {
 	public Dictionary<string, Label> Labels { get; } = new();
 
-	public Label InitialLabel { get; private set; }
+	public Label InitialLabel { get; private set; } = new();
 
 	/// <summary>
 	/// Represents a dialogue step.
 	/// </summary>
 	public class Label
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
-		public Character SpeakingCharacter { get; set; }
+		public Character? SpeakingCharacter { get; set; }
 
 		public List<Character> Characters { get; set; } = new();
 
@@ -32,7 +32,7 @@ public class Dialogue
 		/// <summary>
 		/// Label to direct towards after this one is processed.
 		/// </summary>
-		public AfterLabel AfterLabel { get; set; }
+		public AfterLabel? AfterLabel { get; set; }
     }
 
 	/// <summary>
@@ -40,11 +40,11 @@ public class Dialogue
 	/// </summary>
 	public class Choice
 	{
-		public string ChoiceText { get; set; }
+		public string ChoiceText { get; set; } = string.Empty;
 
-		public string TargetLabel { get; set; }
+		public string TargetLabel { get; set; } = string.Empty;
 
-		public SParen Condition { get; set; }
+		public SParen? Condition { get; set; }
 
 		/// <summary>
 		/// Returns whether this condition is available to the player.
@@ -63,7 +63,7 @@ public class Dialogue
 	{
 		public List<SParen> CodeBlocks { get; set; } = new();
 
-		public string TargetLabel { get; set; }
+		public string? TargetLabel { get; set; }
 	}
 
     public static Dialogue ParseDialogue( List<SParen> codeBlocks )

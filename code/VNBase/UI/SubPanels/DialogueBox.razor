@@ -10,11 +10,11 @@
 @inherits SubPanel
 
 <root>
-    @if (Player.SpeakingCharacter != null && Player.SpeakingCharacter.Name != null)
+    @if (Player.SpeakingCharacter is not null)
     {
         <div class="characterPanel">
             <label class="character" style="color: @Player.SpeakingCharacter.NameColor.Rgba">@Player.SpeakingCharacter.Name</label>
-            @if (Player.SpeakingCharacter.Title != null)
+            @if (!string.IsNullOrEmpty(Player.SpeakingCharacter.Title))
             {
                 <label class="title" style="color: @Player.SpeakingCharacter.TitleColor.Rgba">@Player.SpeakingCharacter.Title</label>
             }

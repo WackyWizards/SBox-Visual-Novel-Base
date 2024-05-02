@@ -7,13 +7,13 @@ public class Character
 	/// <summary>
 	/// The name of the character.
 	/// </summary>
-	public virtual string Name { get; set; }
+	public virtual string Name { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The title of the character.
 	/// If blank, we assume no title.
 	/// </summary>
-	public virtual string Title { get; set; }
+	public virtual string? Title { get; set; }
 
 	/// <summary>
 	/// Path to the folder containing character portraits.
@@ -34,7 +34,7 @@ public class Character
 	/// The name of the active portrait image.
 	/// Includes extension.
 	/// </summary>
-	public string ActivePortrait { get; set; }
+	public string? ActivePortrait { get; set; }
 
 	/// <summary>
 	/// Path to the active portrait.

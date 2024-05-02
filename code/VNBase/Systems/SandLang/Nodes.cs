@@ -192,7 +192,7 @@ public class SParen : IReadOnlyList<Value>
 
 	private static IEnumerable<SParen> ProcessTokens( List<Token> tokenList )
 	{
-		SParen currentParen = null;
+		SParen? currentParen = null;
 		var tokenDepth = 0;
 		for ( var tokenIndex = 0; tokenIndex < tokenList.Count; tokenIndex++ )
 		{

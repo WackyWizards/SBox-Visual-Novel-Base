@@ -11,12 +11,12 @@ public class Script
 	/// <summary>
 	/// This is where you want to write your script dialogue.
 	/// </summary>
-	public virtual string Dialogue { get; set; }
+	public virtual string Dialogue { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The script to run after this one has ended.
 	/// </summary>
-	public virtual Script NextScript { get; set; }
+	public virtual Script? NextScript { get; set; }
 
 	/// <summary>
 	/// This is called when the script is run.

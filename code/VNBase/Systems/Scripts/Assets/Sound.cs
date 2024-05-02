@@ -10,5 +10,5 @@ public class SoundAsset : Asset, Asset.IAsset
 	/// <summary>
 	/// Path to the sound asset.
 	/// </summary>
-	public string Path { get; set; }
+	public string Path { get; set; } = string.Empty;
 }

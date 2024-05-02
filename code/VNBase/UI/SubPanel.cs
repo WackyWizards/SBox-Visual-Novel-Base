@@ -4,7 +4,7 @@ namespace VNBase.UI;
 
 public class SubPanel : Panel
 {
-	public ScriptPlayer Player { get; set; }
+	public ScriptPlayer? Player { get; set; }
 
 	public void ToggleVisibility()
 	{
