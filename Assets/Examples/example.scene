@@ -1,42 +1,37 @@
 {
-  "Id": "6529fcee-4392-4f1e-9662-d81008878eb6",
+  "__guid": "6529fcee-4392-4f1e-9662-d81008878eb6",
   "GameObjects": [
     {
-      "Id": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+      "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
       "Name": "Player",
       "Enabled": true,
       "NetworkMode": 2,
+      "NetworkInterpolation": true,
       "Components": [
         {
-          "__type": "ScreenPanel",
+          "__type": "Sandbox.ScreenPanel",
+          "__guid": "781d3d86-e7f3-4e9e-8fd6-efd61851a831",
           "AutoScreenScale": true,
           "Opacity": 1,
           "Scale": 1,
           "ZIndex": 100
         },
         {
-          "__type": "ScriptPlayer",
-          "ActiveScript": {},
-          "Characters": [],
-          "DialogueChoices": [],
+          "__type": "VNBase.ScriptPlayer",
+          "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "DialogueHistory": [],
           "InitialScript": "examples/scripts/examplelongscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump"
-          },
-          "SpeakingCharacter": {
-            "Images": "/materials/vnbase/scripts/",
-            "NameColor": "1,1,1,1",
-            "TitleColor": "1,1,1,1",
-            "ActivePortraitPath": "/materials/vnbase/scripts/"
           }
         },
         {
-          "__type": "VNHud",
+          "__type": "VNBase.UI.VNHud",
+          "__guid": "b2517958-5f7c-4c53-9a9e-1f876cc437f4",
           "Player": {
             "_type": "component",
+            "component_id": "15bf3654-5343-4d7a-96f3-545202877d3f",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "ScriptPlayer"
           }
@@ -46,9 +41,9 @@
   ],
   "SceneProperties": {
     "FixedUpdateFrequency": 50,
-    "Lerping": true,
     "MaxFixedUpdates": 5,
     "NetworkFrequency": 30,
+    "NetworkInterpolation": true,
     "ThreadedAnimation": true,
     "TimeScale": 1,
     "UseFixedUpdate": true,
@@ -67,6 +62,8 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-03-11T22:04:27.0231997\u002B02:00",
+  "LastSaved": "2024-05-02T23:26:03.0960916\u002B03:00",
+  "ResourceVersion": 1,
+  "__version": 1,
   "__references": []
 }
