@@ -52,11 +52,6 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public List<Character> Characters { get; set; } = new();
 
-	/// <summary>
-	/// History of all previously shown labels.
-	/// </summary>
-	public List<Dialogue.Label> DialogueHistory { get; set; } = new();
-
 	[Property] public VNSettings Settings { get; private set; } = new();
 
 	private Dialogue? _dialogue;
@@ -261,14 +256,6 @@ public sealed partial class ScriptPlayer : Component
 		if ( !DialogueFinished && _cts is not null )
 		{
 			_cts.Cancel();
-		}
-	}
-
-	private void AddHistory( Dialogue.Label dialogue )
-	{
-		if ( !DialogueHistory.Contains( dialogue ) )
-		{
-			DialogueHistory.Add( dialogue );
 		}
 	}
 }
