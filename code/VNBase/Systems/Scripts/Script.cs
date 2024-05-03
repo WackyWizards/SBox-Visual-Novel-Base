@@ -14,7 +14,7 @@ public class Script
 	public virtual string Dialogue { get; set; } = string.Empty;
 
 	/// <summary>
-	/// The script to run after this one has ended.
+	/// The script to run after this one has finished.
 	/// </summary>
 	public virtual Script? NextScript { get; set; }
 

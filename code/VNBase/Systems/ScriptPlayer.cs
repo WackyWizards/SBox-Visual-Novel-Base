@@ -81,15 +81,19 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( Input.Pressed( Settings.SkipAction ) )
 		{
-			if ( ActiveScript is null )
+			if ( ActiveScript is null || _currentLabel is null )
+			{
 				return;
+			}
 
-			if ( !DialogueFinished )
+			if ( !DialogueFinished && Settings.SkipActionEnabled )
 			{
 				SkipDialogue();
 			}
 			else if ( DialogueChoices.IsNullOrEmpty() )
+			{
 				UnloadScript();
+			}
 		}
 	}
 
@@ -179,6 +183,8 @@ public sealed partial class ScriptPlayer : Component
 		_currentLabel = label;
 		DialogueFinished = false;
 
+		Log.Info( $"Loading Label {label.Name}" );
+
 		Characters.Clear();
 		label.Characters.ForEach( Characters.Add );
 		SpeakingCharacter = label.SpeakingCharacter;
@@ -194,7 +200,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		catch ( InvalidOperationException )
 		{
-			Log.Error($"There can only be one BackgroundAsset in a Label!");
+			Log.Error($"There can only be one {nameof(BackgroundAsset)} in label {label.Name}!");
 			Background = null;
 		}
 
@@ -222,7 +228,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( ActiveScript is null || _currentLabel is null )
 		{
-			Log.Error( "Unable to execute the AfterLabel, there is either no active script or label!" );
+			Log.Error( $"Unable to execute the AfterLabel, there is either no active script or label!" );
 			return;
 		}
 

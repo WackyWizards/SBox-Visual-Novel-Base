@@ -18,8 +18,10 @@ public class Dialogue
 	/// Represents a dialogue step.
 	/// </summary>
 	public class Label
-    {
-        public string Text { get; set; } = string.Empty;
+	{
+		public string Name { get; set; } = string.Empty;
+
+		public string Text { get; set; } = string.Empty;
 
 		public Character? SpeakingCharacter { get; set; }
 
@@ -102,6 +104,7 @@ public class Dialogue
             _ => throw new InvalidParameters(new[] { values[0] })
         };
         Labels[labelName] = label;
+		label.Name = labelName;
 
         for (var i = 1; i < values.Length; i++)
         {
