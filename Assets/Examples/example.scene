@@ -37,6 +37,54 @@
           }
         }
       ]
+    },
+    {
+      "__guid": "3ff0d10d-b515-4ff8-a1a0-7d36d8a9b284",
+      "Name": "Sun",
+      "Position": "-59.35651,125.7421,47.31",
+      "Rotation": "0.06698729,0.25,-0.25,0.9330128",
+      "Tags": "light_directional,light",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "Components": [
+        {
+          "__type": "Sandbox.DirectionalLight",
+          "__guid": "dc699705-7e29-4fa2-97d5-802e7b90e40b",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "0.91373,0.98039,1,1",
+          "Shadows": true,
+          "SkyColor": "0.05882,0.07451,0.08235,1"
+        }
+      ]
+    },
+    {
+      "__guid": "65ca6017-ae5c-48a8-b732-7856277fcbf8",
+      "Name": "Camera",
+      "Tags": "maincamera",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "Components": [
+        {
+          "__type": "Sandbox.CameraComponent",
+          "__guid": "13a035ea-1ab5-4fb8-bcba-eff59d39436f",
+          "BackgroundColor": "0.33333,0.46275,0.52157,1",
+          "ClearFlags": "All",
+          "FieldOfView": 60,
+          "IsMainCamera": true,
+          "Orthographic": false,
+          "OrthographicHeight": 1204,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        }
+      ]
     }
   ],
   "SceneProperties": {
@@ -62,7 +110,7 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-05-03T00:00:02.967126\u002B03:00",
+  "LastSaved": "2024-05-03T00:06:52.72638\u002B03:00",
   "ResourceVersion": 1,
   "__version": 1,
   "__references": []
