@@ -1,3 +1,4 @@
+using Sandbox;
 using System.Text.Json.Serialization;
 using static VNBase.Effects;
 
@@ -19,7 +20,13 @@ public class VNSettings
 	/// <summary>
 	/// The action to skip the currently active text effect.
 	/// </summary>
+	[InputAction]
 	public string SkipAction { get; set; } = "jump";
+
+	/// <summary>
+	/// If we are able to skip the active text effect using the skip action.
+	/// </summary>
+	public bool SkipActionEnabled { get; set; } = true;
 
 	/// <summary>
 	/// Path to the background images.
