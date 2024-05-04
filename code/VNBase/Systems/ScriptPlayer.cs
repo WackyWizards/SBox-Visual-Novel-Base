@@ -201,11 +201,18 @@ public sealed partial class ScriptPlayer : Component
 
 		_cts = new();
 
-		try
+		if ( Settings.TextEffect is not null )
 		{
-			await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
+			try
+			{
+				await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
+			}
+			catch ( OperationCanceledException )
+			{
+				DialogueText = label.Text;
+			}
 		}
-		catch ( OperationCanceledException )
+		else
 		{
 			DialogueText = label.Text;
 		}
