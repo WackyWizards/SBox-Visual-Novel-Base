@@ -186,7 +186,8 @@ public sealed partial class ScriptPlayer : Component
 
 		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 		{
-			Sound.Play( sound.Path );
+			sound.Play();
+			Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
 		}
 
 		try

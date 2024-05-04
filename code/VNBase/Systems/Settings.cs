@@ -29,7 +29,12 @@ public class VNSettings
 	public bool SkipActionEnabled { get; set; } = true;
 
 	/// <summary>
-	/// Path to the background images.
+	/// Path to the background image assets.
 	/// </summary>
 	public static string BackgroundsPath { get; set; } = "/materials/vnbase/scripts/backgrounds/";
+
+	/// <summary>
+	/// Path to the sound assets.
+	/// </summary>
+	public static string SoundsPath { get; set; } = "/sounds/vnbase/scripts/";
 }

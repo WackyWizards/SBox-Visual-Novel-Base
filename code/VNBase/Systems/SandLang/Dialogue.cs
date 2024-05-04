@@ -295,7 +295,7 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParameters( new[] { arguments[1] } );
 
 		string soundName = argument.Name;
-		label.Assets.Add( new SoundAsset() { Path = soundName } );
+		label.Assets.Add( new SoundAsset(soundName) );
 	}
 
 	private static void LabelBackgroundArgument( SParen arguments, Label label )
@@ -303,7 +303,7 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParameters( new[] { arguments[1] } );
 
 		string backgroundName = argument.Name;
-		label.Assets.Add( new BackgroundAsset { Path = $"{VNSettings.BackgroundsPath}{backgroundName}" } );
+		label.Assets.Add( new BackgroundAsset( $"{VNSettings.BackgroundsPath}{backgroundName}") );
 	}
 
 	private static Character CreateCharacter( string characterName )
