@@ -302,7 +302,6 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParameters( new[] { arguments[1] } );
 
 		string backgroundName = argument.Name;
-		Log.Error( $"{VNSettings.BackgroundsPath}{backgroundName}" );
 		label.Assets.Add( new BackgroundAsset( $"{VNSettings.BackgroundsPath}{backgroundName}") );
 	}
 
