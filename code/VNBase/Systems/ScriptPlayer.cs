@@ -87,7 +87,7 @@ public sealed partial class ScriptPlayer : Component
 			}
 			else if ( DialogueChoices.IsNullOrEmpty() )
 			{
-				UnloadScript();
+				ExecuteAfterLabel();
 			}
 		}
 	}
@@ -242,6 +242,12 @@ public sealed partial class ScriptPlayer : Component
 			foreach ( var codeBlock in afterLabel.CodeBlocks )
 			{
 				codeBlock.Execute( ActiveScript.GetEnvironment() );
+			}
+
+			if ( afterLabel.IsLastLabel )
+			{
+				UnloadScript();
+				return;
 			}
 
 			if ( afterLabel.TargetLabel is not null )

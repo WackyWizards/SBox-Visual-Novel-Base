@@ -31,9 +31,6 @@ public class Dialogue
 
 		public List<Asset> Assets { get; set; } = new();
 
-		/// <summary>
-		/// Label to direct towards after this one is processed.
-		/// </summary>
 		public AfterLabel? AfterLabel { get; set; }
     }
 
@@ -58,12 +55,13 @@ public class Dialogue
 	}
 
 	/// <summary>
-	/// In labels that do not have choices, 
-	/// represents code to execute as well as the new label to direct towards.
+	/// In labels that do not have choices, represents code to execute as well as the new label to direct towards.
 	/// </summary>
 	public class AfterLabel
 	{
 		public List<SParen> CodeBlocks { get; set; } = new();
+
+		public bool IsLastLabel { get; set; }
 
 		public string? TargetLabel { get; set; }
 	}
@@ -155,7 +153,7 @@ public class Dialogue
 
 	private static void LabelAfterArgument( SParen arguments, Label label )
     {
-        label.AfterLabel = new AfterLabel();
+        label.AfterLabel = new();
 
         for (var i = 1; i < arguments.Count; i++)
         {
@@ -181,13 +179,14 @@ public class Dialogue
 
     private static int AfterJumpArgument( SParen arguments, int index, AfterLabel after )
     {
-        after.TargetLabel = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
+		string labelName = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
+		after.TargetLabel = labelName;
         return 1;
     }
 
     private static int AfterEndDialogueArgument( SParen arguments, int index, AfterLabel after )
     {
-        after.TargetLabel = null;
+		after.IsLastLabel = true;
         return 0;
     }
 
@@ -303,17 +302,13 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParameters( new[] { arguments[1] } );
 
 		string backgroundName = argument.Name;
+		Log.Error( $"{VNSettings.BackgroundsPath}{backgroundName}" );
 		label.Assets.Add( new BackgroundAsset( $"{VNSettings.BackgroundsPath}{backgroundName}") );
 	}
 
 	private static Character CreateCharacter( string characterName )
 	{
-		var characterType = TypeLibrary.GetType( characterName )?.TargetType;
-		if ( characterType == null )
-		{
-			throw new ArgumentException( $"Can't find character with name {characterName}!" );
-		}
-
+		var characterType = (TypeLibrary.GetType( characterName )?.TargetType) ?? throw new ArgumentException( $"Can't find character with name {characterName}!" );
 		if ( !typeof( Character ).IsAssignableFrom( characterType ) )
 		{
 			throw new ArgumentException( $"Type {characterType} is not a character!" );

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace VNBase;
 
 /// <summary>
-/// This class contains all the base effects that can be used in VNBase.
+/// Contains all the base effects that can be used.
 /// </summary>
-public class Effects
+public static class Effects
 {
 	public interface ITextEffect
 	{

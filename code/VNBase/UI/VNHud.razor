@@ -29,7 +29,7 @@
             {
                 Player = Scene.GetAllComponents<ScriptPlayer>().First();
             }
-            catch( InvalidOperationException ex )
+            catch( InvalidOperationException )
             {
                 ScriptPlayer.Log.Warning("No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!");
             }

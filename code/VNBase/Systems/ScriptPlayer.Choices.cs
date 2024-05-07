@@ -20,7 +20,5 @@ sealed partial class ScriptPlayer
 		{
 			SetCurrentLabel( _dialogue.Labels[choice.TargetLabel] );
 		}
-
-		ExecuteAfterLabel();
 	}
 }
