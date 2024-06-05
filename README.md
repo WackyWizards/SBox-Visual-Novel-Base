@@ -18,8 +18,7 @@ Anyone is free to contribute to the base by creating a pull request. Contributio
 
 ## Support
 
-For technical support and/or questions related to VNBase, please join the community discord server found below.
-
+For technical support and/or questions related to VNBase, please either create a new issue, or join the community discord server found below.
 https://discord.gg/JVzVaJDHAQ
 
 ## SandLang
