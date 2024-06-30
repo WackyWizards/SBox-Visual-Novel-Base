@@ -6,6 +6,9 @@ Scripts are written using a LISP-styled language called SandLang, an easy-to-lea
 
 Creating a simple dialogue system or a visual novel is easy, with the base including multiple example scripts. However, it is modular enough for anyone proficient to make custom functions and calculations if they so require, straight inside of SandLang, with little programming knowledge required.
 
+> [!NOTE]
+> Currently, there is no library version of Visual Novel Base.
+
 ## Showcase
 
 Below is a video showcase of a simple example project made with VNBase.
