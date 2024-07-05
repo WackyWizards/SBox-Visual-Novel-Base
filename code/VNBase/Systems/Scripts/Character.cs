@@ -1,8 +1,10 @@
 using Sandbox;
+using System.Text.Json.Serialization;
 
 namespace VNBase;
 
-public class Character
+[GameResource("character", "char", "Defines a VNBase character.")]
+public class Character : GameResource
 {
 	/// <summary>
 	/// The name of the character.
@@ -14,11 +16,6 @@ public class Character
 	/// If blank, we assume no title.
 	/// </summary>
 	public virtual string? Title { get; set; }
-
-	/// <summary>
-	/// Path to the folder containing character portraits.
-	/// </summary>
-	public virtual string Images { get; set; } = "/materials/vnbase/scripts/";
 
 	/// <summary>
 	/// The color of the character's name.
@@ -34,10 +31,12 @@ public class Character
 	/// The name of the active portrait image.
 	/// Includes extension.
 	/// </summary>
+	[JsonIgnore]
 	public string? ActivePortrait { get; set; }
 
 	/// <summary>
 	/// Path to the active portrait.
 	/// </summary>
-	public string ActivePortraitPath => Images + ActivePortrait;
+	[JsonIgnore]
+	public string ActivePortraitPath => VNSettings.CharacterPortraitsPath + ActivePortrait;
 }
