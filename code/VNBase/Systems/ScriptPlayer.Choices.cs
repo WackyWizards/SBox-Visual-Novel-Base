@@ -1,4 +1,3 @@
-using Sandbox;
 using System.Collections.Generic;
 
 namespace VNBase;
@@ -6,7 +5,6 @@ namespace VNBase;
 sealed partial class ScriptPlayer
 {
 	public List<string> DialogueChoices { get; private set; } = new();
-	public static readonly List<string> ContinueChoice = new( new[] { "Continue" } );
 
 	public void ExecuteChoice( int choiceIndex )
 	{

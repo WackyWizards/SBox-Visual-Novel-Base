@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VNBase.Util;
+namespace VNBase;
 
 public static class Collections
 {
