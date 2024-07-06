@@ -1,5 +1,5 @@
 (label breezing-wind
-	(text "The wind is breezing nicely through your hair, the birds are chirping and the sun is out. It's a beautiful day.")
+	(text "The wind is breezing nicely through your hair, the birds are chirping and the sun is out. It's a beautiful day." say Unknown)
 	(choice "Look around your surroundings" jump look-around)
 	(choice "Sit down in the grass to admire the day" jump sit-down)
 	(choice "Spin around in a circle" jump loop)
