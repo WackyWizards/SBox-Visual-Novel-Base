@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace SandLang;
 
-public class UndefinedVariable : Exception
+public class UndefinedVariableException : Exception
 {
-	public UndefinedVariable( string name ) : base( $"Failed to find variable {name}!" )
+	public UndefinedVariableException( string name ) : base( $"Failed to find variable {name}!" )
 	{
 		base.Data["Missing Variable"] = name;
 	}
 }
 
-public class InvalidParameters : Exception
+public class InvalidParametersException : Exception
 {
-	public InvalidParameters( IEnumerable<Value> values ) : base( "Invalid parameter types!" )
+	public InvalidParametersException( IEnumerable<Value> values ) : base( "Invalid parameter types!" )
 	{
 		base.Data["Values"] = values;
 	}
