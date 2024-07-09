@@ -41,7 +41,7 @@ public abstract record Value
 				return builtin;
 			}
 
-			throw new UndefinedVariable( Name );
+			throw new UndefinedVariableException( Name );
 		}
 	}
 

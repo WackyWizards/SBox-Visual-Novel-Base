@@ -1,9 +1,11 @@
 using Sandbox;
+using System;
 using System.Text.Json.Serialization;
 using static VNBase.Effects;
 
 namespace VNBase;
 
+[Serializable]
 public class VNSettings
 {
 	/// <summary>
@@ -31,10 +33,15 @@ public class VNSettings
 	/// <summary>
 	/// Path to the background image assets.
 	/// </summary>
-	public static string BackgroundsPath { get; set; } = "/materials/vnbase/scripts/backgrounds/";
+	public const string BackgroundsPath = "/materials/vnbase/scripts/backgrounds/";
 
 	/// <summary>
-	/// Path to the sound assets.
+	/// Path to character portrait images.
 	/// </summary>
-	public static string SoundsPath { get; set; } = "/sounds/vnbase/scripts/";
+	public const string CharacterPortraitsPath = "/materials/vnbase/scripts/";
+
+	/// <summary>
+	/// Path to the character resources.
+	/// </summary>
+	public const string CharacterResourcesPath = "/characters/";
 }

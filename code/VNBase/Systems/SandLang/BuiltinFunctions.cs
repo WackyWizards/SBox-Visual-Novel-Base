@@ -42,7 +42,7 @@ internal static class BuiltinFunctions
 		{
 			if ( values.Length == 1 )
 			{
-				throw new InvalidParameters( values );
+				throw new InvalidParametersException( values );
 			}
 
 			return values[1].Evaluate( environment );
@@ -68,7 +68,7 @@ internal static class BuiltinFunctions
 		return new Value.NumberValue( values.Select( p => p.Evaluate( environment ) ).Select( p => p switch
 		{
 			Value.NumberValue numberValue => numberValue.Number,
-			_ => throw new InvalidParameters( new[] { p } )
+			_ => throw new InvalidParametersException( new[] { p } )
 		} ).Aggregate( ( acc, v ) => acc + v ) );
 	}
 
@@ -108,11 +108,11 @@ internal static class BuiltinFunctions
 
 	private static Value SetFunction( IEnvironment environment, params Value[] values )
 	{
-		if ( values.Length != 2 ) throw new InvalidParameters( values );
+		if ( values.Length != 2 ) throw new InvalidParametersException( values );
 		var varname = values[0];
 		if ( varname is not Value.VariableReferenceValue vrv )
 		{
-			throw new InvalidParameters( new[] { varname } );
+			throw new InvalidParametersException( new[] { varname } );
 		}
 
 		var value = values[1].Evaluate( environment );
@@ -127,7 +127,7 @@ internal static class BuiltinFunctions
 
 		if ( !(values.All( v => v is Value.NumberValue )) )
 		{
-			throw new InvalidParameters( values );
+			throw new InvalidParametersException( values );
 		}
 
 		return values[0] switch
@@ -144,7 +144,7 @@ internal static class BuiltinFunctions
 
 		if ( !(values.All( v => v is Value.StringValue ) || values.All( v => v is Value.NumberValue )) )
 		{
-			throw new InvalidParameters( values );
+			throw new InvalidParametersException( values );
 		}
 
 		return values[0] switch

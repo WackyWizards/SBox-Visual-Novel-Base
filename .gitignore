@@ -24,5 +24,6 @@ code/properties/
 code/.vs
 code/*.csproj
 tools_thumbnail_cache.bin
-code/Docs/GeneratedFiles
+docs/html
+docs/doxygen/bin/
 code/Properties/launchSettings.json

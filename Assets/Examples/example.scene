@@ -3,6 +3,7 @@
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+      "Flags": 0,
       "Name": "Player",
       "Enabled": true,
       "NetworkMode": 2,
@@ -20,10 +21,11 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "InitialScript": "/examples/scripts/examplelongscript.vnscript",
+          "InitialScript": "/scripts/examplelongscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
-            "SkipAction": "jump"
+            "SkipAction": "jump",
+            "SkipActionEnabled": true
           }
         },
         {
@@ -40,6 +42,7 @@
     },
     {
       "__guid": "3ff0d10d-b515-4ff8-a1a0-7d36d8a9b284",
+      "Flags": 0,
       "Name": "Sun",
       "Position": "-59.35651,125.7421,47.31",
       "Rotation": "0.06698729,0.25,-0.25,0.9330128",
@@ -61,6 +64,7 @@
     },
     {
       "__guid": "65ca6017-ae5c-48a8-b732-7856277fcbf8",
+      "Flags": 0,
       "Name": "Camera",
       "Tags": "maincamera",
       "Enabled": true,
@@ -110,8 +114,7 @@
   },
   "Title": "example",
   "Description": "",
-  "LastSaved": "2024-05-03T00:06:52.72638\u002B03:00",
   "ResourceVersion": 1,
-  "__version": 1,
-  "__references": []
+  "__references": [],
+  "__version": 1
 }

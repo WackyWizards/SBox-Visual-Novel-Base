@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using VNBase.Assets;
-using VNBase.Util;
 using VNBase.UI;
 using SandLang;
 
@@ -14,7 +13,7 @@ namespace VNBase;
 /// Responsible for handling visual novel base scripts.
 /// </summary>
 [Title( "VN Script Player" )]
-[Category("VNBase")]
+[Category( "VNBase" )]
 public sealed partial class ScriptPlayer : Component
 {
 	/// <summary>
@@ -30,17 +29,17 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The currently active script label text.
 	/// </summary>
-	[Property] public string? DialogueText { get; set; }
+	[Property, Group( "Dialogue" )] public string? DialogueText { get; set; }
 
 	/// <summary>
 	/// Path to the currently active background.
 	/// </summary>
-	[Property] public string? Background { get; set; }
+	[Property, Group( "Dialogue" )] public string? Background { get; set; }
 
 	/// <summary>
 	/// If the dialogue has finished writing text.
 	/// </summary>
-	[Property] public bool DialogueFinished { get; set; }
+	[Property, Group( "Dialogue" )] public bool DialogueFinished { get; set; }
 
 	/// <summary>
 	/// The currently active speaking character.
@@ -52,7 +51,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public List<Character> Characters { get; set; } = new();
 
-	[Property] public VNSettings Settings { get; private set; } = new();
+	[Property] public VNSettings Settings { get; } = new();
 
 	private Dialogue? _dialogue;
 	private Dialogue.Label? _currentLabel;
@@ -61,14 +60,14 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnStart()
 	{
-		if ( !string.IsNullOrEmpty(InitialScript) )
+		if ( !string.IsNullOrEmpty( InitialScript ) )
 		{
 			LoadScript( InitialScript );
 		}
 
-		if ( Scene.GetAllComponents<UI.VNHud>().IsNullOrEmpty() )
+		if ( Scene.GetAllComponents<VNHud>().IsNullOrEmpty() )
 		{
-			Log.Warning( "No VNHud Component found, ScriptPlayer will not be immediately visible!");
+			Log.Warning( "No VNHud Component found, ScriptPlayer will not be immediately visible!" );
 		}
 	}
 
@@ -116,7 +115,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		else
 		{
-			Log.Error("Unable to load script! The script file is empty.");
+			Log.Error( "Unable to load script! The script file is empty." );
 		}
 	}
 
@@ -128,7 +127,7 @@ public sealed partial class ScriptPlayer : Component
 	{
 		if ( script is null )
 		{
-			Log.Error("Unable to load script! Script is null!");
+			Log.Error( "Unable to load script! Script is null!" );
 			return;
 		}
 
@@ -178,7 +177,10 @@ public sealed partial class ScriptPlayer : Component
 		_currentLabel = label;
 		DialogueFinished = false;
 
-		Log.Info( $"Loading Label {label.Name}" );
+		if ( Game.IsEditor )
+		{
+			Log.Info( $"Loading Label {label.Name}" );
+		}
 
 		Characters.Clear();
 		label.Characters.ForEach( Characters.Add );
@@ -196,7 +198,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		catch ( InvalidOperationException )
 		{
-			Log.Error($"There can only be one {nameof(BackgroundAsset)} in label {label.Name}!");
+			Log.Error( $"There can only be one {nameof( BackgroundAsset )} in label {label.Name}!" );
 			Background = null;
 		}
 
