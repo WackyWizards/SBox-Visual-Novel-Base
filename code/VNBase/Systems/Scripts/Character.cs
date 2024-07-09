@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace VNBase;
 
-[GameResource("character", "char", "Defines a VNBase character.")]
+[GameResource( "character", "char", "Defines a VNBase character." )]
 public class Character : GameResource
 {
 	/// <summary>
@@ -31,7 +31,7 @@ public class Character : GameResource
 	/// The name of the active portrait image.
 	/// Includes extension.
 	/// </summary>
-	[JsonIgnore]
+	[JsonIgnore, Hide]
 	public string? ActivePortrait { get; set; }
 
 	/// <summary>
