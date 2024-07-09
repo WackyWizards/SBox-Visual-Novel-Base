@@ -1,9 +1,11 @@
 using Sandbox;
+using System;
 using System.Text.Json.Serialization;
 using static VNBase.Effects;
 
 namespace VNBase;
 
+[Serializable]
 public class VNSettings
 {
 	/// <summary>
