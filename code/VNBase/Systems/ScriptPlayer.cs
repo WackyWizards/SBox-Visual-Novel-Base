@@ -1,5 +1,6 @@
 using Sandbox;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
@@ -107,10 +108,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			Script script = new()
-			{
-				Dialogue = dialogue
-			};
+			Script script = new( dialogue, path );
 			LoadScript( script );
 		}
 		else
@@ -131,7 +129,13 @@ public sealed partial class ScriptPlayer : Component
 			return;
 		}
 
-		Log.Info( $"Loading script: {script.GetType().Name}" );
+		string? scriptName = string.Empty;
+		if ( script.FromFile )
+		{
+			scriptName = Path.GetFileNameWithoutExtension( script.Path );
+		}
+
+		Log.Info( $"Loading script: {scriptName}" );
 
 		ActiveScript = script;
 		script.OnLoad();

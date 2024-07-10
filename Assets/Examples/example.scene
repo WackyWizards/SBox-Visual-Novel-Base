@@ -6,8 +6,6 @@
       "Flags": 0,
       "Name": "Player",
       "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkInterpolation": true,
       "Components": [
         {
           "__type": "Sandbox.ScreenPanel",
@@ -21,7 +19,7 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "InitialScript": "/scripts/examplelongscript.vnscript",
+          "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump",
@@ -48,8 +46,6 @@
       "Rotation": "0.06698729,0.25,-0.25,0.9330128",
       "Tags": "light_directional,light",
       "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkInterpolation": true,
       "Components": [
         {
           "__type": "Sandbox.DirectionalLight",
@@ -68,8 +64,6 @@
       "Name": "Camera",
       "Tags": "maincamera",
       "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkInterpolation": true,
       "Components": [
         {
           "__type": "Sandbox.CameraComponent",
