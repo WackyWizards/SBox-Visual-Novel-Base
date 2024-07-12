@@ -42,27 +42,25 @@ public class Script
 	/// <summary>
 	/// This is called when the script is run.
 	/// </summary>
-	public virtual void OnLoad()
-	{
-
-	}
+	public virtual void OnLoad() { }
 
 	/// <summary>
 	/// This is called after the script has finished.
 	/// </summary>
-	public virtual void After()
-	{
-
-	}
+	public virtual void OnUnload() { }
 
 	/// <summary>
 	/// Get this scripts local environment map.
 	/// </summary>
 	public virtual IEnvironment GetEnvironment()
 	{
-		return new EnvironmentMap( new Dictionary<string, Value>()
+		_environment ??= new EnvironmentMap( new Dictionary<string, Value>()
 		{
-			// Assign unique script variables here.
+			// You may manually assign unique script variables here.
 		} );
+
+		return _environment;
 	}
+
+	private IEnvironment? _environment;
 }
