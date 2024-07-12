@@ -11,6 +11,9 @@ internal static class BuiltinFunctions
 	/// </summary>
 	public static Dictionary<string, Value.FunctionValue> Builtins { get; } = new()
 	{
+		["="] = new Value.FunctionValue( EqualityFunction ),
+		[">"] = new Value.FunctionValue( GreaterThanFunction ),
+		["<"] = new Value.FunctionValue( LessThanFunction ),
 		["+"] = new Value.FunctionValue( SumFunction ),
 		["-"] = new Value.FunctionValue( SubtractFunction ),
 		["*"] = new Value.FunctionValue( MulFunction ),
@@ -20,8 +23,46 @@ internal static class BuiltinFunctions
 		["pow"] = new Value.FunctionValue( PowFunction ),
 		["sqrt"] = new Value.FunctionValue( SqrtFunction ),
 		["if"] = new Value.FunctionValue( IfFunction ),
-		["body"] = new Value.FunctionValue( ExpressionBodyFunction )
+		["body"] = new Value.FunctionValue( ExpressionBodyFunction ),
 	};
+
+	private static Value GreaterThanFunction( IEnvironment environment, Value[] values )
+	{
+		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
+		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
+
+		return new Value.BooleanValue( v2!.Number > v1!.Number );
+	}
+
+	private static Value LessThanFunction( IEnvironment environment, Value[] values )
+	{
+		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
+		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
+
+		return new Value.BooleanValue( v2!.Number < v1!.Number );
+	}
+
+	private static Value EqualityFunction( IEnvironment environment, Value[] values )
+	{
+		var v1 = values[0].Evaluate( environment );
+		var v2 = values[1].Evaluate( environment );
+
+		if ( v1.GetType() != v2.GetType() )
+		{
+			throw new InvalidParametersException( new[] { v1, v2 } );
+		}
+
+		if ( v2 is Value.BooleanValue booleanValue )
+		{
+			return new Value.BooleanValue( ((Value.BooleanValue)v1).Boolean.Equals( booleanValue.Boolean ) );
+		}
+		else if ( v2 is Value.NumberValue number )
+		{
+			return new Value.BooleanValue( ((Value.NumberValue)v1).Number.Equals( number.Number ) );
+		}
+
+		return Value.NoneValue.None;
+	}
 
 	private static Value ExpressionBodyFunction( IEnvironment environment, Value[] values )
 	{
@@ -91,12 +132,15 @@ internal static class BuiltinFunctions
 		{
 			Value.StringValue stringValue => stringValue.Text,
 			Value.VariableReferenceValue variableReferenceValue => variableReferenceValue.Name,
-			_ => throw new ArgumentOutOfRangeException( nameof(p) )
+			_ => throw new ArgumentOutOfRangeException( nameof( p ) )
 		} ).ToArray();
+
 		var body = (values[1] as Value.ListValue)!.ValueList;
+
 		return new Value.FunctionValue( ( _, arglist ) =>
 		{
 			var env = new EnvironmentMap( environment );
+
 			for ( var i = 0; i < MathF.Min( argnames.Length, arglist.Length ); i++ )
 			{
 				env.SetVariable( argnames[i], arglist[i].Evaluate( _ ) );
@@ -110,6 +154,7 @@ internal static class BuiltinFunctions
 	{
 		if ( values.Length != 2 ) throw new InvalidParametersException( values );
 		var varname = values[0];
+
 		if ( varname is not Value.VariableReferenceValue vrv )
 		{
 			throw new InvalidParametersException( new[] { varname } );
