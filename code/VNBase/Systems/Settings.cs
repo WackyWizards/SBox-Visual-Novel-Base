@@ -6,7 +6,7 @@ using static VNBase.Effects;
 namespace VNBase;
 
 [Serializable]
-public class VNSettings
+public class Settings
 {
 	/// <summary>
 	/// The currently active text effect.
