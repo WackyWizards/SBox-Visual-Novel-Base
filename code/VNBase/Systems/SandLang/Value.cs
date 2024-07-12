@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SandLang;
@@ -36,6 +37,11 @@ public abstract record Value
 			if ( environment.VariableSet().Contains( Name ) )
 				return environment.GetVariable( Name );
 
+			if ( BooleanValue.BooleanMap.TryGetValue( Name, out bool value ) )
+			{
+				return new BooleanValue( value );
+			}
+
 			if ( BuiltinFunctions.Builtins.TryGetValue( Name, out var builtin ) )
 			{
 				return builtin;
@@ -43,6 +49,18 @@ public abstract record Value
 
 			throw new UndefinedVariableException( Name );
 		}
+	}
+
+	/// <summary>
+	/// Represents a true or false value, a boolean.
+	/// </summary>
+	public record BooleanValue( bool Boolean ) : Value
+	{
+		public static Dictionary<string, bool> BooleanMap { get; } = new()
+		{
+			["true"] = true,
+			["false"] = false,
+		};
 	}
 
 	public record StringValue( string Text ) : Value;
@@ -55,7 +73,7 @@ public abstract record Value
 	{
 		public override Value Evaluate( IEnvironment environment )
 		{
-			if ( ValueList.Count <= 0 ) 
+			if ( ValueList.Count <= 0 )
 				return this;
 
 			var firstValue = ValueList[0];
