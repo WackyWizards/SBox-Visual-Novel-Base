@@ -1,0 +1,30 @@
+(label start
+    (text "This is a condition test script.")
+    (choice "Continue" jump the)
+    (choice "This is unavailable!" cond (= a true) jump not)
+)
+
+(label not
+    (text "How did you get here?")
+    (choice "End The Script" jump secret)
+    (after end-dialogue)
+)
+
+(label the
+    (text "What Now?")
+    (choice "End The Script" jump end)
+    (choice "Return To Start" jump start)
+)
+
+(label end
+    (text "Normal Ending!")
+    (after end-dialogue)
+)
+
+(label secret
+    (text "Secret Ending!")
+    (after end-dialogue)
+)
+
+(set a false)
+(start-dialogue start)

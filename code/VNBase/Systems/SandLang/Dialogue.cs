@@ -15,6 +15,8 @@ public class Dialogue
 
 	public Label InitialLabel { get; private set; } = new();
 
+	public Dictionary<Value, Value> Variables { get; } = new();
+
 	/// <summary>
 	/// Represents a dialogue step.
 	/// </summary>
@@ -51,7 +53,17 @@ public class Dialogue
 		/// </summary>
 		public bool IsAvailable( IEnvironment environment )
 		{
-			return Condition == null || Condition.Execute( environment ) is Value.NumberValue { Number: > 0 };
+			if ( Condition == null )
+				return true;
+
+			var value = Condition.Execute( environment );
+
+			if ( value is Value.BooleanValue boolValue )
+			{
+				return boolValue.Boolean;
+			}
+
+			return false;
 		}
 	}
 
@@ -80,11 +92,24 @@ public class Dialogue
 
 		dialogueParsingFunctions.SetVariable( "label", new Value.FunctionValue( CreateLabel ) );
 		dialogueParsingFunctions.SetVariable( "start-dialogue", new Value.FunctionValue( SetStartDialogue ) );
+		dialogueParsingFunctions.SetVariable( "set", new Value.FunctionValue( SetVariable ) );
 
 		foreach ( var sParen in codeBlocks )
 		{
 			sParen.Execute( dialogueParsingFunctions );
 		}
+	}
+
+	private Value SetVariable( IEnvironment environment, Value[] values )
+	{
+		for ( int i = 0; i < values.Length - 1; i += 2 )
+		{
+			var key = values[i];
+			var value = values[i + 1];
+			Variables[key] = value;
+		}
+
+		return Value.NoneValue.None;
 	}
 
 	private Value SetStartDialogue( IEnvironment environment, Value[] values )
@@ -303,12 +328,12 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 
 		string backgroundName = argument.Name;
-		label.Assets.Add( new BackgroundAsset( $"{VNSettings.BackgroundsPath}{backgroundName}" ) );
+		label.Assets.Add( new BackgroundAsset( $"{Settings.BackgroundsPath}{backgroundName}" ) );
 	}
 
 	private static Character? GetCharacterResource( string characterName )
 	{
-		if ( ResourceLibrary.TryGet<Character>( $"{VNSettings.CharacterResourcesPath}{characterName}.char", out var loadedCharacter ) )
+		if ( ResourceLibrary.TryGet<Character>( $"{Settings.CharacterResourcesPath}{characterName}.char", out var loadedCharacter ) )
 		{
 			return loadedCharacter;
 		}

@@ -15,7 +15,7 @@ public class UndefinedVariableException : Exception
 
 public class InvalidParametersException : Exception
 {
-	public InvalidParametersException( IEnumerable<Value> values ) : base( "Invalid parameter types!" )
+	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types {string.Join( ", ", values.Select( v => v.GetType().Name ) )}!" )
 	{
 		base.Data["Values"] = values;
 	}
@@ -26,6 +26,7 @@ public interface IEnvironment
 	public Value GetVariable( string name );
 	public void SetVariable( string name, Value value );
 	public IEnumerable<string> VariableSet();
+	public Dictionary<string, Value> GetVariables();
 }
 
 public class EnvironmentMap : IEnvironment
@@ -51,7 +52,7 @@ public class EnvironmentMap : IEnvironment
 	{
 		foreach ( var key in copy.VariableSet() )
 		{
-			this.SetVariable( key, copy.GetVariable( key ) );
+			SetVariable( key, copy.GetVariable( key ) );
 		}
 	}
 
@@ -68,6 +69,11 @@ public class EnvironmentMap : IEnvironment
 	public IEnumerable<string> VariableSet()
 	{
 		return _variables.Keys;
+	}
+
+	public Dictionary<string, Value> GetVariables()
+	{
+		return _variables;
 	}
 }
 
@@ -105,7 +111,7 @@ public class SParen : IReadOnlyList<Value>
 
 	public int Count => _backingList.Count;
 
-	public Value this[ int index ] => _backingList[index];
+	public Value this[int index] => _backingList[index];
 
 	private static IEnumerable<Token> TokenizeText( string text )
 	{
@@ -130,7 +136,7 @@ public class SParen : IReadOnlyList<Value>
 				{
 					if ( i != symbolStart )
 					{
-						var sym = text.Substring( symbolStart, i - symbolStart );
+						var sym = text[symbolStart..i];
 						if ( sym.All( IsFloatChar ) )
 						{
 							yield return new Token.Number( sym );
@@ -149,7 +155,7 @@ public class SParen : IReadOnlyList<Value>
 
 			if ( symbolStart != i && IsValidSymbolName( text[symbolStart] ) && !IsValidSymbolName( text[i] ) )
 			{
-				var sym = text.Substring( symbolStart, i - symbolStart );
+				var sym = text[symbolStart..i];
 				if ( sym.All( IsFloatChar ) )
 				{
 					yield return new Token.Number( sym );
@@ -180,20 +186,21 @@ public class SParen : IReadOnlyList<Value>
 
 	private static bool IsValidSymbolName( char symChar )
 	{
-		return char.IsLetterOrDigit( symChar ) || symChar is '-' or '+' or '/' or '*' or '.';
+		return char.IsLetterOrDigit( symChar ) || symChar is '=' or '<' or '>' or '-' or '+' or '/' or '*' or '.';
 	}
 
 	public static IEnumerable<SParen> ParseText( string text )
 	{
 		var tokenList = TokenizeText( text ).ToList();
 
-		foreach ( var p in ProcessTokens( tokenList ) ) yield return p;
+		foreach ( var token in ProcessTokens( tokenList ) ) yield return token;
 	}
 
 	private static IEnumerable<SParen> ProcessTokens( List<Token> tokenList )
 	{
 		SParen? currentParen = null;
 		var tokenDepth = 0;
+
 		for ( var tokenIndex = 0; tokenIndex < tokenList.Count; tokenIndex++ )
 		{
 			var token = tokenList[tokenIndex];
@@ -210,10 +217,12 @@ public class SParen : IReadOnlyList<Value>
 					break;
 				case Token.OpenParen:
 					tokenDepth++;
+
 					if ( tokenDepth == 1 )
 					{
 						currentParen = new SParen( new List<Value>() );
 					}
+
 					else
 					{
 						var subDepth = 1;
@@ -230,13 +239,12 @@ public class SParen : IReadOnlyList<Value>
 						}
 
 						foreach ( var sub in ProcessTokens(
-							         tokenList.GetRange( tokenIndex, subToken - tokenIndex + 1 ) ) )
+									 tokenList.GetRange( tokenIndex, subToken - tokenIndex + 1 ) ) )
 						{
 							currentParen!._backingList.Add( new Value.ListValue( sub ) );
 						}
 
 						tokenDepth--;
-
 						tokenIndex = subToken;
 					}
 
@@ -246,7 +254,7 @@ public class SParen : IReadOnlyList<Value>
 					break;
 				case Token.String str:
 					currentParen!._backingList.Add(
-						new Value.StringValue( str.Text.Substring( 1, str.Text.Length - 2 ) ) );
+						new Value.StringValue( str.Text[1..^1] ) );
 					break;
 				case Token.Symbol symbol:
 					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) );

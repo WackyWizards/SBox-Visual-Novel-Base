@@ -52,7 +52,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public List<Character> Characters { get; set; } = new();
 
-	[Property] public VNSettings Settings { get; } = new();
+	[Property] public Settings Settings { get; } = new();
 
 	private Dialogue? _dialogue;
 	private Dialogue.Label? _currentLabel;
@@ -140,11 +140,9 @@ public sealed partial class ScriptPlayer : Component
 		ActiveScript = script;
 		script.OnLoad();
 
-		_dialogue = Dialogue.ParseDialogue(
-			SParen.ParseText( script.Dialogue ).ToList()
-		);
-
-		SetCurrentLabel( _dialogue.InitialLabel );
+		var dialogue = Dialogue.ParseDialogue( SParen.ParseText( ActiveScript.Dialogue ).ToList() );
+		SetEnvironment( dialogue );
+		SetCurrentLabel( dialogue.InitialLabel );
 	}
 
 	/// <summary>
@@ -158,12 +156,12 @@ public sealed partial class ScriptPlayer : Component
 		}
 
 		_dialogue = null;
-		DialogueChoices?.Clear();
 		DialogueText = null;
 		SpeakingCharacter = null;
 		Background = null;
+		DialogueChoices.Clear();
 
-		ActiveScript.After();
+		ActiveScript.OnUnload();
 		if ( ActiveScript.NextScript is not null )
 		{
 			LoadScript( ActiveScript.NextScript );

@@ -38,5 +38,5 @@ public class Character : GameResource
 	/// Path to the active portrait.
 	/// </summary>
 	[JsonIgnore]
-	public string ActivePortraitPath => VNSettings.CharacterPortraitsPath + ActivePortrait;
+	public string ActivePortraitPath => Settings.CharacterPortraitsPath + ActivePortrait;
 }

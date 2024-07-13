@@ -19,7 +19,7 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "InitialScript": "/scripts/exampleconditionscript.vnscript",
+          "InitialScript": "/scripts/examplelongscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump",
