@@ -1,5 +1,5 @@
 {
-  "__guid": "4565dcd9-edfe-44f5-9250-62f7c897d435",
+  "__guid": "52fd2bd9-bcc0-41eb-bf1a-03b09ff150d2",
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
@@ -19,7 +19,7 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
           "DialogueFinished": false,
-          "InitialScript": "/scripts/examplelongscript.vnscript",
+          "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
             "SkipAction": "jump",
