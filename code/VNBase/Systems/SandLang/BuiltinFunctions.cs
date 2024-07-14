@@ -31,7 +31,7 @@ internal static class BuiltinFunctions
 		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
 		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
 
-		return new Value.BooleanValue( v2!.Number > v1!.Number );
+		return new Value.BooleanValue( v1!.Number > v2!.Number );
 	}
 
 	private static Value LessThanFunction( IEnvironment environment, Value[] values )
@@ -39,7 +39,7 @@ internal static class BuiltinFunctions
 		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
 		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
 
-		return new Value.BooleanValue( v2!.Number < v1!.Number );
+		return new Value.BooleanValue( v1!.Number < v2!.Number );
 	}
 
 	private static Value EqualityFunction( IEnvironment environment, Value[] values )
