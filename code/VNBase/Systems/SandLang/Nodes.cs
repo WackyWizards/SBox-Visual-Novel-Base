@@ -117,9 +117,34 @@ public class SParen : IReadOnlyList<Value>
 	{
 		var symbolStart = 0;
 		var isInQuote = false;
+		var isInSingleLineComment = false;
+		var isInMultiLineComment = false;
 
 		for ( var i = 0; i < text.Length; i++ )
 		{
+			if ( isInSingleLineComment )
+			{
+				if ( text[i] == '\n' )
+				{
+					// End of single-line comment
+					isInSingleLineComment = false;
+					symbolStart = i + 1;
+				}
+				continue;
+			}
+
+			if ( isInMultiLineComment )
+			{
+				if ( text[i] == '*' && i + 1 < text.Length && text[i + 1] == '/' )
+				{
+					// End of multi-line comment
+					isInMultiLineComment = false;
+					i++; // Skip '/'
+					symbolStart = i + 1;
+				}
+				continue;
+			}
+
 			if ( isInQuote )
 			{
 				if ( text[i] != '"' ) continue;
@@ -151,6 +176,18 @@ public class SParen : IReadOnlyList<Value>
 				{
 					isInQuote = true;
 				}
+				else if ( text[i] == '/' && i + 1 < text.Length && text[i + 1] == '/' )
+				{
+					isInSingleLineComment = true;
+					i++; // Skip '/'
+					continue;
+				}
+				else if ( text[i] == '/' && i + 1 < text.Length && text[i + 1] == '*' )
+				{
+					isInMultiLineComment = true;
+					i++; // Skip '*'
+					continue;
+				}
 			}
 
 			if ( symbolStart != i && IsValidSymbolName( text[symbolStart] ) && !IsValidSymbolName( text[i] ) )
@@ -176,6 +213,16 @@ public class SParen : IReadOnlyList<Value>
 				yield return new Token.CloseParen();
 				symbolStart = i + 1;
 			}
+		}
+
+		if ( symbolStart < text.Length )
+		{
+			var sym = text[symbolStart..];
+			if ( sym.All( IsFloatChar ) )
+			{
+				yield return new Token.Number( sym );
+			}
+			else yield return new Token.Symbol( sym );
 		}
 	}
 

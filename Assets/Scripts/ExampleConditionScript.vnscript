@@ -1,6 +1,8 @@
 (label start
     (text "This is a condition test script.")
     (choice "Continue" jump the)
+
+    // This choice is only available if the "a" variable equals true.
     (choice "This is unavailable!" cond (= a true) jump not)
 )
 
