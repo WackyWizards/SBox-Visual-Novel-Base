@@ -2,20 +2,25 @@
     (text "This is a condition test script.")
     (choice "Continue" jump the)
 
-    // This choice is only available if the "a" variable equals true.
-    (choice "This is unavailable!" cond (= a true) jump not)
+    // This choice is only available if the secret ending is unlocked.
+    (choice "Secret Ending" cond (= secret-ending true) jump not)
 )
 
 (label not
     (text "How did you get here?")
     (choice "End The Script" jump secret)
-    (after end-dialogue)
 )
 
 (label the
     (text "What Now?")
     (choice "End The Script" jump end)
     (choice "Return To Start" jump start)
+    (choice "Unlock Secret Ending" jump var)
+)
+
+(label var
+    (text "Secret ending unlocked!")
+    (after (set* secret-ending true) jump start)
 )
 
 (label end
@@ -28,5 +33,5 @@
     (after end-dialogue)
 )
 
-(set a false)
+(set secret-ending false)
 (start-dialogue start)
