@@ -17,7 +17,7 @@
         },
         {
           "__type": "VNBase.ScriptPlayer",
-          "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
+          "__guid": "5f77e103-d433-474c-b829-c2a58cbd28d6",
           "DialogueFinished": false,
           "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
@@ -28,10 +28,10 @@
         },
         {
           "__type": "VNBase.UI.VNHud",
-          "__guid": "b2517958-5f7c-4c53-9a9e-1f876cc437f4",
+          "__guid": "636035c5-1281-4df2-8ba6-91325d733a05",
           "Player": {
             "_type": "component",
-            "component_id": "15bf3654-5343-4d7a-96f3-545202877d3f",
+            "component_id": "5f77e103-d433-474c-b829-c2a58cbd28d6",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "ScriptPlayer"
           }
