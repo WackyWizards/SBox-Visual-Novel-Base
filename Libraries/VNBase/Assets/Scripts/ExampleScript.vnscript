@@ -1,0 +1,32 @@
+// This is a single-line comment. It does not get parsed by SandLang.
+// You can use comments to mark things in your scripts.
+
+/* 
+	This is also a comment, but available multi-line.
+	You can use them to mark things further.
+*/
+
+(label start
+	(text "Hello! This is a short example script!")
+	(choice "This is choice 1!" jump end1)
+	(choice "This is choice 2!" jump end2)
+)
+
+(label end1
+	(text "This is label end1!")
+	(after end-dialogue)
+)
+
+(label end2
+	(text "This is label end2!")
+	(after end-dialogue)
+)
+
+/* 
+	start-dialogue is a unique keyword which
+	marks the starting label of the script.
+
+	It's required, because otherwise the script
+	won't know where to start.
+*/
+(start-dialogue start)

@@ -15,7 +15,7 @@ public class Dialogue
 
 	public Label InitialLabel { get; private set; } = new();
 
-	public Dictionary<Value, Value> Variables { get; } = new();
+	internal Dictionary<Value, Value> Variables { get; } = new();
 
 	/// <summary>
 	/// Represents a dialogue step.
@@ -53,7 +53,7 @@ public class Dialogue
 		/// </summary>
 		public bool IsAvailable( IEnvironment environment )
 		{
-			if ( Condition == null )
+			if ( Condition is null )
 				return true;
 
 			var value = Condition.Execute( environment );

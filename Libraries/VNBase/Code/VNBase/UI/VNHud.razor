@@ -1,4 +1,5 @@
 @using Sandbox;
+@using Sandbox.UI;
 @using System;
 @using System.Linq;
 
@@ -6,6 +7,7 @@
 
 @attribute [Title("VN Hud")]
 @attribute [Category("VNBase")]
+@attribute [StyleSheet]
 @inherits PanelComponent
 
 @if ( Player is not null && Player.ActiveScript is not null )
@@ -23,6 +25,8 @@
 
     protected override void OnStart()
     {
+        Log.Error(Panel.StyleSheet);
+
         if (Player is null)
         {
             try

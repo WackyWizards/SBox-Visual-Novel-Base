@@ -1,0 +1,114 @@
+{
+  "__guid": "52fd2bd9-bcc0-41eb-bf1a-03b09ff150d2",
+  "GameObjects": [
+    {
+      "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+      "Flags": 0,
+      "Name": "Player",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.ScreenPanel",
+          "__guid": "781d3d86-e7f3-4e9e-8fd6-efd61851a831",
+          "AutoScreenScale": true,
+          "Opacity": 1,
+          "Scale": 1,
+          "ZIndex": 100
+        },
+        {
+          "__type": "VNBase.ScriptPlayer",
+          "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
+          "DialogueFinished": false,
+          "InitialScript": "/scripts/exampleconditionscript.vnscript",
+          "Settings": {
+            "TextEffectDelay": 55,
+            "SkipAction": "jump",
+            "SkipActionEnabled": true
+          }
+        },
+        {
+          "__type": "VNBase.UI.VNHud",
+          "__guid": "b2517958-5f7c-4c53-9a9e-1f876cc437f4",
+          "Player": {
+            "_type": "component",
+            "component_id": "15bf3654-5343-4d7a-96f3-545202877d3f",
+            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+            "component_type": "ScriptPlayer"
+          }
+        }
+      ]
+    },
+    {
+      "__guid": "3ff0d10d-b515-4ff8-a1a0-7d36d8a9b284",
+      "Flags": 0,
+      "Name": "Sun",
+      "Position": "-59.35651,125.7421,47.31",
+      "Rotation": "0.06698729,0.25,-0.25,0.9330128",
+      "Tags": "light_directional,light",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.DirectionalLight",
+          "__guid": "dc699705-7e29-4fa2-97d5-802e7b90e40b",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "0.91373,0.98039,1,1",
+          "Shadows": true,
+          "SkyColor": "0.05882,0.07451,0.08235,1"
+        }
+      ]
+    },
+    {
+      "__guid": "65ca6017-ae5c-48a8-b732-7856277fcbf8",
+      "Flags": 0,
+      "Name": "Camera",
+      "Tags": "maincamera",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.CameraComponent",
+          "__guid": "13a035ea-1ab5-4fb8-bcba-eff59d39436f",
+          "BackgroundColor": "0.33333,0.46275,0.52157,1",
+          "ClearFlags": "All",
+          "FieldOfView": 60,
+          "IsMainCamera": true,
+          "Orthographic": false,
+          "OrthographicHeight": 1204,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        }
+      ]
+    }
+  ],
+  "SceneProperties": {
+    "FixedUpdateFrequency": 50,
+    "MaxFixedUpdates": 5,
+    "NetworkFrequency": 30,
+    "NetworkInterpolation": true,
+    "ThreadedAnimation": true,
+    "TimeScale": 1,
+    "UseFixedUpdate": true,
+    "NavMesh": {
+      "Enabled": false,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "",
+      "IncludedBodies": ""
+    }
+  },
+  "Title": "example",
+  "Description": "",
+  "ResourceVersion": 1,
+  "__references": [],
+  "__version": 1
+}
