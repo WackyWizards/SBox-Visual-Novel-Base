@@ -1,13 +1,14 @@
 {
-  "Title": "VNBase",
+  "Title": "Visual Novel Base",
   "Type": "library",
-  "Org": "local",
-  "Ident": "vnbase",
+  "Org": "spoonstuff",
+  "Ident": "vn",
   "Schema": 1,
   "IncludeSourceFiles": false,
   "Resources": null,
   "PackageReferences": [],
   "EditorReferences": null,
+  "IsWhitelistDisabled": false,
   "Metadata": {
     "CsProjName": "",
     "Compiler": {

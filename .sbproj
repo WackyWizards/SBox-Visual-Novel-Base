@@ -8,6 +8,7 @@
   "Resources": "/Assets/*\n/Code/*\n*.vnscript",
   "PackageReferences": [],
   "EditorReferences": null,
+  "IsWhitelistDisabled": false,
   "Metadata": {
     "MaxPlayers": 1,
     "MinPlayers": 1,

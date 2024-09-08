@@ -1,5 +1,5 @@
 {
-  "__guid": "52fd2bd9-bcc0-41eb-bf1a-03b09ff150d2",
+  "__guid": "39ad36a5-557e-4129-b32e-c4b90518ab48",
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
@@ -13,12 +13,14 @@
           "AutoScreenScale": true,
           "Opacity": 1,
           "Scale": 1,
+          "ScaleStrategy": "ConsistentHeight",
           "ZIndex": 100
         },
         {
           "__type": "VNBase.ScriptPlayer",
           "__guid": "5f77e103-d433-474c-b829-c2a58cbd28d6",
           "DialogueFinished": false,
+          "DialogueText": "",
           "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
