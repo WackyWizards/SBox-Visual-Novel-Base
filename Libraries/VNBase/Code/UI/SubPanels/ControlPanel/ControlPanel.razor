@@ -1,0 +1,58 @@
+@using Sandbox.UI;
+@using System;
+@using System.Linq;
+
+@namespace VNBase.UI
+@inherits SubPanel
+
+<root>
+    <div class="buttons" @ref=ControlButtons>
+        <button class="control-button" id="DialogueHistory">History</button>
+        <button class="control-button" onclick="@HideUI">@(_uiVisible ? "Hide UI" : "Show UI")</button>
+    </div>
+
+    <DialogueHistory class="hidden" Player="@Player"/>
+</root>
+
+@code {
+    public Panel ControlButtons { get; set; }
+
+    private bool _uiVisible = true;
+
+    private void HideUI()
+    {
+        var panelsToHide = Parent.ChildrenOfType<SubPanel>()
+            .Skip(1)
+            .Where(x => x.GetType() != typeof(CharacterPortraits));
+
+        foreach (var panel in panelsToHide)
+        {
+            panel.ToggleVisibility();
+        }
+
+        _uiVisible = !_uiVisible;
+    }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        if ( !firstTime ) return;
+
+        foreach ( Button button in ControlButtons.ChildrenOfType<Button>() )
+        {
+            if ( button.Id != null)
+            {
+                SubPanel panel = GetSubPanelFromId(button.Id);
+
+                button.AddEventListener("onclick", () =>
+                {
+                    panel.ToggleVisibility();
+                });
+            }
+        }
+    }
+
+    private SubPanel GetSubPanelFromId( string id )
+    {
+        return this.ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
+    }
+}

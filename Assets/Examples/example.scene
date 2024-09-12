@@ -1,5 +1,5 @@
 {
-  "__guid": "52fd2bd9-bcc0-41eb-bf1a-03b09ff150d2",
+  "__guid": "39ad36a5-557e-4129-b32e-c4b90518ab48",
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
@@ -13,11 +13,12 @@
           "AutoScreenScale": true,
           "Opacity": 1,
           "Scale": 1,
+          "ScaleStrategy": "ConsistentHeight",
           "ZIndex": 100
         },
         {
           "__type": "VNBase.ScriptPlayer",
-          "__guid": "15bf3654-5343-4d7a-96f3-545202877d3f",
+          "__guid": "03fbb40d-7993-498a-9b12-f6d405f43aad",
           "DialogueFinished": false,
           "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
@@ -28,10 +29,10 @@
         },
         {
           "__type": "VNBase.UI.VNHud",
-          "__guid": "b2517958-5f7c-4c53-9a9e-1f876cc437f4",
+          "__guid": "1552670a-8e3c-46ab-bc45-bc3c4b52e609",
           "Player": {
             "_type": "component",
-            "component_id": "15bf3654-5343-4d7a-96f3-545202877d3f",
+            "component_id": "03fbb40d-7993-498a-9b12-f6d405f43aad",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "ScriptPlayer"
           }

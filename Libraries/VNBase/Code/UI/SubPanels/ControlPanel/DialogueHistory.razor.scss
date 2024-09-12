@@ -1,0 +1,60 @@
+@import "/UI/Styles/Buttons.scss";
+@import "/UI/Styles/Dialogue.scss";
+
+DialogueHistory {
+    width: 75%;
+    height: 85%;
+    pointer-events: all;
+    background-color: rgba(0,0,0,0.99);
+    box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.99);
+    flex-direction: column;
+    transition: opacity 0.1s linear;
+
+    .title {
+        width: 100%;
+        height: 35px;
+        color: white;
+        font-family: $text-font;
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .history {
+        pointer-events: all;
+        width: 100%;
+        height: 100%;
+        margin-top: 5px;
+        flex-direction: column;
+        overflow-y: scroll;
+
+        .dialogue {
+            font-family: $dialogue-font;
+            background-color: rgba(35,35,35,0.9);
+            box-shadow: 0px 0px 10px 2px rgba(35,35,35,0.9);
+            margin-top: 10px;
+            flex-direction: column;
+            flex-shrink: 0;
+
+            .character {
+                font-weight: bold;
+                font-size: $text-font-size;
+            }
+
+            .text {
+                color: $dialogue-color;
+                font-size: $text-font-size-small;
+            }
+
+            .label {
+                text-shadow: 0px 0px 5px black;
+                margin: 5px 5px 5px 10px;
+            }
+        }
+    }
+
+    &.hidden {
+        opacity: 0;
+    }
+}

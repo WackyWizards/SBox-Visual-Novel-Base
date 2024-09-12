@@ -1,0 +1,30 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@using System.Linq;
+
+@namespace VNBase.UI
+@inherits SubPanel
+
+<root>
+    @if (!Player.DialogueChoices.IsNullOrEmpty() && Player.DialogueFinished)
+    {
+        <div class="choicePanel">
+            @for (var i = 0; i < Player.DialogueChoices.Count; i++)
+            {
+                var buttonIndex = i;
+                <button class="choice" onclick="@(() => Player.ExecuteChoice(buttonIndex))">
+                    @Player.DialogueChoices[i]
+                </button>
+            }
+        </div>
+    }
+</root>
+
+
+@code {
+    protected override int BuildHash()
+    {
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices?.Count);
+    }
+}
