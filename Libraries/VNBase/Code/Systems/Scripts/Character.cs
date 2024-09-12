@@ -1,8 +1,11 @@
 using Sandbox;
 using System.Text.Json.Serialization;
 
-namespace VNBase;
+namespace VNBase.Scripts;
 
+/// <summary>
+/// A character in the visual novel.
+/// </summary>
 [GameResource( "character", "char", "Defines a VNBase character." )]
 public class Character : GameResource
 {

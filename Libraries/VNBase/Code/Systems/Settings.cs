@@ -5,6 +5,9 @@ using static VNBase.Effects;
 
 namespace VNBase;
 
+/// <summary>
+/// Settings for the script reader.
+/// </summary>
 [Serializable]
 public class Settings
 {

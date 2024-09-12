@@ -8,7 +8,7 @@ namespace VNBase.Assets;
 public class SoundAsset : Asset, Asset.IAsset
 {
 	/// <summary>
-	/// The name of the <see cref="Sandbox.SoundEvent"/> this asset is tied to.
+	/// The name of the <see cref="SoundEvent"/> this asset is tied to.
 	/// </summary>
 	public string EventName { get; set; } = string.Empty;
 

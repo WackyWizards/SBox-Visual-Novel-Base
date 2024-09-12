@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SandLang;
 
+/// <summary>
+/// Exception thrown when a variable is not found in the environment.
+/// </summary>
 public class UndefinedVariableException : Exception
 {
 	public UndefinedVariableException( string name ) : base( $"Failed to find variable {name}!" )
@@ -13,6 +17,9 @@ public class UndefinedVariableException : Exception
 	}
 }
 
+/// <summary>
+/// Exception thrown when the parameters passed to a function are invalid.
+/// </summary>
 public class InvalidParametersException : Exception
 {
 	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types {string.Join( ", ", values.Select( v => v.GetType().Name ) )}!" )
@@ -21,6 +28,29 @@ public class InvalidParametersException : Exception
 	}
 }
 
+/// <summary>
+/// Exception that is thrown if a required resource is unable to be found.
+/// </summary>
+public class ResourceNotFoundException : FileNotFoundException
+{
+	public string ResourceName { get; private set; } = string.Empty;
+
+	public ResourceNotFoundException(string message, string? resourceName = null, string? fileName = null, Exception? innerException = null)
+		: base(message, fileName)
+	{
+		ResourceName = resourceName ?? string.Empty;
+		if (innerException != null)
+		{
+			base.Data["InnerException"] = innerException;
+		}
+	}
+
+	public override string Message => $"{base.Message} Resource: {ResourceName}, File: {FileName ?? "N/A"}";
+}
+
+/// <summary>
+/// Interface for an environment that can store and retrieve variables.
+/// </summary>
 public interface IEnvironment
 {
 	public Value GetVariable( string name );
@@ -29,6 +59,9 @@ public interface IEnvironment
 	public Dictionary<string, Value> GetVariables();
 }
 
+/// <summary>
+/// A map of environment variables.
+/// </summary>
 public class EnvironmentMap : IEnvironment
 {
 	private readonly Dictionary<string, Value> _variables;
@@ -40,6 +73,7 @@ public class EnvironmentMap : IEnvironment
 
 	public EnvironmentMap() : this( new Dictionary<string, Value>() )
 	{
+
 	}
 
 	public override string ToString()
@@ -77,8 +111,14 @@ public class EnvironmentMap : IEnvironment
 	}
 }
 
+/// <summary>
+/// A list of values that can be parsed from a string.
+/// </summary>
 public class SParen : IReadOnlyList<Value>
 {
+	/// <summary>
+	/// A token that can be parsed from a string.
+	/// </summary>
 	public abstract record Token
 	{
 		public record OpenParen : Token;
@@ -113,6 +153,11 @@ public class SParen : IReadOnlyList<Value>
 
 	public Value this[int index] => _backingList[index];
 
+	/// <summary>
+	/// Tokenizes a string into a list of tokens.
+	/// </summary>
+	/// <param name="text">The string to tokenize.</param>
+	/// <returns>An enumerable of tokens.</returns>
 	private static IEnumerable<Token> TokenizeText( string text )
 	{
 		var symbolStart = 0;

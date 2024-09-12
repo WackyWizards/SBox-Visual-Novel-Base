@@ -2,6 +2,7 @@ using Sandbox;
 using System;
 using System.Collections.Generic;
 using VNBase;
+using VNBase.Scripts;
 using VNBase.Assets;
 
 namespace SandLang;
