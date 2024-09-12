@@ -18,7 +18,7 @@ internal static class BuiltinFunctions
 		["-"] = new Value.FunctionValue( SubtractFunction ),
 		["*"] = new Value.FunctionValue( MulFunction ),
 		["cmp"] = new Value.FunctionValue( CmpFunction ),
-		["set*"] = new Value.FunctionValue( SetFunction ),
+		["set"] = new Value.FunctionValue( SetFunction ),
 		["defun"] = new Value.FunctionValue( DefineFunction ),
 		["pow"] = new Value.FunctionValue( PowFunction ),
 		["sqrt"] = new Value.FunctionValue( SqrtFunction ),

@@ -20,7 +20,7 @@
 
 (label var
     (text "Secret ending unlocked!")
-    (after (set* secret-ending true) jump start)
+    (after (set secret-ending true) jump start)
 )
 
 (label end

@@ -1,7 +1,7 @@
 using SandLang;
 using System.Collections.Generic;
 
-namespace VNBase.Scripts;
+namespace VNBase;
 
 /// <summary>
 /// Defines a VNBase script.
