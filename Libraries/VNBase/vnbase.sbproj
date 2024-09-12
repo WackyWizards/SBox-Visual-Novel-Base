@@ -2,7 +2,7 @@
   "Title": "Visual Novel Base",
   "Type": "library",
   "Org": "spoonstuff",
-  "Ident": "vn",
+  "Ident": "vnbase_library",
   "Schema": 1,
   "IncludeSourceFiles": false,
   "Resources": null,
