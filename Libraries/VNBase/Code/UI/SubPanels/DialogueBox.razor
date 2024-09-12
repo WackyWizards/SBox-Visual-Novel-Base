@@ -19,10 +19,11 @@
     }
 
     <div class="dialoguePanel">
-        @(Player.DialogueText)
+        <label class="dialogueText">@Player.DialogueText</label>
 
         @if (Player.DialogueFinished && Player.DialogueChoices.IsNullOrEmpty())
         {
+            Log.Info($"Dialogue finished: {Player.DialogueText}");
             <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" />
         }
     </div>
@@ -31,6 +32,6 @@
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices.Count);
     }
 }
