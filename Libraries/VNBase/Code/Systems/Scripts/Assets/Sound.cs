@@ -26,8 +26,8 @@ public class SoundAsset : IAsset
 	/// If this asset is constructed with a SoundEvent, returns the path to the event on disk.
 	/// Otherwise, returns an empty string.
 	/// </summary>
-	public string Path 
-	{ 
+	public string Path
+	{
 		get
 		{
 			if ( Event is not null )
@@ -47,12 +47,12 @@ public class SoundAsset : IAsset
 
 	private string _path = string.Empty;
 
-	public SoundAsset( string eventName ) 
+	public SoundAsset( string eventName )
 	{
 		EventName = eventName;
 	}
 
-	public SoundAsset( SoundEvent soundEvent ) 
+	public SoundAsset( SoundEvent soundEvent )
 	{
 		EventName = soundEvent.ResourceName;
 		Event = soundEvent;
@@ -65,6 +65,6 @@ public class SoundAsset : IAsset
 
 	public void Stop( float fadeTime = 0 )
 	{
-		Handle?.Stop(fadeTime);
+		Handle?.Stop( fadeTime );
 	}
 }
