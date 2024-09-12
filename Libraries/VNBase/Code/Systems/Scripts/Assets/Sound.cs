@@ -5,7 +5,7 @@ namespace VNBase.Assets;
 /// <summary>
 /// A playable sound asset.
 /// </summary>
-public class SoundAsset : Asset, Asset.IAsset
+public class SoundAsset : IAsset
 {
 	/// <summary>
 	/// The name of the <see cref="SoundEvent"/> this asset is tied to.
@@ -44,6 +44,7 @@ public class SoundAsset : Asset, Asset.IAsset
 			_path = value;
 		}
 	}
+
 	private string _path = string.Empty;
 
 	public SoundAsset( string eventName ) 

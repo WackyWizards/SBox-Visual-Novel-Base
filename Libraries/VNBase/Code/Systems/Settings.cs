@@ -36,12 +36,12 @@ public class Settings
 	/// <summary>
 	/// Path to the background image assets.
 	/// </summary>
-	public const string BackgroundsPath = "/materials/vnbase/scripts/backgrounds/";
+	public const string BackgroundsPath = "/materials/scripts/backgrounds/";
 
 	/// <summary>
 	/// Path to character portrait images.
 	/// </summary>
-	public const string CharacterPortraitsPath = "/materials/vnbase/scripts/";
+	public const string CharacterPortraitsPath = "/materials/scripts/";
 
 	/// <summary>
 	/// Path to the character resources.

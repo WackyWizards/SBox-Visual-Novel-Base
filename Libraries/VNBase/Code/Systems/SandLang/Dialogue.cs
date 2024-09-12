@@ -2,7 +2,6 @@ using Sandbox;
 using System;
 using System.Collections.Generic;
 using VNBase;
-using VNBase.Scripts;
 using VNBase.Assets;
 
 namespace SandLang;
@@ -33,7 +32,7 @@ public class Dialogue
 
 		public List<Choice> Choices { get; set; } = new();
 
-		public List<Asset> Assets { get; set; } = new();
+		public List<IAsset> Assets { get; set; } = new();
 
 		public AfterLabel? AfterLabel { get; set; }
 	}
