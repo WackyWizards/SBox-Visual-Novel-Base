@@ -7,37 +7,40 @@ using static VNBase.Effects;
 namespace VNBase;
 
 /// <summary>
-/// Settings for the script reader.
+/// Settings for the script player.
 /// </summary>
-[Serializable]
-public class Settings
+[Title( "VN Settings" )]
+[Category( "VNBase" )]
+public class Settings : Component
 {
 	/// <summary>
 	/// The currently active text effect.
 	/// </summary>
 	[JsonIgnore]
-	[Category( "Text Effect" )]
+	[Property, Category( "Text Effect" )]
 	public ITextEffect TextEffect { get; set; } = new Typewriter();
 
 	/// <summary>
 	/// Time used for the active text effect to determine text delays.
 	/// </summary>
-	[Category( "Text Effect" )]
+	[Property, Category( "Text Effect" )]
 	public int TextEffectDelay { get; set; } = 55;
 
 	/// <summary>
 	/// The actions to skip the currently active text effect.
+	/// By default, this is set to "jump".
 	/// </summary>
-	[Category( "Skip Action" )]
+	[InlineEditor]
+	[Property, Category( "Skip Action" )]
 	public List<SkipInput> SkipActions { get; set; } = new()
 	{
-		new SkipInput("jump")
+		new() { Action = "jump" }
 	};
 
 	/// <summary>
 	/// If we are able to skip the active text effect using a skip action.
 	/// </summary>
-	[Category( "Skip Action" )]
+	[Property, Category( "Skip Action" )]
 	public bool SkipActionEnabled { get; set; } = true;
 
 	/// <summary>
@@ -56,12 +59,8 @@ public class Settings
 	public const string CharacterResourcesPath = "/characters/";
 }
 
-public record SkipInput
+public class SkipInput
 {
 	[InputAction]
 	public string Action { get; set; } = string.Empty;
-
-	public SkipInput() { }
-
-	public SkipInput( string action ) => Action = action;
 }
