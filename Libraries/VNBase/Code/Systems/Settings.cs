@@ -1,5 +1,6 @@
 using Sandbox;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static VNBase.Effects;
 
@@ -15,22 +16,28 @@ public class Settings
 	/// The currently active text effect.
 	/// </summary>
 	[JsonIgnore]
+	[Category( "Text Effect" )]
 	public ITextEffect TextEffect { get; set; } = new Typewriter();
 
 	/// <summary>
 	/// Time used for the active text effect to determine text delays.
 	/// </summary>
+	[Category( "Text Effect" )]
 	public int TextEffectDelay { get; set; } = 55;
 
 	/// <summary>
-	/// The action to skip the currently active text effect.
+	/// The actions to skip the currently active text effect.
 	/// </summary>
-	[InputAction]
-	public string SkipAction { get; set; } = "jump";
+	[Category( "Skip Action" )]
+	public List<SkipInput> SkipActions { get; set; } = new()
+	{
+		new SkipInput("jump")
+	};
 
 	/// <summary>
-	/// If we are able to skip the active text effect using the skip action.
+	/// If we are able to skip the active text effect using a skip action.
 	/// </summary>
+	[Category( "Skip Action" )]
 	public bool SkipActionEnabled { get; set; } = true;
 
 	/// <summary>
@@ -47,4 +54,14 @@ public class Settings
 	/// Path to the character resources.
 	/// </summary>
 	public const string CharacterResourcesPath = "/characters/";
+}
+
+public record SkipInput
+{
+	[InputAction]
+	public string Action { get; set; } = string.Empty;
+
+	public SkipInput() { }
+
+	public SkipInput( string action ) => Action = action;
 }

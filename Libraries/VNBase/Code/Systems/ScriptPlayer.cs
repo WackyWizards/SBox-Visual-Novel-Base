@@ -66,15 +66,17 @@ public sealed partial class ScriptPlayer : Component
 			LoadScript( InitialScript );
 		}
 
-		if ( Scene.GetAllComponents<VNHud>().IsNullOrEmpty() )
+		if ( !Scene.GetAllComponents<VNHud>().Any() )
 		{
 			Log.Warning( "No VNHud Component found, ScriptPlayer will not be immediately visible!" );
 		}
 	}
 
+	private bool SkipActionPressed => Settings.SkipActions.Any( x => Input.Pressed( x.Action ) );
+
 	protected override void OnUpdate()
 	{
-		if ( Input.Pressed( Settings.SkipAction ) )
+		if ( SkipActionPressed )
 		{
 			if ( ActiveScript is null || _currentLabel is null )
 			{
@@ -85,7 +87,7 @@ public sealed partial class ScriptPlayer : Component
 			{
 				SkipDialogue();
 			}
-			else if ( DialogueChoices.IsNullOrEmpty() )
+			else if ( !DialogueChoices.Any() )
 			{
 				ExecuteAfterLabel();
 			}

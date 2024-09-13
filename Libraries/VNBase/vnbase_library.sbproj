@@ -19,7 +19,10 @@
       "Nullables": true,
       "Whitelist": true,
       "AssemblyReferences": [],
-      "IgnoreFolders": [],
+      "IgnoreFolders": [
+        "editor",
+        "unittest"
+      ],
       "DistinctAssemblyReferences": []
     }
   }

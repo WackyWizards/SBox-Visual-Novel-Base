@@ -23,7 +23,11 @@
           "InitialScript": "/scripts/exampleconditionscript.vnscript",
           "Settings": {
             "TextEffectDelay": 55,
-            "SkipAction": "jump",
+            "SkipActions": [
+              {
+                "Action": "Jump"
+              }
+            ],
             "SkipActionEnabled": true
           }
         },
