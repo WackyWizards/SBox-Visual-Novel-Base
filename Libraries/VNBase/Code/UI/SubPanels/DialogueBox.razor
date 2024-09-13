@@ -1,6 +1,7 @@
 @using Sandbox;
 @using Sandbox.UI;
 @using System;
+@using System.Linq;
 @using System.Collections.Generic;
 
 @namespace VNBase.UI
@@ -21,7 +22,7 @@
     <div class="dialoguePanel">
         <label class="dialogueText">@Player.DialogueText</label>
 
-        @if (Player.DialogueFinished && Player.DialogueChoices.IsNullOrEmpty())
+        @if (Player.DialogueFinished && !Player.DialogueChoices.Any())
         {
             <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" />
         }
