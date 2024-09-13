@@ -1,3 +1,4 @@
+using Sandbox;
 using SandLang;
 using System.Collections.Generic;
 
@@ -29,14 +30,35 @@ public class Script
 	/// </summary>
 	public bool FromFile => !string.IsNullOrEmpty( Path );
 
-	public Script( string dialogue )
+	/// <summary>
+	/// Create a new empty script.
+	/// </summary>
+	public Script() { }
+
+	/// <summary>
+	/// Create a new script from a file.
+	/// </summary>
+	/// <param name="path">The path to the script file.</param>
+	public Script( string path )
 	{
-		Dialogue = dialogue;
+		if ( !FileSystem.Mounted.FileExists( path ) )
+		{
+			Log.Error( $"Unable to load script! Script file couldn't be found by path: {path}" );
+			return;
+		}
+
+		Dialogue = FileSystem.Mounted.ReadAllText( path );
+		Path = path;
 	}
 
-	public Script( string dialogue, string path ) : this( dialogue )
+	/// <summary>
+	/// Create a new script from a file.
+	/// </summary>
+	/// <param name="path">The path to the script file.</param>
+	/// <param name="nextScript">The next script to run after this one has finished.</param>
+	public Script( string path, Script nextScript ) : this( path )
 	{
-		Path = path;
+		NextScript = nextScript;
 	}
 
 	/// <summary>

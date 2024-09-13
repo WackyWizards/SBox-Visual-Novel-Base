@@ -115,7 +115,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			Script script = new( dialogue, path );
+			Script script = new( path );
 			LoadScript( script );
 		}
 		else
