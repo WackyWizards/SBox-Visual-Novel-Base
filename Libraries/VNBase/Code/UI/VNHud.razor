@@ -20,7 +20,7 @@
 }
 
 @code {
-    [Property] public ScriptPlayer Player { get; set; }
+    [Property, RequireComponent] public ScriptPlayer Player { get; set; }
 
     protected override void OnStart()
     {

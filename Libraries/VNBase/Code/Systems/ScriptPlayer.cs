@@ -52,7 +52,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public List<Character> Characters { get; set; } = new();
 
-	[Property] public Settings Settings { get; } = new();
+	[Property, RequireComponent] public Settings? Settings { get; set; }
 
 	private Dialogue? _dialogue;
 	private Dialogue.Label? _currentLabel;
@@ -72,10 +72,15 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
-	private bool SkipActionPressed => Settings.SkipActions.Any( x => Input.Pressed( x.Action ) );
+	private bool SkipActionPressed => Settings?.SkipActions.Any( x => Input.Pressed( x.Action ) ) ?? false;
 
 	protected override void OnUpdate()
 	{
+		if ( !Settings?.SkipActionEnabled ?? false )
+		{
+			return;
+		}
+
 		if ( SkipActionPressed )
 		{
 			if ( ActiveScript is null || _currentLabel is null )
@@ -83,7 +88,7 @@ public sealed partial class ScriptPlayer : Component
 				return;
 			}
 
-			if ( !DialogueFinished && Settings.SkipActionEnabled )
+			if ( !DialogueFinished )
 			{
 				SkipDialogue();
 			}
@@ -208,7 +213,7 @@ public sealed partial class ScriptPlayer : Component
 
 		_cts = new();
 
-		if ( Settings.TextEffect is not null )
+		if ( Settings?.TextEffect is not null )
 		{
 			try
 			{

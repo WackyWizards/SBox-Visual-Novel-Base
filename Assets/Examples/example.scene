@@ -1,5 +1,5 @@
 {
-  "__guid": "39ad36a5-557e-4129-b32e-c4b90518ab48",
+  "__guid": "afa4764d-9f78-44c4-8bc0-dbd1c4b690dc",
   "GameObjects": [
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
@@ -18,25 +18,33 @@
         },
         {
           "__type": "VNBase.ScriptPlayer",
-          "__guid": "03fbb40d-7993-498a-9b12-f6d405f43aad",
+          "__guid": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
           "DialogueFinished": false,
-          "InitialScript": "/scripts/exampleconditionscript.vnscript",
+          "InitialScript": "scripts/exampleconditionscript.vnscript",
           "Settings": {
-            "TextEffectDelay": 55,
-            "SkipActions": [
-              {
-                "Action": "Jump"
-              }
-            ],
-            "SkipActionEnabled": true
+            "_type": "component",
+            "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
+            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+            "component_type": "Settings"
           }
         },
         {
+          "__type": "VNBase.Settings",
+          "__guid": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
+          "SkipActionEnabled": true,
+          "SkipActions": [
+            {
+              "Action": "jump"
+            }
+          ],
+          "TextEffectDelay": 55
+        },
+        {
           "__type": "VNBase.UI.VNHud",
-          "__guid": "1552670a-8e3c-46ab-bc45-bc3c4b52e609",
+          "__guid": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
           "Player": {
             "_type": "component",
-            "component_id": "03fbb40d-7993-498a-9b12-f6d405f43aad",
+            "component_id": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "ScriptPlayer"
           }
