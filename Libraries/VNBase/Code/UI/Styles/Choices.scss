@@ -1,0 +1,13 @@
+Choices {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    .choicePanel {
+        width: 650px;
+        height: 50%;
+        color: white;
+        flex-direction: column;
+        justify-content: center;
+    }
+}

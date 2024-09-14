@@ -1,21 +1,8 @@
 @import "/UI/Styles/Buttons.scss";
+@import "/UI/Styles/Control.scss";
 
 ControlPanel {
-    pointer-events: none;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-
-    .buttons {
-        position: absolute;
-        pointer-events: all;
-        width: 100%;
-        height: 5%;
-        bottom: 0;
-        align-items: flex-end;
-        flex-direction: row-reverse;
+    &.hidden {
+        display: none;
     }
 }
