@@ -56,6 +56,11 @@ public abstract record Value
 	/// </summary>
 	public record BooleanValue( bool Boolean ) : Value
 	{
+		public override string ToString()
+		{
+			return Boolean.ToString().ToLower();
+		}
+
 		public static Dictionary<string, bool> BooleanMap { get; } = new()
 		{
 			["true"] = true,
@@ -63,9 +68,21 @@ public abstract record Value
 		};
 	}
 
-	public record StringValue( string Text ) : Value;
+	public record StringValue( string Text ) : Value
+	{
+		public override string ToString()
+		{
+			return Text;
+		}
+	}
 
-	public record NumberValue( decimal Number ) : Value;
+	public record NumberValue( decimal Number ) : Value
+	{
+		public override string ToString()
+		{
+			return Number.ToString();
+		}
+	}
 
 	public record FunctionValue( FunctionMapping Function ) : Value;
 
