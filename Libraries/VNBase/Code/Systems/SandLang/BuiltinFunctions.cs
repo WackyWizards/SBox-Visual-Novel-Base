@@ -170,14 +170,14 @@ internal static class BuiltinFunctions
 	{
 		values = values.Select( v => v.Evaluate( environment ) ).ToArray();
 
-		if ( !(values.All( v => v is Value.NumberValue )) )
+		if ( !values.All( v => v is Value.NumberValue ) )
 		{
 			throw new InvalidParametersException( values );
 		}
 
 		return values[0] switch
 		{
-			Value.NumberValue => new Value.NumberValue( values.Select( v => ((v as Value.NumberValue)!).Number )
+			Value.NumberValue => new Value.NumberValue( values.Select( v => (v as Value.NumberValue)!.Number )
 				.Aggregate( ( acc, v ) => acc - v ) ),
 			_ => Value.NoneValue.None,
 		};
@@ -195,9 +195,9 @@ internal static class BuiltinFunctions
 		return values[0] switch
 		{
 			Value.StringValue => new Value.StringValue(
-				values.Select( v => ((v as Value.StringValue)!).Text ).Aggregate( ( acc, v ) => acc + v ) ),
+				values.Select( v => (v as Value.StringValue)!.Text ).Aggregate( ( acc, v ) => acc + v ) ),
 			Value.NumberValue =>
-				new Value.NumberValue( values.Select( v => ((v as Value.NumberValue)!).Number ).Sum() ),
+				new Value.NumberValue( values.Select( v => (v as Value.NumberValue)!.Number ).Sum() ),
 			_ => Value.NoneValue.None
 		};
 	}
