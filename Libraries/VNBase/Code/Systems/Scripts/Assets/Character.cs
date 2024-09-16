@@ -6,7 +6,7 @@ namespace VNBase.Assets;
 /// <summary>
 /// Defines a VNBase character.
 /// </summary>
-[GameResource( "character", "char", "Defines a VNBase character." )]
+[GameResource( "Character", "char", "Defines a VNBase character." )]
 public class Character : AssetResource
 {
 	/// <summary>
