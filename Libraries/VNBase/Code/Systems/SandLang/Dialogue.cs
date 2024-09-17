@@ -49,7 +49,7 @@ public class Dialogue
 	/// </summary>
 	public class Choice
 	{
-		public FormattableText ChoiceText { get; set; } = string.Empty;
+		public FormattableText Text { get; set; } = string.Empty;
 
 		public string TargetLabel { get; set; } = string.Empty;
 
@@ -261,7 +261,7 @@ public class Dialogue
 
 		var choice = new Choice();
 		label.Choices.Add( choice );
-		choice.ChoiceText = argument.Text;
+		choice.Text = argument.Text;
 
 		for ( var i = 2; i < arguments.Count; i++ )
 		{

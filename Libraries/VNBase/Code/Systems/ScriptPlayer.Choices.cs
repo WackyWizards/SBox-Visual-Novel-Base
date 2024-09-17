@@ -10,7 +10,7 @@ sealed partial class ScriptPlayer
 
 	public void SetChoices( IEnvironment environment, List<Dialogue.Choice> choices )
 	{
-		DialogueChoices = choices.Where( x => x.IsAvailable( environment ) ).Select( x => x.ChoiceText.Format( environment ) ).ToList();
+		DialogueChoices = choices.Where( x => x.IsAvailable( environment ) ).Select( x => x.Text.Format( environment ) ).ToList();
 	}
 
 	public void ExecuteChoice( int choiceIndex )
