@@ -22,7 +22,7 @@
     <div class="dialoguePanel">
         <label class="dialogueText">@Player.DialogueText</label>
 
-        @if (Player.DialogueFinished && !Player.DialogueChoices.Any())
+        @if (Player.DialogueFinished && !Player.DialogueChoices.Any() && Player.ActiveLabel.ActiveInput is null)
         {
             <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" />
         }
@@ -32,6 +32,6 @@
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices.Count);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.SpeakingCharacter, Player.DialogueChoices.Count);
     }
 }

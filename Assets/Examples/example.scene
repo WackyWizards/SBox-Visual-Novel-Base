@@ -19,8 +19,24 @@
         {
           "__type": "VNBase.ScriptPlayer",
           "__guid": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
+          "ActiveLabel": {
+            "Name": "",
+            "Text": {
+              "Text": ""
+            },
+            "Characters": [],
+            "Choices": [],
+            "Assets": []
+          },
+          "ActiveScript": {
+            "Dialogue": "",
+            "NextScript": {
+              "Dialogue": ""
+            }
+          },
+          "Characters": [],
           "DialogueFinished": false,
-          "InitialScript": "scripts/examplelongscript.vnscript",
+          "InitialScript": "scripts/exampleinputscript.vnscript",
           "Settings": {
             "_type": "component",
             "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",

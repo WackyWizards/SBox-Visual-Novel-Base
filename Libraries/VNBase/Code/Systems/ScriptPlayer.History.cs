@@ -14,6 +14,7 @@ sealed partial class ScriptPlayer
 	{
 		if ( !DialogueHistory.Contains( dialogue ) )
 		{
+			dialogue.Text = dialogue.Text.Format( _environment );
 			DialogueHistory.Add( dialogue );
 		}
 	}

@@ -8,15 +8,22 @@ sealed partial class ScriptPlayer
 
 	public void ExecuteChoice( int choiceIndex )
 	{
-		if ( ActiveScript is null || _dialogue is null || _currentLabel is null )
+		if ( ActiveScript is null || ActiveLabel is null )
 		{
+			Log.Warning( "Unable to execute choice: No active script or label." );
 			return;
 		}
 
-		var choice = _currentLabel.Choices[choiceIndex];
+		if ( _activeDialogue is null )
+		{
+			Log.Error( "Unable to execute choice: No active dialogue." );
+			return;
+		}
+
+		var choice = ActiveLabel.Choices[choiceIndex];
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
-			SetCurrentLabel( _dialogue.Labels[choice.TargetLabel] );
+			SetLabel( _activeDialogue.Labels[choice.TargetLabel] );
 		}
 	}
 }
