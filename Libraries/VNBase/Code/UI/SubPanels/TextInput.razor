@@ -19,7 +19,7 @@
     public Sandbox.UI.TextEntry Entry { get; private set; }
 
     private Dialogue.Input Input => Player?.ActiveLabel?.ActiveInput;
-    private bool ShouldShow => Player?.DialogueFinished == true && Input != null;
+    private bool ShouldShow => Player?.DialogueFinished == true && Input is not null;
 
     public void Submit()
     {
