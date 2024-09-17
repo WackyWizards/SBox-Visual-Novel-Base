@@ -49,7 +49,7 @@ public class Dialogue
 	/// </summary>
 	public class Choice
 	{
-		public string ChoiceText { get; set; } = string.Empty;
+		public FormattableText ChoiceText { get; set; } = string.Empty;
 
 		public string TargetLabel { get; set; } = string.Empty;
 
@@ -373,6 +373,11 @@ public class Dialogue
 	private static void LabelTextInputArgument( SParen arguments, Label label )
 	{
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
+
+		if ( label.Choices.Count > 0 )
+		{
+			throw new InvalidOperationException( "Cannot have a text input in a label with choices!" );
+		}
 
 		label.ActiveInput = new()
 		{
