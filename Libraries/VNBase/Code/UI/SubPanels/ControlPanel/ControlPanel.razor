@@ -11,7 +11,7 @@
         <button class="control-button" onclick="@HideUI">@(_uiVisible ? "Hide UI" : "Show UI")</button>
     </div>
 
-    <DialogueHistory class="hidden" Player="@Player"/>
+    <DialogueHistory class="hidden" Player="@Player" />
 </root>
 
 @code {
@@ -21,9 +21,15 @@
 
     private void HideUI()
     {
+        // Panels that should not be hidden
+        Type[] panelsToNotHide = new Type[]
+        {
+            typeof(CharacterPortraits)
+        };
+
         var panelsToHide = Parent.ChildrenOfType<SubPanel>()
             .Skip(1)
-            .Where(x => x.GetType() != typeof(CharacterPortraits));
+            .Where(x => !panelsToNotHide.Contains(x.GetType()));
 
         foreach (var panel in panelsToHide)
         {
@@ -33,13 +39,13 @@
         _uiVisible = !_uiVisible;
     }
 
-    protected override void OnAfterTreeRender( bool firstTime )
+    protected override void OnAfterTreeRender(bool firstTime)
     {
-        if ( !firstTime ) return;
+        if (!firstTime) return;
 
-        foreach ( Button button in ControlButtons.ChildrenOfType<Button>() )
+        foreach (Button button in ControlButtons.ChildrenOfType<Button>())
         {
-            if ( button.Id != null)
+            if (button.Id != null)
             {
                 SubPanel panel = GetSubPanelFromId(button.Id);
 
@@ -51,7 +57,7 @@
         }
     }
 
-    private SubPanel GetSubPanelFromId( string id )
+    private SubPanel GetSubPanelFromId(string id)
     {
         return this.ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
     }
