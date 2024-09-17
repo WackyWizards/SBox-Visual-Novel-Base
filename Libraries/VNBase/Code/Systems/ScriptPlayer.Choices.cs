@@ -1,10 +1,17 @@
+using System.Linq;
 using System.Collections.Generic;
+using SandLang;
 
 namespace VNBase;
 
 sealed partial class ScriptPlayer
 {
 	public List<string> DialogueChoices { get; private set; } = new();
+
+	public void SetChoices( IEnvironment environment, List<Dialogue.Choice> choices )
+	{
+		DialogueChoices = choices.Where( x => x.IsAvailable( environment ) ).Select( x => x.ChoiceText.Format( environment ) ).ToList();
+	}
 
 	public void ExecuteChoice( int choiceIndex )
 	{

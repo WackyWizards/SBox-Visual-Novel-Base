@@ -251,7 +251,8 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( ActiveScript is not null )
 		{
-			DialogueChoices = label.Choices.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+			var environment = _environment ?? new EnvironmentMap();
+			SetChoices( environment, label.Choices );
 		}
 	}
 
