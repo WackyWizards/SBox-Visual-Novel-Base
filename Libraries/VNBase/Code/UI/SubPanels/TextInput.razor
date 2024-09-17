@@ -8,17 +8,18 @@
 @namespace VNBase.UI
 @inherits SubPanel
 
-<root>
-    @if (Player.DialogueFinished && Input is not null)
+<root class="centered">
+    @if (ShouldShow)
     {
-        <textentry placeholder="@Input.Variable?.ToString()" onsubmit="@Submit" @ref="Entry"></textentry>
+        <textentry placeholder="@Input?.Variable?.ToString()" onsubmit="@Submit" @ref="Entry" />
     }
 </root>
 
 @code {
     public Sandbox.UI.TextEntry Entry { get; private set; }
 
-    private Dialogue.Input Input => Player.ActiveLabel?.ActiveInput;
+    private Dialogue.Input Input => Player?.ActiveLabel?.ActiveInput;
+    private bool ShouldShow => Player?.DialogueFinished == true && Input != null;
 
     public void Submit()
     {
@@ -34,6 +35,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueFinished, Player.ActiveScript, Player.ActiveLabel);
+        return HashCode.Combine(Player?.DialogueFinished, Player?.ActiveScript, Player?.ActiveLabel);
     }
 }
