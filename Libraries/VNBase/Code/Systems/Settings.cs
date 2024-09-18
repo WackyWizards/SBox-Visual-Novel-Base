@@ -13,17 +13,20 @@ namespace VNBase;
 [Category( "VNBase" )]
 public class Settings : Component
 {
+	[Property, ToggleGroup( "TextEffectEnabled" )]
+	public bool TextEffectEnabled { get; set; } = true;
+
 	/// <summary>
 	/// The currently active text effect.
 	/// </summary>
 	[JsonIgnore]
-	[Property, Category( "Text Effect" )]
+	[Property, ToggleGroup( "TextEffectEnabled" )]
 	public ITextEffect TextEffect { get; set; } = new Typewriter();
 
 	/// <summary>
 	/// Time used for the active text effect to determine text delays.
 	/// </summary>
-	[Property, Category( "Text Effect" )]
+	[Property, ToggleGroup( "TextEffectEnabled" )]
 	public int TextEffectDelay { get; set; } = 55;
 
 	/// <summary>

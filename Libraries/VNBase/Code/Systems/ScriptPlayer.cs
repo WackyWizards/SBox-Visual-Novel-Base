@@ -232,7 +232,7 @@ public sealed partial class ScriptPlayer : Component
 		_cts = new();
 
 		string formattedText = label.Text.Format( _environment ?? new EnvironmentMap() );
-		if ( Settings?.TextEffect is not null )
+		if ( Settings?.TextEffectEnabled ?? false && Settings.TextEffect is not null )
 		{
 			try
 			{
