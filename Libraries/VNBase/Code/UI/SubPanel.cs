@@ -6,6 +6,8 @@ public class SubPanel : Panel
 {
 	public ScriptPlayer? Player { get; set; }
 
+	public VNHud? Hud { get; set; }
+
 	public void ToggleVisibility()
 	{
 		SetClass( "hidden", IsVisible );

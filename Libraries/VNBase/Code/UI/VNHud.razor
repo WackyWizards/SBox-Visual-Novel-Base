@@ -12,11 +12,11 @@
 @if ( Player is not null && Player.ActiveScript is not null )
 {
     <root style="background-image: url('@(Player.Background)')">
-        <CharacterPortraits Player="@Player"/>
-        <TextInput class="centered" Player="@Player"/>
-        <Choices class="centered" Player="@Player"/>
-        <DialogueBox Player="@Player"/>
-        <ControlPanel Player="@Player"/>
+        <CharacterPortraits Player="@Player" Hud="@this"/>
+        <TextInput class="centered" Player="@Player" Hud="@this"/>
+        <Choices class="centered" Player="@Player" Hud="@this"/>
+        <DialogueBox Player="@Player" Hud="@this"/>
+        <ControlPanel Player="@Player" Hud="@this"/>
     </root> 
 }
 
