@@ -1,5 +1,5 @@
 (label breezing-wind
-	(text "The wind is breezing nicely through your hair, the birds are chirping and the sun is out. It's a beautiful day.")
+	(text "A gentle breeze rustles through your hair, birds chirp melodiously, and the sun shines brightly. It's a perfect day.")
 	(choice "Look around your surroundings" jump look-around)
 	(choice "Sit down in the grass to admire the day" jump sit-down)
 	(choice "Spin around in a circle" jump loop)
@@ -7,46 +7,46 @@
 )
 
 (label look-around
-	(text "Infront of you is a path, to your right is the road. It appears that you are in the countryside.")
+	(text "Ahead of you is a path, and to your right is the road. It seems you are in the countryside.")
 	(choice "Follow the path" jump follow-the-path)
 	(bg meadow.jpg)
 )
 
 (label follow-the-path
-	(text "You follow the pathway for a while, until you come across a small village. You see a small house in the distance. It looks abandoned, perhaps there's loot to be found?")
+	(text "You follow the path for a while until you come across a small village. In the distance, you see a small house that looks abandoned. Perhaps there's something valuable inside?")
 	(choice "Head towards the house" jump head-towards-house)
 	(choice "Continue on the path" jump continue-on-the-path)
 	(bg meadow.jpg)
 )
 
 (label head-towards-house
-	(text "You head towards the house, it's a bit run down and it looks like it's been abandoned for a while. You see a small window on the second floor, perhaps you can climb up and loot the place?")
+	(text "You approach the house, which appears run-down and abandoned. You notice a small window on the second floor. Maybe you can climb up and explore?")
 	(choice "Climb up the house" jump climb-up-house)
 	(choice "Continue on the path" jump continue-on-the-path)
 	(bg meadow.jpg)
 )
 
 (label climb-up-house
-	(text "You climb up the house, and find a small chest. You open it, and find a few coins and a rusty sword.")
+	(text "You climb up to the second floor and find a small chest. Inside, you discover a few coins and a rusty sword.")
 	(choice "Take the coins and sword" jump sit-down)
 	(choice "Leave the house and continue on the path" jump continue-on-the-path)
 	(bg meadow.jpg)
 )
 
 (label continue-on-the-path
-	(text "You decide that the house might not be worth your time, and decide to continue alongside the pathway.")
+	(text "Deciding the house isn't worth your time, you continue along the pathway.")
 	(bg meadow.jpg)
 	(after end-dialogue)
 )
 
 (label sit-down
-	(text "You decide to sit down to admire your surroundings. It's truly beautiful. You decide to rest your eyes, laying on the bare grass and taking shade underneath the leaves of a big tree.")
+	(text "You sit down to admire your surroundings. It's truly beautiful. You rest your eyes, lying on the grass and taking shade under a large tree.")
 	(bg meadow.jpg)
 	(after end-dialogue)
 )
 
 (label loop
-	(text "You decide to do a quick spin in place. Move on now?")
+	(text "You spin around in place. What next?")
 	(choice "Return to the start" jump breezing-wind)
 	(choice "Spin Again" jump loop)
 	(bg meadow.jpg)

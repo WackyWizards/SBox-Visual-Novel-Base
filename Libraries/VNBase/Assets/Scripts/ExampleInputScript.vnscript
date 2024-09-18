@@ -1,0 +1,21 @@
+(label start
+    (text "What's your name?")
+
+    // Input allows us to display an input box.
+    // It then takes the input and stores it in the provided variable.
+    // In this case, we'll be storing it in "name".
+    (input name)
+    (after jump display)
+)
+
+(label display
+    // We interpolate the variable "name" into the text.
+    // This is done by using curly braces around the variable name.
+    (text "So your name is {name}, huh? Nice to meet you!")
+    (after end-dialogue)
+)
+
+// We store the player's name so we can use it later.
+// The default value here is "Garry".
+(set name "Garry")
+(start-dialogue start)

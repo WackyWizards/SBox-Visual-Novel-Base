@@ -22,7 +22,7 @@
     "LeaderboardType": "None",
     "ProjectTemplate": null,
     "CsProjName": "",
-    "StartupScene": "examples/example.scene",
+    "StartupScene": "example.scene",
     "Summary": "System for creating Visual Novels or Dialogue Systems for S\u0026Box Games",
     "Public": true,
     "HttpAllowList": null,

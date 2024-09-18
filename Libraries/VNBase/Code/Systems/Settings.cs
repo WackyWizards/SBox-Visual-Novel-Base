@@ -31,16 +31,16 @@ public class Settings : Component
 	/// By default, this is set to "jump".
 	/// </summary>
 	[InlineEditor]
-	[Property, Category( "Skip Action" )]
+	[Property, ToggleGroup( "SkipActionEnabled" )]
 	public List<SkipInput> SkipActions { get; set; } = new()
 	{
-		new() { Action = "jump" }
+		"jump"
 	};
 
 	/// <summary>
 	/// If we are able to skip the active text effect using a skip action.
 	/// </summary>
-	[Property, Category( "Skip Action" )]
+	[Property, ToggleGroup( "SkipActionEnabled" )]
 	public bool SkipActionEnabled { get; set; } = true;
 
 	/// <summary>
@@ -59,8 +59,16 @@ public class Settings : Component
 	public const string CharacterResourcesPath = "/characters/";
 }
 
-public class SkipInput
+public class SkipInput : IEquatable<InputAction>
 {
 	[InputAction]
 	public string Action { get; set; } = string.Empty;
+
+	public bool Equals( InputAction? other )
+	{
+		return Action == other?.Name;
+	}
+
+	public static implicit operator string( SkipInput skipInput ) => skipInput.Action;
+	public static implicit operator SkipInput( string action ) => new() { Action = action };
 }

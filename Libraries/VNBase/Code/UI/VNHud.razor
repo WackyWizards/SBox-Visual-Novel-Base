@@ -13,6 +13,7 @@
 {
     <root style="background-image: url('@(Player.Background)')">
         <CharacterPortraits Player="@Player"/>
+        <TextInput class="centered" Player="@Player"/>
         <Choices class="centered" Player="@Player"/>
         <DialogueBox Player="@Player"/>
         <ControlPanel Player="@Player"/>
@@ -35,6 +36,11 @@
                 ScriptPlayer.Log.Warning("No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!");
             }
         }
+    }
+
+    public T GetSubPanel<T>() where T : SubPanel
+    {
+        return Panel.Children.OfType<T>().FirstOrDefault();
     }
 
     protected override int BuildHash()

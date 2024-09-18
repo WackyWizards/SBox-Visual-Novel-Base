@@ -8,10 +8,11 @@ sealed partial class ScriptPlayer
 	{
 		if ( ActiveScript is null )
 		{
+			Log.Error( "No active script to set environment for!" );
 			return;
 		}
 
-		var environment = ActiveScript.GetEnvironment();
+		IEnvironment environment = ActiveScript.GetEnvironment();
 
 		foreach ( var variable in dialogue.Variables )
 		{
@@ -27,12 +28,19 @@ sealed partial class ScriptPlayer
 			}
 		}
 
-		//LogVariables( environment );
+		foreach ( var label in dialogue.Labels.Values )
+		{
+			label.Environment = environment;
+		}
 
-		_dialogue = dialogue;
+		_environment = environment;
 	}
 
-	private void LogVariables( IEnvironment environment )
+	/// <summary>
+	/// Logs all of the variables in the environment.
+	/// </summary>
+	/// <param name="environment">The environment to log the variables of.</param>
+	internal static void LogVariables( IEnvironment environment )
 	{
 		foreach ( var val in environment.GetVariables() )
 		{

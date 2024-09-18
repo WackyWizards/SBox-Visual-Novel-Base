@@ -20,12 +20,17 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// If not empty, will load the script at this path on initial component start.
 	/// </summary>
-	[Property] public string? InitialScript { get; set; }
+	[Property, Group( "Script" )] public string? InitialScript { get; set; }
 
 	/// <summary>
 	/// The currently active script.
 	/// </summary>
-	public Script? ActiveScript { get; private set; }
+	[Property, Group( "Script" ), ReadOnly] public Script? ActiveScript { get; private set; }
+
+	/// <summary>
+	/// The currently active script label.
+	/// </summary>
+	[Property, Group( "Script" ), ReadOnly] public Dialogue.Label? ActiveLabel { get; private set; }
 
 	/// <summary>
 	/// The currently active script label text.
@@ -33,7 +38,7 @@ public sealed partial class ScriptPlayer : Component
 	[Property, Group( "Dialogue" )] public string? DialogueText { get; set; }
 
 	/// <summary>
-	/// Path to the currently active background.
+	/// Path to the currently active background image.
 	/// </summary>
 	[Property, Group( "Dialogue" )] public string? Background { get; set; }
 
@@ -45,17 +50,24 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The currently active speaking character.
 	/// </summary>
-	public Character? SpeakingCharacter { get; set; }
+	[Property, Group( "Characters" )] public Character? SpeakingCharacter { get; set; }
 
 	/// <summary>
 	/// Characters to display for this label.
 	/// </summary>
-	public List<Character> Characters { get; set; } = new();
+	[Property, Group( "Characters" )] public List<Character> Characters { get; set; } = new();
 
 	[Property, RequireComponent] public Settings? Settings { get; set; }
 
-	private Dialogue? _dialogue;
-	private Dialogue.Label? _currentLabel;
+	[Property, RequireComponent] public VNHud? Hud { get; set; }
+
+	private Dialogue? _activeDialogue;
+
+	/// <summary>
+	/// The script environment.
+	/// Will be empty if there is no active dialogue.
+	/// </summary>
+	private IEnvironment _environment = new EnvironmentMap();
 
 	private CancellationTokenSource? _cts;
 
@@ -83,7 +95,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( SkipActionPressed )
 		{
-			if ( ActiveScript is null || _currentLabel is null )
+			if ( ActiveScript is null || ActiveLabel is null )
 			{
 				return;
 			}
@@ -100,7 +112,7 @@ public sealed partial class ScriptPlayer : Component
 	}
 
 	/// <summary>
-	/// Read and Load the script at the provided path.
+	/// Read and load the script at the provided path.
 	/// </summary>
 	/// <param name="path">Path to the script to load.</param>
 	public void LoadScript( string path )
@@ -147,9 +159,11 @@ public sealed partial class ScriptPlayer : Component
 		ActiveScript = script;
 		script.OnLoad();
 
-		var dialogue = Dialogue.ParseDialogue( SParen.ParseText( ActiveScript.Dialogue ).ToList() );
-		SetEnvironment( dialogue );
-		SetCurrentLabel( dialogue.InitialLabel );
+		List<SParen> codeblocks = SParen.ParseText( ActiveScript.Dialogue ).ToList();
+		_activeDialogue = Dialogue.ParseDialogue( codeblocks );
+
+		SetEnvironment( _activeDialogue );
+		SetLabel( _activeDialogue.InitialLabel );
 	}
 
 	/// <summary>
@@ -162,7 +176,7 @@ public sealed partial class ScriptPlayer : Component
 			return;
 		}
 
-		_dialogue = null;
+		_activeDialogue = null;
 		DialogueText = null;
 		SpeakingCharacter = null;
 		Background = null;
@@ -181,9 +195,9 @@ public sealed partial class ScriptPlayer : Component
 		Log.Info( $"Unloaded active script." );
 	}
 
-	private async void SetCurrentLabel( Dialogue.Label label )
+	private async void SetLabel( Dialogue.Label label )
 	{
-		_currentLabel = label;
+		ActiveLabel = label;
 		DialogueFinished = false;
 
 		if ( Game.IsEditor )
@@ -198,7 +212,11 @@ public sealed partial class ScriptPlayer : Component
 		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 		{
 			sound.Play();
-			Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
+
+			if ( Game.IsEditor )
+			{
+				Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
+			}
 		}
 
 		try
@@ -213,20 +231,21 @@ public sealed partial class ScriptPlayer : Component
 
 		_cts = new();
 
+		string formattedText = label.Text.Format( _environment ?? new EnvironmentMap() );
 		if ( Settings?.TextEffect is not null )
 		{
 			try
 			{
-				await Settings.TextEffect.Play( label.Text, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
+				await Settings.TextEffect.Play( formattedText, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
 			}
 			catch ( OperationCanceledException )
 			{
-				DialogueText = label.Text;
+				DialogueText = formattedText;
 			}
 		}
 		else
 		{
-			DialogueText = label.Text;
+			DialogueText = formattedText;
 		}
 
 		AddHistory( label );
@@ -234,25 +253,37 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( ActiveScript is not null )
 		{
-			DialogueChoices = label.Choices.Where( x => x.IsAvailable( ActiveScript.GetEnvironment() ) ).Select( p => p.ChoiceText ).ToList();
+			var environment = _environment ?? new EnvironmentMap();
+			SetChoices( environment, label.Choices );
 		}
 	}
 
 	private void ExecuteAfterLabel()
 	{
-		if ( ActiveScript is null || _currentLabel is null )
+		if ( ActiveScript is null || ActiveLabel is null )
 		{
 			Log.Error( $"Unable to execute the AfterLabel, there is either no active script or label!" );
 			return;
 		}
 
-		var afterLabel = _currentLabel.AfterLabel;
+		var afterLabel = ActiveLabel.AfterLabel;
 
 		if ( afterLabel is not null )
 		{
 			foreach ( var codeBlock in afterLabel.CodeBlocks )
 			{
 				codeBlock.Execute( ActiveScript.GetEnvironment() );
+			}
+
+			bool hasInput = ActiveLabel.ActiveInput is not null;
+			if ( hasInput && Hud is not null )
+			{
+				var input = Hud.GetSubPanel<TextInput>();
+
+				if ( input is not null && string.IsNullOrWhiteSpace( input.Entry.Text ) )
+				{
+					return;
+				}
 			}
 
 			if ( afterLabel.IsLastLabel )
@@ -263,12 +294,13 @@ public sealed partial class ScriptPlayer : Component
 
 			if ( afterLabel.TargetLabel is not null )
 			{
-				if ( _dialogue is null )
+				if ( _activeDialogue is null )
 				{
+					Log.Error( "There is no active dialogue set, unable to switch active labels!" );
 					return;
 				}
 
-				SetCurrentLabel( _dialogue.Labels[afterLabel.TargetLabel] );
+				SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 			}
 		}
 	}

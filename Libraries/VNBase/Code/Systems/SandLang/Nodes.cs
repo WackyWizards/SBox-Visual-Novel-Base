@@ -35,11 +35,11 @@ public class ResourceNotFoundException : FileNotFoundException
 {
 	public string ResourceName { get; private set; } = string.Empty;
 
-	public ResourceNotFoundException(string message, string? resourceName = null, string? fileName = null, Exception? innerException = null)
-		: base(message, fileName)
+	public ResourceNotFoundException( string message, string? resourceName = null, string? fileName = null, Exception? innerException = null )
+		: base( message, fileName )
 	{
 		ResourceName = resourceName ?? string.Empty;
-		if (innerException != null)
+		if ( innerException != null )
 		{
 			base.Data["InnerException"] = innerException;
 		}
@@ -92,7 +92,12 @@ public class EnvironmentMap : IEnvironment
 
 	public Value GetVariable( string name )
 	{
-		return _variables[name];
+		if ( !_variables.TryGetValue( name, out var value ) )
+		{
+			throw new UndefinedVariableException( name );
+		}
+
+		return value;
 	}
 
 	public void SetVariable( string name, Value value )

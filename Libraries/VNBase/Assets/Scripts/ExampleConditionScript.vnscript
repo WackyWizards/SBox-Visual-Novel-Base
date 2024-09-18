@@ -15,6 +15,9 @@
 
 (label unlock-secret
     (text "Secret ending unlocked!")
+
+    // After processing this label, we set the secret-ending variable to true,
+    // and jump back to the start label.
     (after (set secret-ending true) jump start)
 )
 

@@ -1,0 +1,7 @@
+@import "/UI/Styles/Input.scss";
+
+TextInput {
+    &.hidden {
+        display: none;
+    }
+}

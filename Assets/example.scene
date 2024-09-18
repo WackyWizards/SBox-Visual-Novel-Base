@@ -19,8 +19,30 @@
         {
           "__type": "VNBase.ScriptPlayer",
           "__guid": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
+          "ActiveLabel": {
+            "Name": "",
+            "Text": {
+              "Text": ""
+            },
+            "Characters": [],
+            "Choices": [],
+            "Assets": []
+          },
+          "ActiveScript": {
+            "Dialogue": "",
+            "NextScript": {
+              "Dialogue": ""
+            }
+          },
+          "Characters": [],
           "DialogueFinished": false,
-          "InitialScript": "scripts/examplelongscript.vnscript",
+          "Hud": {
+            "_type": "component",
+            "component_id": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
+            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+            "component_type": "VNHud"
+          },
+          "InitialScript": "scripts/exampleinputscript.vnscript",
           "Settings": {
             "_type": "component",
             "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",

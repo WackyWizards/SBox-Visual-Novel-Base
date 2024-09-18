@@ -1,4 +1,5 @@
 using Sandbox;
+using Sandbox.Diagnostics;
 using System;
 using System.Collections.Generic;
 using VNBase;
@@ -17,6 +18,8 @@ public class Dialogue
 
 	internal Dictionary<Value, Value> Variables { get; } = new();
 
+	internal static Logger Log { get; } = new( "SandLang" );
+
 	/// <summary>
 	/// Represents a dialogue step.
 	/// </summary>
@@ -24,7 +27,9 @@ public class Dialogue
 	{
 		public string Name { get; set; } = string.Empty;
 
-		public string Text { get; set; } = string.Empty;
+		public FormattableText Text { get; set; } = string.Empty;
+
+		public Input? ActiveInput { get; set; }
 
 		public Character? SpeakingCharacter { get; set; }
 
@@ -35,6 +40,8 @@ public class Dialogue
 		public List<IAsset> Assets { get; set; } = new();
 
 		public AfterLabel? AfterLabel { get; set; }
+
+		internal IEnvironment Environment { get; set; } = new EnvironmentMap();
 	}
 
 	/// <summary>
@@ -42,7 +49,7 @@ public class Dialogue
 	/// </summary>
 	public class Choice
 	{
-		public string ChoiceText { get; set; } = string.Empty;
+		public FormattableText Text { get; set; } = string.Empty;
 
 		public string TargetLabel { get; set; } = string.Empty;
 
@@ -64,6 +71,36 @@ public class Dialogue
 			}
 
 			return false;
+		}
+	}
+
+	/// <summary>
+	/// Represents an input from the player, and the variable to store the input in.
+	/// </summary>
+	public class Input
+	{
+		public string VariableName { get; set; } = string.Empty;
+
+		public Value? Variable => _environment?.GetVariable( VariableName );
+
+		private IEnvironment? _environment;
+
+		/// <summary>
+		/// Sets the value of the input variable in the environment.
+		/// </summary>
+		/// <param name="environment">The environment to set the value in.</param>
+		/// <param name="value">The value to set the variable to.</param>
+		public Value SetValue( IEnvironment environment, Value value )
+		{
+			_environment = environment;
+			_environment.SetVariable( VariableName, value );
+
+			if ( Game.IsEditor )
+			{
+				Log.Info( $"Set value of variable \"{VariableName}\" to \"{value}\" through user input." );
+			}
+
+			return environment.GetVariable( VariableName );
 		}
 	}
 
@@ -155,6 +192,8 @@ public class Dialogue
 				LabelSoundArgument,
 			"bg" =>
 				LabelBackgroundArgument,
+			"input" =>
+				LabelTextInputArgument,
 			"after" =>
 				LabelAfterArgument,
 			_ => throw new ArgumentOutOfRangeException()
@@ -222,7 +261,7 @@ public class Dialogue
 
 		var choice = new Choice();
 		label.Choices.Add( choice );
-		choice.ChoiceText = argument.Text;
+		choice.Text = argument.Text;
 
 		for ( var i = 2; i < arguments.Count; i++ )
 		{
@@ -329,6 +368,21 @@ public class Dialogue
 
 		string backgroundName = argument.Name;
 		label.Assets.Add( new BackgroundAsset( $"{Settings.BackgroundsPath}{backgroundName}" ) );
+	}
+
+	private static void LabelTextInputArgument( SParen arguments, Label label )
+	{
+		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
+
+		if ( label.Choices.Count > 0 )
+		{
+			throw new InvalidOperationException( "Cannot have a text input in a label with choices!" );
+		}
+
+		label.ActiveInput = new()
+		{
+			VariableName = argument.Name
+		};
 	}
 
 	private static Character? GetCharacterResource( string characterName )
