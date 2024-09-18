@@ -7,19 +7,25 @@
 */
 
 (label start
-	(text "Hello! This is a short example script!")
-	(choice "This is choice 1!" jump end1)
-	(choice "This is choice 2!" jump end2)
+	(text "Which example do you want to load?")
+	(choice "Story Example" jump load-storyscript)
+	(choice "Input Example" jump load-inputscript)
+	(choice "Condition Example" jump load-conditionscript)
 )
 
-(label end1
-	(text "This is label end1!")
-	(after end-dialogue)
+(label load-storyscript
+	(text "Loading story example")
+	(after load-script StoryExample.vnscript)
 )
 
-(label end2
-	(text "This is label end2!")
-	(after end-dialogue)
+(label load-inputscript
+	(text "Loading input example")
+	(after load-script InputExample.vnscript)
+)
+
+(label load-conditionscript
+	(text "Loading condition example")
+	(after load-script ConditionExample.vnscript)
 )
 
 /* 
