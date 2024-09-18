@@ -108,7 +108,7 @@ public sealed partial class ScriptPlayer
 
 			if ( afterLabel.ScriptPath is not null )
 			{
-				LoadScript( Settings.ScriptPath + afterLabel.ScriptPath );
+				LoadScript( afterLabel.ScriptPath );
 				return;
 			}
 

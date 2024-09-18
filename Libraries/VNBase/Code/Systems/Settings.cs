@@ -60,11 +60,6 @@ public class Settings : Component
 	/// Path to the character resources.
 	/// </summary>
 	public const string CharacterResourcesPath = "/characters/";
-
-	/// <summary>
-	/// Path to the script files.
-	/// </summary>
-	public const string ScriptPath = "/scripts/";
 }
 
 public class SkipInput : IEquatable<InputAction>

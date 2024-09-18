@@ -15,17 +15,17 @@
 
 (label load-storyscript
 	(text "Loading story example")
-	(after load-script StoryExample.vnscript)
+	(after load-script /Scripts/StoryExample.vnscript)
 )
 
 (label load-inputscript
 	(text "Loading input example")
-	(after load-script InputExample.vnscript)
+	(after load-script /Scripts/InputExample.vnscript)
 )
 
 (label load-conditionscript
 	(text "Loading condition example")
-	(after load-script ConditionExample.vnscript)
+	(after load-script /Scripts/ConditionExample.vnscript)
 )
 
 /* 
