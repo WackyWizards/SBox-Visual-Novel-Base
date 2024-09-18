@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VNBase;
 
-sealed partial class ScriptPlayer
+public sealed partial class ScriptPlayer
 {
 	/// <summary>
 	/// All previously shown labels.

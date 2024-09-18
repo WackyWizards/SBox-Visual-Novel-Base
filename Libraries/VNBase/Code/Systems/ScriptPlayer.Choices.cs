@@ -4,7 +4,7 @@ using SandLang;
 
 namespace VNBase;
 
-sealed partial class ScriptPlayer
+public sealed partial class ScriptPlayer
 {
 	public List<string> DialogueChoices { get; private set; } = new();
 

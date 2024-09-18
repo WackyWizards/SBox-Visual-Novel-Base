@@ -2,7 +2,7 @@
 
 namespace VNBase;
 
-sealed partial class ScriptPlayer
+public sealed partial class ScriptPlayer
 {
 	internal void SetEnvironment( Dialogue dialogue )
 	{
