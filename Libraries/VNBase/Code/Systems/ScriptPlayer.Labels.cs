@@ -106,6 +106,12 @@ public sealed partial class ScriptPlayer
 				return;
 			}
 
+			if ( afterLabel.ScriptPath is not null )
+			{
+				LoadScript( Settings.ScriptPath + afterLabel.ScriptPath );
+				return;
+			}
+
 			if ( afterLabel.TargetLabel is not null )
 			{
 				if ( _activeDialogue is null )
