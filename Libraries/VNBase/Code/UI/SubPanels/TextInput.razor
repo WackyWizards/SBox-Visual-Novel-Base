@@ -18,6 +18,8 @@
 @code {
     public Sandbox.UI.TextEntry Entry { get; private set; }
 
+    public bool CanContinue => ShouldShow && (Entry is null || !string.IsNullOrWhiteSpace(Entry.Text));
+
     private Dialogue.Input Input => Player?.ActiveLabel?.ActiveInput;
     private bool ShouldShow => Player?.DialogueFinished == true && Input is not null;
 

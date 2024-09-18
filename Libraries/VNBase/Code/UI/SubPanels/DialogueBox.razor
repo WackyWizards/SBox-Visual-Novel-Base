@@ -22,7 +22,7 @@
     <div class="dialoguePanel">
         <label class="dialogueText">@Player.DialogueText</label>
 
-        @if (Player.DialogueFinished && !Player.DialogueChoices.Any() && Player.ActiveLabel.ActiveInput is null)
+        @if (CanContinue)
         {
             <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" />
         }
@@ -30,8 +30,15 @@
 </root>
 
 @code {
+    private TextInput TextInput => Hud.GetSubPanel<TextInput>();
+
+    private bool CanContinue
+    {
+        get => Player.DialogueFinished && !Player.DialogueChoices.Any() && (TextInput?.Entry is null || TextInput.CanContinue);
+    }
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.SpeakingCharacter, Player.DialogueChoices.Count);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.SpeakingCharacter, Player.DialogueChoices.Count, TextInput?.CanContinue);
     }
 }
