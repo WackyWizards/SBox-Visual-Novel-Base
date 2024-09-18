@@ -36,6 +36,12 @@
           },
           "Characters": [],
           "DialogueFinished": false,
+          "Hud": {
+            "_type": "component",
+            "component_id": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
+            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
+            "component_type": "VNHud"
+          },
           "InitialScript": "scripts/exampleinputscript.vnscript",
           "Settings": {
             "_type": "component",

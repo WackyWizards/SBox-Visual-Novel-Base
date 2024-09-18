@@ -59,6 +59,8 @@ public sealed partial class ScriptPlayer : Component
 
 	[Property, RequireComponent] public Settings? Settings { get; set; }
 
+	[Property, RequireComponent] public VNHud? Hud { get; set; }
+
 	private Dialogue? _activeDialogue;
 
 	/// <summary>
@@ -271,6 +273,17 @@ public sealed partial class ScriptPlayer : Component
 			foreach ( var codeBlock in afterLabel.CodeBlocks )
 			{
 				codeBlock.Execute( ActiveScript.GetEnvironment() );
+			}
+
+			bool hasInput = ActiveLabel.ActiveInput is not null;
+			if ( hasInput && Hud is not null )
+			{
+				var input = Hud.GetSubPanel<TextInput>();
+
+				if ( input is not null && input.Entry.Text.Length == 0 )
+				{
+					return;
+				}
 			}
 
 			if ( afterLabel.IsLastLabel )
