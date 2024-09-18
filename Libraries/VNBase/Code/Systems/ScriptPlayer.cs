@@ -280,7 +280,7 @@ public sealed partial class ScriptPlayer : Component
 			{
 				var input = Hud.GetSubPanel<TextInput>();
 
-				if ( input is not null && input.Entry.Text.Length == 0 )
+				if ( input is not null && string.IsNullOrWhiteSpace( input.Entry.Text ) )
 				{
 					return;
 				}
