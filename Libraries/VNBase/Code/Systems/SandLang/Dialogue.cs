@@ -114,6 +114,8 @@ public class Dialogue
 		public bool IsLastLabel { get; set; }
 
 		public string? TargetLabel { get; set; }
+
+		public string? ScriptPath { get; set; }
 	}
 
 	public static Dialogue ParseDialogue( List<SParen> codeBlocks )
@@ -232,6 +234,7 @@ public class Dialogue
 					{
 						"end-dialogue" => AfterEndDialogueArgument,
 						"jump" => AfterJumpArgument,
+						"load-script" => AfterLoadScriptArgument,
 						_ => throw new ArgumentOutOfRangeException()
 					};
 					i += afterArgument( arguments, i, label.AfterLabel );
@@ -253,6 +256,12 @@ public class Dialogue
 	{
 		after.IsLastLabel = true;
 		return 0;
+	}
+
+	private static int AfterLoadScriptArgument( SParen arguments, int index, AfterLabel after )
+	{
+		after.ScriptPath = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
+		return 1;
 	}
 
 	private static void LabelChoiceArgument( SParen arguments, Label label )
