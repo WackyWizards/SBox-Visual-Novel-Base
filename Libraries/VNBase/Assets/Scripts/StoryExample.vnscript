@@ -36,13 +36,13 @@
 (label continue-on-the-path
 	(text "Deciding the house isn't worth your time, you continue along the pathway.")
 	(bg meadow.jpg)
-	(after end-dialogue)
+	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
 (label sit-down
 	(text "You sit down to admire your surroundings. It's truly beautiful. You rest your eyes, lying on the grass and taking shade under a large tree.")
 	(bg meadow.jpg)
-	(after end-dialogue)
+	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
 (label loop

@@ -2,12 +2,12 @@ using Sandbox;
 using SandLang;
 using System.Collections.Generic;
 
-namespace VNBase;
+namespace VNBase.Assets;
 
 /// <summary>
 /// Defines a VNBase script.
 /// </summary>
-public class Script
+public class Script : IAsset
 {
 	/// <summary>
 	/// This is where you want to write your script.
@@ -23,7 +23,7 @@ public class Script
 	/// If this script is initialized from a file,
 	/// this is the path to that script file.
 	/// </summary>
-	public string? Path { get; set; }
+	public string Path { get; set; } = string.Empty;
 
 	/// <summary>
 	/// If this script was initialized from a file or not.

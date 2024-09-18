@@ -23,12 +23,12 @@
 
 (label end
     (text "Normal Ending!")
-    (after end-dialogue)
+	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
 (label secret
     (text "Secret Ending!")
-    (after end-dialogue)
+	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
 (set secret-ending false)
