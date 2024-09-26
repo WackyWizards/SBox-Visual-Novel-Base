@@ -1,0 +1,17 @@
+(label start
+    (text "Hello!")
+    (choice "Get Access" jump get)
+    (choice "Return" jump return)
+)
+
+(label get
+    (text "You gained access!")
+    (after (set $access true) load-script /Scripts/ExampleScript.vnscript)
+)
+
+(label return
+    (text "Returning To The Start")
+    (after load-script /Scripts/ExampleScript.vnscript)
+)
+
+(start-dialogue start)
