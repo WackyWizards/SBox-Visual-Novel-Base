@@ -22,3 +22,7 @@ code/*.csproj
 tools_thumbnail_cache.bin
 docs/html
 docs/doxygen/bin/
+
+# Libraries
+libraries/*
+!libraries/VNBase/
