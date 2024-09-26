@@ -1,10 +1,8 @@
 # S&Box Visual Novel Base (VNBase)
 
-VNBase is a base for creating visual novels or dialogue systems for S&Box Games.
+VNBase is a library for creating visual novels or dialogue systems for S&Box Games.
 
-Scripts are written using a LISP-styled language called SandLang, an easy-to-learn DSL meant for making VNBase scripts.
-
-Creating a simple dialogue system or a visual novel is easy, with the base including multiple example scripts. However, it is modular enough for anyone proficient to make custom functions and calculations if they so require, straight inside of SandLang, with little programming knowledge required.
+Scripts are written using a LISP-styled language called VNScript, a user-friendly DSL (Domain-Specific Language) designed for building VNBase scripts with ease.
 
 ## Showcase
 
@@ -14,15 +12,22 @@ https://www.youtube.com/watch?v=X50jqOHCtVs
 
 ## Contributing
 
+> [!NOTE]
+> Contributors are **strongly recommended** to read the following wiki page before contributing:
+> https://github.com/kEllieGit/SBox-Visual-Novel-Base/wiki/Contributors
+
 Anyone is free to contribute to the base by creating a pull request. Contributions are always welcome if you have any improvements, bug fixes or just wish to add some cool new features to the base. Any and all help is appreciated.
 
-## Support
-
-For technical support and/or questions related to VNBase, please either create a new issue, or join the community discord server found below.
+For technical support and/or questions related to VNBase, please either create a new issue, or join my discord server found below.
 https://discord.gg/JVzVaJDHAQ
 
 ## SandLang
 
-The base SandLang language can be found below.
+The base for VNScript, SandLang, can be found in the link below.
+
+> [!IMPORTANT]
+> The VNBase version of SandLang is heavily modified!
+> This means that the internals have changed drastically, and SandLang is no longer up-to-date.
+> Please refer to the Wiki or the Documentation for latest information.
 
 https://github.com/kouta-kun/VNTest
