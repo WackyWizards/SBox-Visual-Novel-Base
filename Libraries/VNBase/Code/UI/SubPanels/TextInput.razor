@@ -30,8 +30,8 @@
             return;
         }
 
-        var environment = Player.ActiveScript.GetEnvironment();
         var value = new Value.StringValue(Entry.Text);
+        var environment = Player.ActiveScript.GetEnvironment();
         Input.SetValue(environment, value);
     }
 
