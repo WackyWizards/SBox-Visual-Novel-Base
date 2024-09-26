@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,6 +6,11 @@ namespace SandLang;
 
 public abstract record Value
 {
+	/// <summary>
+	/// The denoter of global variables.
+	/// </summary>
+	public const char GlobalDenoter = '$';
+
 	public virtual Value Evaluate( IEnvironment environment )
 	{
 		return this;
@@ -13,7 +19,7 @@ public abstract record Value
 	public delegate Value FunctionMapping( IEnvironment environment, params Value[] values );
 
 	/// <summary>
-	/// Not really in use right now, but represents the equivalent of a null in LISP
+	/// Represents a null value, that is the absence of a value.
 	/// </summary>
 	public record NoneValue : Value
 	{
@@ -22,9 +28,11 @@ public abstract record Value
 	}
 
 	/// <summary>
-	/// For representing C# world variables (such as entities) in LISP (cannot be used with builtins, only really
-	/// useful for environment-defined functions)
+	/// For representing C# world variables (such as components) in SandLang.
 	/// </summary>
+	/// <remarks>
+	/// Cannot be used with builtins, only really useful for environment-defined functions.
+	/// </remarks>
 	public record WrapperValue<T>( T Value ) : Value;
 
 	/// <summary>
@@ -34,8 +42,15 @@ public abstract record Value
 	{
 		public override Value Evaluate( IEnvironment environment )
 		{
+			if ( GlobalEnvironment.Map.VariableSet().Contains( Name ) )
+			{
+				return GlobalEnvironment.Map.GetVariable( Name );
+			}
+
 			if ( environment.VariableSet().Contains( Name ) )
+			{
 				return environment.GetVariable( Name );
+			}
 
 			if ( BooleanValue.BooleanMap.TryGetValue( Name, out bool value ) )
 			{
@@ -106,6 +121,11 @@ public abstract record Value
 			}
 
 			return this;
+		}
+
+		public override string ToString()
+		{
+			return ValueList?.ToString() ?? "[]";
 		}
 	}
 }
