@@ -61,7 +61,9 @@ public class Dialogue
 		public bool IsAvailable( IEnvironment environment )
 		{
 			if ( Condition is null )
+			{
 				return true;
+			}
 
 			var value = Condition.Execute( environment );
 
@@ -90,17 +92,15 @@ public class Dialogue
 		/// </summary>
 		/// <param name="environment">The environment to set the value in.</param>
 		/// <param name="value">The value to set the variable to.</param>
-		public Value SetValue( IEnvironment environment, Value value )
+		public void SetValue( IEnvironment environment, Value value )
 		{
+			environment.SetVariable( VariableName, value );
 			_environment = environment;
-			_environment.SetVariable( VariableName, value );
 
 			if ( Game.IsEditor )
 			{
-				Log.Info( $"Set value of variable \"{VariableName}\" to \"{value}\" through user input." );
+				Log.Info( $"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );
 			}
-
-			return environment.GetVariable( VariableName );
 		}
 	}
 
@@ -113,9 +113,9 @@ public class Dialogue
 
 		public bool IsLastLabel { get; set; }
 
-		public string? TargetLabel { get; set; }
-
 		public string? ScriptPath { get; set; }
+
+		public string? TargetLabel { get; set; }
 	}
 
 	public static Dialogue ParseDialogue( List<SParen> codeBlocks )
@@ -127,16 +127,30 @@ public class Dialogue
 
 	private void Parse( List<SParen> codeBlocks )
 	{
-		var dialogueParsingFunctions = new EnvironmentMap();
-
-		dialogueParsingFunctions.SetVariable( "label", new Value.FunctionValue( CreateLabel ) );
-		dialogueParsingFunctions.SetVariable( "start-dialogue", new Value.FunctionValue( SetStartDialogue ) );
-		dialogueParsingFunctions.SetVariable( "set", new Value.FunctionValue( SetVariable ) );
+		var parsingFunctions = CreateParsingFunctions();
 
 		foreach ( var sParen in codeBlocks )
 		{
-			sParen.Execute( dialogueParsingFunctions );
+			sParen.Execute( parsingFunctions );
 		}
+	}
+
+	private EnvironmentMap CreateParsingFunctions()
+	{
+		var functionEnvironment = new EnvironmentMap();
+		var functions = new Dictionary<string, Value.FunctionValue>
+		{
+			{ "label", new Value.FunctionValue( CreateLabel ) },
+			{ "start-dialogue", new Value.FunctionValue( SetStartDialogue ) },
+			{ "set", new Value.FunctionValue( SetVariable ) },
+		};
+
+		foreach ( var function in functions )
+		{
+			functionEnvironment.SetVariable( function.Key, function.Value );
+		}
+
+		return functionEnvironment;
 	}
 
 	private Value SetVariable( IEnvironment environment, Value[] values )
@@ -195,7 +209,7 @@ public class Dialogue
 			"bg" =>
 				LabelBackgroundArgument,
 			"input" =>
-				LabelTextInputArgument,
+				LabelInputArgument,
 			"after" =>
 				LabelAfterArgument,
 			_ => throw new ArgumentOutOfRangeException()
@@ -379,7 +393,7 @@ public class Dialogue
 		label.Assets.Add( new BackgroundAsset( $"{Settings.BackgroundsPath}{backgroundName}" ) );
 	}
 
-	private static void LabelTextInputArgument( SParen arguments, Label label )
+	private static void LabelInputArgument( SParen arguments, Label label )
 	{
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 

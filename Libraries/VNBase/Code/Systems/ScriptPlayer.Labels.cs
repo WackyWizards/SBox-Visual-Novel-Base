@@ -14,7 +14,7 @@ public sealed partial class ScriptPlayer
 		ActiveLabel = label;
 		DialogueFinished = false;
 
-		if ( Game.IsEditor )
+		if ( LoggingEnabled )
 		{
 			Log.Info( $"Loading Label {label.Name}" );
 		}
@@ -27,7 +27,7 @@ public sealed partial class ScriptPlayer
 		{
 			sound.Play();
 
-			if ( Game.IsEditor )
+			if ( LoggingEnabled )
 			{
 				Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
 			}
@@ -45,7 +45,8 @@ public sealed partial class ScriptPlayer
 
 		_cts = new();
 
-		string formattedText = label.Text.Format( _environment ?? new EnvironmentMap() );
+		IEnvironment environment = _environment;
+		string formattedText = label.Text.Format( environment );
 		if ( Settings?.TextEffectEnabled ?? false && Settings.TextEffect is not null )
 		{
 			try
@@ -67,7 +68,6 @@ public sealed partial class ScriptPlayer
 
 		if ( ActiveScript is not null )
 		{
-			var environment = _environment ?? new EnvironmentMap();
 			SetChoices( environment, label.Choices );
 		}
 	}

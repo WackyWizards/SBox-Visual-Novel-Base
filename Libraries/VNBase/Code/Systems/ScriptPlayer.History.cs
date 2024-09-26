@@ -10,12 +10,12 @@ public sealed partial class ScriptPlayer
 	/// </summary>
 	public List<Dialogue.Label> DialogueHistory { get; set; } = new();
 
-	private void AddHistory( Dialogue.Label dialogue )
+	private void AddHistory( Dialogue.Label label )
 	{
-		if ( !DialogueHistory.Contains( dialogue ) )
+		if ( !DialogueHistory.Contains( label ) )
 		{
-			dialogue.Text = dialogue.Text.Format( _environment );
-			DialogueHistory.Add( dialogue );
+			label.Text = label.Text.Format( _environment );
+			DialogueHistory.Add( label );
 		}
 	}
 }

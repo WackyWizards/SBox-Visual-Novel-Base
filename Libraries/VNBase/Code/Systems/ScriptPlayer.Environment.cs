@@ -4,6 +4,21 @@ namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
+	/// <summary>
+	/// The active dialogue environment.
+	/// Will be empty if there is no active dialogue.
+	/// </summary>
+	private IEnvironment _environment = new EnvironmentMap();
+
+	protected override void OnDestroy()
+	{
+		GlobalEnvironment.Clear();
+		base.OnDestroy();
+	}
+
+	/// <summary>
+	/// Sets the active dialogue environment.
+	/// </summary>
 	internal void SetEnvironment( Dialogue dialogue )
 	{
 		if ( ActiveScript is null )
@@ -34,25 +49,5 @@ public sealed partial class ScriptPlayer
 		}
 
 		_environment = environment;
-	}
-
-	/// <summary>
-	/// Logs all of the variables in the environment.
-	/// </summary>
-	/// <param name="environment">The environment to log the variables of.</param>
-	internal static void LogVariables( IEnvironment environment )
-	{
-		foreach ( var val in environment.GetVariables() )
-		{
-			if ( val.Value is Value.ListValue list )
-			{
-				foreach ( var v in list.ValueList )
-				{
-					Log.Info( v );
-				}
-			}
-
-			Log.Info( $"Variable: {val.Key} = {val.Value}" );
-		}
 	}
 }

@@ -1,16 +1,10 @@
 (label start
-    (text "This is a condition test script.")
-    (choice "Continue" jump options)
-
-    // This choice is only available if the secret ending is unlocked.
-    (choice "Secret Ending" cond (= secret-ending true) jump secret)
-)
-
-(label options
     (text "What Now?")
-    (choice "End The Script" jump end)
-    (choice "Return To Start" jump start)
     (choice "Unlock Secret Ending" jump unlock-secret)
+    (choice "Normal Ending" jump normal-ending)
+    
+    // This choice is conditional, and will only be shown if the secret ending is unlocked.
+    (choice "Secret Ending" cond (= secret-ending-unlocked true) jump secret-ending)
 )
 
 (label unlock-secret
@@ -18,18 +12,18 @@
 
     // After processing this label, we set the secret-ending variable to true,
     // and jump back to the start label.
-    (after (set secret-ending true) jump start)
+    (after (set secret-ending-unlocked true) jump start)
 )
 
-(label end
+(label normal-ending
     (text "Normal Ending!")
 	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
-(label secret
+(label secret-ending
     (text "Secret Ending!")
 	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
-(set secret-ending false)
+(set secret-ending-unlocked false)
 (start-dialogue start)

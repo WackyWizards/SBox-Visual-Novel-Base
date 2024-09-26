@@ -35,16 +35,20 @@ public class FormattableText : IEquatable<string>
         return Regex.Replace( Text, "\\{(\\w+)\\}", match =>
         {
             var variableName = match.Groups[1].Value;
-            try
-            {
-                var value = environment.GetVariable( variableName );
-                return value.ToString();
-            }
-            catch ( UndefinedVariableException )
-            {
-                return string.Empty;
-            }
+            return GetVariableValue( environment, variableName ).ToString();
         } );
+    }
+
+    private static Value GetVariableValue( IEnvironment environment, string variableName )
+    {
+        try 
+        {
+            return environment.GetVariable( variableName );
+        }
+        catch
+        {
+            return Value.NoneValue.None;
+        }
     }
 
     public static implicit operator string( FormattableText formattableText ) => formattableText.Text;

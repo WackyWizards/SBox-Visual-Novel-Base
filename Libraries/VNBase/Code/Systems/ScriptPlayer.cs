@@ -62,12 +62,6 @@ public sealed partial class ScriptPlayer : Component
 
 	private Dialogue? _activeDialogue;
 
-	/// <summary>
-	/// The script environment.
-	/// Will be empty if there is no active dialogue.
-	/// </summary>
-	private IEnvironment _environment = new EnvironmentMap();
-
 	private CancellationTokenSource? _cts;
 
 	protected override void OnStart()
@@ -153,7 +147,10 @@ public sealed partial class ScriptPlayer : Component
 			scriptName = Path.GetFileNameWithoutExtension( script.Path );
 		}
 
-		Log.Info( $"Loading script: {scriptName}" );
+		if ( LoggingEnabled )
+		{
+			Log.Info( $"Loading script: {scriptName}" );
+		}
 
 		ActiveScript = script;
 		script.OnLoad();
@@ -182,16 +179,21 @@ public sealed partial class ScriptPlayer : Component
 		DialogueChoices.Clear();
 
 		ActiveScript.OnUnload();
-		if ( ActiveScript.NextScript is not null )
+
+		var nextScript = ActiveScript.NextScript;
+		if ( nextScript is not null )
 		{
-			LoadScript( ActiveScript.NextScript );
+			LoadScript( nextScript );
 		}
 		else
 		{
 			ActiveScript = null;
 		}
 
-		Log.Info( $"Unloaded active script." );
+		if ( LoggingEnabled )
+		{
+			Log.Info( $"Unloaded active script." );
+		}
 	}
 
 	/// <summary>

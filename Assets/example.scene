@@ -31,8 +31,10 @@
           "ActiveScript": {
             "Dialogue": "",
             "NextScript": {
-              "Dialogue": ""
-            }
+              "Dialogue": "",
+              "Path": ""
+            },
+            "Path": ""
           },
           "Characters": [],
           "DialogueFinished": false,
@@ -42,7 +44,7 @@
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "VNHud"
           },
-          "InitialScript": "scripts/examplescript.vnscript",
+          "InitialScript": "/scripts/startscript.vnscript",
           "Settings": {
             "_type": "component",
             "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
@@ -146,5 +148,6 @@
   "Description": "",
   "ResourceVersion": 1,
   "__references": [],
+  "IsValid": true,
   "__version": 1
 }
