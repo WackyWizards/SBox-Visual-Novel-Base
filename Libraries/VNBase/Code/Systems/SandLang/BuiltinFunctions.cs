@@ -7,7 +7,7 @@ namespace SandLang;
 internal static class BuiltinFunctions
 {
 	/// <summary>
-	/// This dictionary contains mappings from symbols to builtin executable functions
+	/// Contains mappings from symbols to builtin executable functions
 	/// </summary>
 	public static Dictionary<string, Value.FunctionValue> Builtins { get; } = new()
 	{
@@ -17,7 +17,6 @@ internal static class BuiltinFunctions
 		["+"] = new Value.FunctionValue( SumFunction ),
 		["-"] = new Value.FunctionValue( SubtractFunction ),
 		["*"] = new Value.FunctionValue( MulFunction ),
-		["cmp"] = new Value.FunctionValue( CmpFunction ),
 		["set"] = new Value.FunctionValue( SetFunction ),
 		["defun"] = new Value.FunctionValue( DefineFunction ),
 		["pow"] = new Value.FunctionValue( PowFunction ),
@@ -95,13 +94,6 @@ internal static class BuiltinFunctions
 		}
 
 		return Value.NoneValue.None;
-	}
-
-	private static Value CmpFunction( IEnvironment environment, Value[] values )
-	{
-		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
-		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
-		return new Value.NumberValue( v1!.Number.CompareTo( v2!.Number ) );
 	}
 
 	private static Value MulFunction( IEnvironment environment, Value[] values )
