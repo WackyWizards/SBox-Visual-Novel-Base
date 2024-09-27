@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 using SandLang;
 
@@ -6,14 +5,9 @@ namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-	public List<string> DialogueChoices { get; private set; } = new();
+	public List<Dialogue.Choice> DialogueChoices { get; private set; } = new();
 
-	public void SetChoices( IEnvironment environment, List<Dialogue.Choice> choices )
-	{
-		DialogueChoices = choices.Where( x => x.IsAvailable( environment ) ).Select( x => x.Text.Format( environment ) ).ToList();
-	}
-
-	public void ExecuteChoice( int choiceIndex )
+	public void ExecuteChoice( Dialogue.Choice choice )
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{
@@ -27,10 +21,14 @@ public sealed partial class ScriptPlayer
 			return;
 		}
 
-		var choice = ActiveLabel.Choices[choiceIndex];
+		Dialogue.Label targetLabel = _activeDialogue.Labels[choice.TargetLabel];
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
-			SetLabel( _activeDialogue.Labels[choice.TargetLabel] );
+			SetLabel( targetLabel );
+		}
+		else
+		{
+			Log.Error( $"Tried executing choice which isn't available: '{targetLabel.Name}'. This shouldn't be possible!" );
 		}
 	}
 }

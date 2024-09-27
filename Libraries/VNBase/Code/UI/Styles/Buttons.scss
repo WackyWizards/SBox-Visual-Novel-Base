@@ -28,6 +28,10 @@ $button-font-size: $text-font-size;
     &:active {
         sound-in: "ui-click";
     }
+    
+    &.hidden {
+        display: none;
+    }
 }
 
 // Control Panel Buttons.

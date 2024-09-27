@@ -1,6 +1,6 @@
 (label start
     (text "What Now?")
-    (choice "Unlock Secret Ending" jump unlock-secret)
+    (choice "Unlock Secret Ending" cond (= secret-ending-unlocked false) jump unlock-secret)
     (choice "Normal Ending" jump normal-ending)
     
     // This choice is conditional, and will only be shown if the secret ending is unlocked.

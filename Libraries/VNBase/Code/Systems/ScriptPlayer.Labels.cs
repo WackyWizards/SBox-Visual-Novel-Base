@@ -9,7 +9,7 @@ namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-    private async void SetLabel( Dialogue.Label label )
+	private async void SetLabel( Dialogue.Label label )
 	{
 		ActiveLabel = label;
 		DialogueFinished = false;
@@ -68,7 +68,7 @@ public sealed partial class ScriptPlayer
 
 		if ( ActiveScript is not null )
 		{
-			SetChoices( environment, label.Choices );
+			DialogueChoices = label.Choices;
 		}
 	}
 

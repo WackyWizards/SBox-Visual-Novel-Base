@@ -2,6 +2,7 @@
 @using Sandbox.UI;
 @using System;
 @using System.Linq;
+@using SandLang;
 
 @namespace VNBase.UI
 @inherits SubPanel
@@ -10,21 +11,30 @@
     @if (Player.DialogueChoices.Any() && Player.DialogueFinished)
     {
         <div class="choicePanel">
-            @for (var i = 0; i < Player.DialogueChoices.Count; i++)
+            @foreach (var choice in Player.DialogueChoices)
             {
-                var buttonIndex = i;
-                <button class="choice" onclick="@(() => Player.ExecuteChoice(buttonIndex))">
-                    @Player.DialogueChoices[i]
+                @{
+                    IEnvironment environment = Player.ActiveScript.GetEnvironment();
+                    string text = choice.Text;
+                    bool isAvailable = choice.IsAvailable(environment);
+                }
+
+                <button class="choice @(isAvailable ? "" : "hidden")" onclick="@(() => ExecuteChoice(choice))">
+                    @text
                 </button>
             }
         </div>
     }
 </root>
 
-
 @code {
+    private void ExecuteChoice(Dialogue.Choice choice)
+    {
+        Player.ExecuteChoice(choice);
+    }
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices?.Count);
+        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices.Count);
     }
 }
