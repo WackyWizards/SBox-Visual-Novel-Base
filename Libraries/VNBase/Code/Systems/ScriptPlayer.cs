@@ -77,7 +77,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 
-	private bool SkipActionPressed => Settings?.SkipActions.Any( x => Input.Pressed( x.Action ) ) ?? false;
+	private bool SkipActionPressed => Settings?.SkipActions.Any( x => x.Pressed ) ?? false;
 
 	protected override void OnUpdate()
 	{

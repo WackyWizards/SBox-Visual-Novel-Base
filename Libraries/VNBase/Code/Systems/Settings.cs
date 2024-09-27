@@ -35,7 +35,7 @@ public class Settings : Component
 	/// </summary>
 	[InlineEditor]
 	[Property, ToggleGroup( "SkipActionEnabled" )]
-	public List<SkipInput> SkipActions { get; set; } = new()
+	public List<Input> SkipActions { get; set; } = new()
 	{
 		"jump"
 	};
@@ -45,6 +45,22 @@ public class Settings : Component
 	/// </summary>
 	[Property, ToggleGroup( "SkipActionEnabled" )]
 	public bool SkipActionEnabled { get; set; } = true;
+
+	/// <summary>
+	/// The Inputs to show the history UI.
+	/// </summary>
+	[InlineEditor]
+	[Title( "History Inputs" )]
+	[Property, Group( "Actions" )]
+	public List<Input> HistoryInputs { get; set; } = new();
+
+	/// <summary>
+	/// The Inputs to toggle the UI.
+	/// </summary>
+	[InlineEditor]
+	[Title( "Hide UI Inputs" )]
+	[Property, Group( "Actions" )]
+	public List<Input> HideUIInputs { get; set; } = new();
 
 	/// <summary>
 	/// Path to the background image assets.
@@ -62,7 +78,7 @@ public class Settings : Component
 	public const string CharacterResourcesPath = "/characters/";
 }
 
-public class SkipInput : IEquatable<InputAction>
+public class Input : IEquatable<InputAction>
 {
 	[InputAction]
 	public string Action { get; set; } = string.Empty;
@@ -72,6 +88,12 @@ public class SkipInput : IEquatable<InputAction>
 		return Action == other?.Name;
 	}
 
-	public static implicit operator string( SkipInput skipInput ) => skipInput.Action;
-	public static implicit operator SkipInput( string action ) => new() { Action = action };
+	[Hide, JsonIgnore]
+	public bool Pressed => Sandbox.Input.Pressed( this );
+
+	[Hide, JsonIgnore]
+	public bool Down => Sandbox.Input.Down( this );
+
+	public static implicit operator string( Input input ) => input.Action;
+	public static implicit operator Input( string action ) => new() { Action = action };
 }

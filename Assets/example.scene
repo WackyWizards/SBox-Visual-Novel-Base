@@ -55,6 +55,16 @@
         {
           "__type": "VNBase.Settings",
           "__guid": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
+          "HideUIInputs": [
+            {
+              "Action": "Score"
+            }
+          ],
+          "HistoryInputs": [
+            {
+              "Action": "Menu"
+            }
+          ],
           "SkipActionEnabled": true,
           "SkipActions": [
             {
