@@ -1,4 +1,5 @@
 @using Sandbox.UI;
+@using System.Linq;
 
 @namespace VNBase.UI
 @inherits SubPanel
@@ -9,9 +10,10 @@
         @foreach (var dialogue in Player.DialogueHistory)
         {
             <div class="dialogue">
-                @if ( dialogue.SpeakingCharacter is not null )
+                @if (dialogue.SpeakingCharacter is not null)
                 {
-                    <div class="character" style="color: @dialogue.SpeakingCharacter.NameColor.Rgba">@(dialogue.SpeakingCharacter.Name):</div>
+                    <div class="character" style="color: @dialogue.SpeakingCharacter.NameColor.Rgba">
+                        @(dialogue.SpeakingCharacter.Name):</div>
                 }
                 <div class="text">@dialogue.Text</div>
             </div>
@@ -22,6 +24,16 @@
 </root>
 
 @code {
+    private bool IsInputPressed => Settings?.HistoryInputs.Any(x => x.Pressed) ?? false;
+
+    public override void Tick()
+    {
+        if (IsInputPressed)
+        {
+            this.ToggleVisibility();
+        }
+    }
+
     protected override int BuildHash()
     {
         return Player.DialogueHistory.Count;

@@ -8,18 +8,28 @@
 <root>
     <div class="buttons" @ref=ControlButtons>
         <button class="control-button" id="DialogueHistory">History</button>
-        <button class="control-button" onclick="@HideUI">@(_uiVisible ? "Hide UI" : "Show UI")</button>
+        <button class="control-button" onclick="@ToggleUI">@(UIVisible ? "Hide UI" : "Show UI")</button>
     </div>
 
-    <DialogueHistory class="hidden" Player="@Player" />
+    <DialogueHistory class="hidden" Player="@Player" Settings="@Player.Settings" Hud="@this.Hud" />
 </root>
 
 @code {
     public Panel ControlButtons { get; set; }
 
-    private bool _uiVisible = true;
+    public bool UIVisible { get; private set; } = true;
 
-    private void HideUI()
+    private bool IsInputPressed => Settings?.HideUIInputs.Any(x => x.Pressed) ?? false;
+
+    public override void Tick()
+    {
+        if (IsInputPressed)
+        {
+            ToggleUI();
+        }
+    }
+
+    public void ToggleUI()
     {
         // Panels that should not be hidden
         Type[] panelsToNotHide = new Type[]
@@ -36,7 +46,12 @@
             panel.ToggleVisibility();
         }
 
-        _uiVisible = !_uiVisible;
+        UIVisible = !UIVisible;
+    }
+
+    private SubPanel GetSubPanelFromId(string id)
+    {
+        return this.ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
     }
 
     protected override void OnAfterTreeRender(bool firstTime)
@@ -57,8 +72,8 @@
         }
     }
 
-    private SubPanel GetSubPanelFromId(string id)
+    protected override int BuildHash()
     {
-        return this.ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
+        return HashCode.Combine(UIVisible);
     }
 }

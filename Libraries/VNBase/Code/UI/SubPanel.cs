@@ -5,6 +5,8 @@ namespace VNBase.UI;
 public class SubPanel : Panel
 {
 	public ScriptPlayer? Player { get; set; }
+	
+	public Settings? Settings { get; set; }
 
 	public VNHud? Hud { get; set; }
 
