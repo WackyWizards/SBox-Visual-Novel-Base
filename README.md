@@ -18,8 +18,8 @@ https://www.youtube.com/watch?v=X50jqOHCtVs
 
 Anyone is free to contribute to the base by creating a pull request. Contributions are always welcome if you have any improvements, bug fixes or just wish to add some cool new features to the base. Any and all help is appreciated.
 
-For technical support and/or questions related to VNBase, please either create a new issue, or join my discord server found below.
-https://discord.gg/JVzVaJDHAQ
+For technical support and/or questions related to VNBase, please either create a new issue, or join the discord server found below.
+https://discord.gg/kKU6a4AYNk
 
 ## SandLang
 
