@@ -1,4 +1,5 @@
 # Source 2/Sandbox stuff
+.sbox/*
 *.vpk
 *.los
 *.vmap
