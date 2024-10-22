@@ -16,6 +16,8 @@ namespace VNBase;
 [Category( "VNBase" )]
 public sealed partial class ScriptPlayer : Component
 {
+	[Property] public bool IsScriptActive { get; set; }
+
 	/// <summary>
 	/// If not empty, will load the script at this path on initial component start.
 	/// </summary>
@@ -160,6 +162,7 @@ public sealed partial class ScriptPlayer : Component
 
 		SetEnvironment( _activeDialogue );
 		SetLabel( _activeDialogue.InitialLabel );
+		IsScriptActive = true;
 	}
 
 	/// <summary>
@@ -179,6 +182,7 @@ public sealed partial class ScriptPlayer : Component
 		DialogueChoices.Clear();
 
 		ActiveScript.OnUnload();
+		IsScriptActive = false;
 
 		var nextScript = ActiveScript.NextScript;
 		if ( nextScript is not null )
