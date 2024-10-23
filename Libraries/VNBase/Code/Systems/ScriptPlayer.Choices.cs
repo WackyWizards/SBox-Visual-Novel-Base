@@ -5,8 +5,6 @@ namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-	public List<Dialogue.Choice> DialogueChoices { get; private set; } = new();
-
 	public void ExecuteChoice( Dialogue.Choice choice )
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
@@ -25,6 +23,7 @@ public sealed partial class ScriptPlayer
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
 			SetLabel( targetLabel );
+			ActiveScript.OnChoiceSelected?.Invoke( choice );
 		}
 		else
 		{

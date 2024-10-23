@@ -1,6 +1,7 @@
 using Sandbox;
-using SandLang;
+using System;
 using System.Collections.Generic;
+using SandLang;
 
 namespace VNBase.Assets;
 
@@ -29,6 +30,11 @@ public class Script : IAsset
 	/// If this script was initialized from a file or not.
 	/// </summary>
 	public bool FromFile => !string.IsNullOrEmpty( Path );
+
+	/// <summary>
+	/// Called when a choice is selected from this script.
+	/// </summary>
+	public Action<Dialogue.Choice>? OnChoiceSelected { get; set; }
 
 	/// <summary>
 	/// Create a new empty script.
