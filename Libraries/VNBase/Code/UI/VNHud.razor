@@ -11,7 +11,7 @@
 
 @if ( Player is not null && Player.ActiveScript is not null )
 {
-    <root style="background-image: url('@(Player.Background)')">
+    <root style="background-image: url('@(Player.State.Background)')">
         <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         <TextInput class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         <Choices class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this"/>
@@ -45,6 +45,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player, Player?.ActiveScript, Player?.Background);
+        return HashCode.Combine(Player, Player?.ActiveScript, Player?.State.Background);
     }
 }

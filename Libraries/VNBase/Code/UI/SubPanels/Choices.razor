@@ -8,10 +8,10 @@
 @inherits SubPanel
 
 <root>
-    @if (Player.DialogueChoices.Any() && Player.DialogueFinished)
+    @if (Player.State.Choices.Any() && Player.DialogueFinished)
     {
         <div class="choicePanel">
-            @foreach (var choice in Player.DialogueChoices)
+            @foreach (var choice in Player.State.Choices)
             {
                 @{
                     IEnvironment environment = Player.ActiveScript.GetEnvironment();
@@ -35,6 +35,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.DialogueChoices.Count);
+        return HashCode.Combine(Player.State.DialogueText, Player.DialogueFinished, Player.State.Choices.Count);
     }
 }

@@ -1,4 +1,5 @@
 using Sandbox;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -34,29 +35,14 @@ public sealed partial class ScriptPlayer : Component
 	[Property, Group( "Script" ), ReadOnly] public Dialogue.Label? ActiveLabel { get; private set; }
 
 	/// <summary>
-	/// The currently active script label text.
+	/// The <see cref="ScriptState"/>.
 	/// </summary>
-	[Property, Group( "Dialogue" )] public string? DialogueText { get; set; }
-
-	/// <summary>
-	/// Path to the currently active background image.
-	/// </summary>
-	[Property, Group( "Dialogue" )] public string? Background { get; set; }
+	[Property, Group( "Script" ), ReadOnly] public ScriptState State { get; private set; } = new();
 
 	/// <summary>
 	/// If the dialogue has finished writing text.
 	/// </summary>
 	[Property, Group( "Dialogue" )] public bool DialogueFinished { get; set; }
-
-	/// <summary>
-	/// The currently active speaking character.
-	/// </summary>
-	[Property, Group( "Characters" )] public Character? SpeakingCharacter { get; set; }
-
-	/// <summary>
-	/// Characters to display for this label.
-	/// </summary>
-	[Property, Group( "Characters" )] public List<Character> Characters { get; set; } = new();
 
 	[Property, RequireComponent] public Settings? Settings { get; set; }
 
@@ -99,7 +85,7 @@ public sealed partial class ScriptPlayer : Component
 			{
 				SkipDialogue();
 			}
-			else if ( !DialogueChoices.Any() )
+			else if ( !State.Choices.Any() )
 			{
 				ExecuteAfterLabel();
 			}
@@ -175,11 +161,16 @@ public sealed partial class ScriptPlayer : Component
 			return;
 		}
 
-		_activeDialogue = null;
-		DialogueText = null;
-		SpeakingCharacter = null;
-		Background = null;
-		DialogueChoices.Clear();
+		// Safety check. Should hopefully not cause issues.
+		if ( ActiveScript.OnChoiceSelected is not null )
+		{
+			foreach ( var @delegate in ActiveScript.OnChoiceSelected.GetInvocationList() )
+			{
+				ActiveScript.OnChoiceSelected -= (Action<Dialogue.Choice>)@delegate;
+			}
+		}
+
+		State.Clear();
 
 		ActiveScript.OnUnload();
 		IsScriptActive = false;

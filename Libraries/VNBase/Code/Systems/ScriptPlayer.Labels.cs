@@ -19,9 +19,9 @@ public sealed partial class ScriptPlayer
 			Log.Info( $"Loading Label {label.Name}" );
 		}
 
-		Characters.Clear();
-		label.Characters.ForEach( Characters.Add );
-		SpeakingCharacter = label.SpeakingCharacter;
+		State.Characters.Clear();
+		label.Characters.ForEach( State.Characters.Add );
+		State.SpeakingCharacter = label.SpeakingCharacter;
 
 		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
 		{
@@ -35,12 +35,12 @@ public sealed partial class ScriptPlayer
 
 		try
 		{
-			Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault()?.Path;
+			State.Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault()?.Path;
 		}
 		catch ( InvalidOperationException )
 		{
 			Log.Error( $"There can only be one {nameof( BackgroundAsset )} in label {label.Name}!" );
-			Background = null;
+			State.Background = null;
 		}
 
 		_cts = new();
@@ -51,16 +51,16 @@ public sealed partial class ScriptPlayer
 		{
 			try
 			{
-				await Settings.TextEffect.Play( formattedText, Settings.TextEffectDelay, ( text ) => DialogueText = text, _cts.Token );
+				await Settings.TextEffect.Play( formattedText, Settings.TextEffectDelay, ( text ) => State.DialogueText = text, _cts.Token );
 			}
 			catch ( OperationCanceledException )
 			{
-				DialogueText = formattedText;
+				State.DialogueText = formattedText;
 			}
 		}
 		else
 		{
-			DialogueText = formattedText;
+			State.DialogueText = formattedText;
 		}
 
 		AddHistory( label );
@@ -68,7 +68,7 @@ public sealed partial class ScriptPlayer
 
 		if ( ActiveScript is not null )
 		{
-			DialogueChoices = label.Choices;
+			State.Choices = label.Choices;
 		}
 	}
 

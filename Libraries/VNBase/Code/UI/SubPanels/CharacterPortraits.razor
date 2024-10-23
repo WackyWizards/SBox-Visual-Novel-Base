@@ -5,7 +5,7 @@
 @inherits SubPanel
 
 <root>
-    @foreach (var character in Player.Characters)
+    @foreach (var character in Player.State.Characters)
     {
         <CharacterPortrait Character="@character" />
     }
@@ -14,6 +14,6 @@
 @code {
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.Characters.Count);
+        return HashCode.Combine(Player.State.DialogueText, Player.State.Characters.Count);
     }
 }

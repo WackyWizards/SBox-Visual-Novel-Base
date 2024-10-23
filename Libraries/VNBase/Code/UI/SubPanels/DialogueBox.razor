@@ -8,19 +8,19 @@
 @inherits SubPanel
 
 <root>
-    @if (Player.SpeakingCharacter is not null)
+    @if (Player.State.SpeakingCharacter is not null)
     {
         <div class="characterPanel">
-            <label class="character" style="color: @Player.SpeakingCharacter.NameColor.Rgba">@Player.SpeakingCharacter.Name</label>
-            @if (!string.IsNullOrEmpty(Player.SpeakingCharacter.Title))
+            <label class="character" style="color: @Player.State.SpeakingCharacter.NameColor.Rgba">@Player.State.SpeakingCharacter.Name</label>
+            @if (!string.IsNullOrEmpty(Player.State.SpeakingCharacter.Title))
             {
-                <label class="title" style="color: @Player.SpeakingCharacter.TitleColor.Rgba">@Player.SpeakingCharacter.Title</label>
+                <label class="title" style="color: @Player.State.SpeakingCharacter.TitleColor.Rgba">@Player.State.SpeakingCharacter.Title</label>
             }
         </div>
     }
 
     <div class="dialoguePanel">
-        <label class="dialogueText">@Player.DialogueText</label>
+        <label class="dialogueText">@Player.State.DialogueText</label>
 
         @if (CanContinue)
         {
@@ -34,11 +34,11 @@
 
     private bool CanContinue
     {
-        get => Player.DialogueFinished && !Player.DialogueChoices.Any() && (TextInput?.Entry is null || TextInput.CanContinue);
+        get => Player.DialogueFinished && !Player.State.Choices.Any() && (TextInput?.Entry is null || TextInput.CanContinue);
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.DialogueText, Player.DialogueFinished, Player.SpeakingCharacter, Player.DialogueChoices.Count, TextInput?.CanContinue);
+        return HashCode.Combine(Player.State.DialogueText, Player.DialogueFinished, Player.State.SpeakingCharacter, Player.State.Choices.Count, TextInput?.CanContinue);
     }
 }
