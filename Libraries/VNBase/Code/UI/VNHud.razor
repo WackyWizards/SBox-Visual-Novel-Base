@@ -9,15 +9,15 @@
 @attribute [Category("VNBase")]
 @inherits PanelComponent
 
-@if ( Player is not null && Player.ActiveScript is not null )
+@if (Player is not null)
 {
-    <root style="background-image: url('@(Player.State.Background)')">
-        <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this"/>
-        <TextInput class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this"/>
-        <Choices class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this"/>
-        <DialogueBox Player="@Player" Settings="@Player.Settings" Hud="@this"/>
-        <ControlPanel Player="@Player" Settings="@Player.Settings" Hud="@this"/>
-    </root> 
+    <root class="@(Player.IsScriptActive ? "" : "hidden")" style="background-image: url('@(Player.State.Background)')">
+        <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this" />
+        <TextInput class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this" />
+        <Choices class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this" />
+        <DialogueBox Player="@Player" Settings="@Player.Settings" Hud="@this" />
+        <ControlPanel Player="@Player" Settings="@Player.Settings" Hud="@this" />
+    </root>
 }
 
 @code {
@@ -31,7 +31,7 @@
             {
                 Player = Scene.GetAllComponents<ScriptPlayer>().First();
             }
-            catch( InvalidOperationException )
+            catch (InvalidOperationException)
             {
                 ScriptPlayer.Log.Warning("No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!");
             }
@@ -45,6 +45,6 @@
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player, Player?.ActiveScript, Player?.State.Background);
+        return HashCode.Combine(Player, Player?.IsScriptActive, Player?.ActiveScript, Player?.State.Background);
     }
 }
