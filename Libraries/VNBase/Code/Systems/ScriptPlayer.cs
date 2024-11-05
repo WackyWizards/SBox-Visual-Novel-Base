@@ -27,12 +27,12 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The currently active script.
 	/// </summary>
-	[Property, Group( "Script" ), ReadOnly] public Script? ActiveScript { get; private set; }
+	public Script? ActiveScript { get; private set; }
 
 	/// <summary>
 	/// The currently active script label.
 	/// </summary>
-	[Property, Group( "Script" ), ReadOnly] public Dialogue.Label? ActiveLabel { get; private set; }
+	public Dialogue.Label? ActiveLabel { get; private set; }
 
 	/// <summary>
 	/// The <see cref="ScriptState"/>.
