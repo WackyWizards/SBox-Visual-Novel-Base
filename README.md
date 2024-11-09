@@ -4,11 +4,21 @@ VNBase is a library for creating visual novels or dialogue systems for S&Box Gam
 
 Scripts are written using a LISP-styled language called VNScript, a user-friendly DSL (Domain-Specific Language) designed for building VNBase scripts with ease.
 
+For further information about VNBase, please visit the wiki page or click [this link](https://github.com/kEllieGit/SBox-Visual-Novel-Base/wiki/What-is-VNBase%3F)
+
 ## Showcase
 
-Below is a video showcase of a simple example project made with VNBase.
+Below is a video showcase of a simple example project made with VNBase, along with the link to the file to try it out for yourself.
 
 https://www.youtube.com/watch?v=X50jqOHCtVs
+
+https://github.com/kEllieGit/SBox-Visual-Novel-Base/tree/master/Assets
+
+## How to make your own Visual Novel
+
+To get started on making your own Visual Novel, please refer to the documentation provided in the wiki that details the several ways to write the code to get started. Link provided below.
+
+https://github.com/kEllieGit/SBox-Visual-Novel-Base/wiki/How-to-write-your-first-script
 
 ## Contributing
 
