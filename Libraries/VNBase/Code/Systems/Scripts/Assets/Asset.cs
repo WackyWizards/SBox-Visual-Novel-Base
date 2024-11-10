@@ -17,7 +17,7 @@ public interface IAsset
 /// A base class for all asset game resources.
 /// You should still mark asset classes that inherit from this with [GameResource(...)]
 /// </summary>
-public class AssetResource : GameResource, IAsset
+public abstract class AssetResource : GameResource, IAsset
 {
 	[Hide]
 	public string Path { get => ResourcePath; set => ResourcePath = value; }
