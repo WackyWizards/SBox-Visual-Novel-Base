@@ -3,11 +3,11 @@ namespace VNBase.Assets;
 /// <summary>
 /// A background image asset.
 /// </summary>
-public class BackgroundAsset : IAsset
+public class Background : IAsset
 {
 	public string Path { get; set; } = string.Empty;
 
-	public BackgroundAsset( string path )
+	public Background( string path )
 	{
 		Path = path;
 	}

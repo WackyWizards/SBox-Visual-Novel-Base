@@ -382,7 +382,7 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 
 		string soundName = argument.Name;
-		label.Assets.Add( new SoundAsset( soundName ) );
+		label.Assets.Add( new VNBase.Assets.Sound( soundName ) );
 	}
 
 	private static void LabelBackgroundArgument( SParen arguments, Label label )
@@ -390,7 +390,7 @@ public class Dialogue
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 
 		string backgroundName = argument.Name;
-		label.Assets.Add( new BackgroundAsset( $"{Settings.BackgroundsPath}{backgroundName}" ) );
+		label.Assets.Add( new Background( $"{Settings.BackgroundsPath}{backgroundName}" ) );
 	}
 
 	private static void LabelInputArgument( SParen arguments, Label label )

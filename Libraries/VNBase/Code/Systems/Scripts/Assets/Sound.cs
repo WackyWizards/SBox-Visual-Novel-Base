@@ -5,7 +5,7 @@ namespace VNBase.Assets;
 /// <summary>
 /// A playable sound asset.
 /// </summary>
-public class SoundAsset : IAsset
+public class Sound : IAsset
 {
 	/// <summary>
 	/// The name of the <see cref="SoundEvent"/> this asset is tied to.
@@ -47,12 +47,12 @@ public class SoundAsset : IAsset
 
 	private string _path = string.Empty;
 
-	public SoundAsset( string eventName )
+	public Sound( string eventName )
 	{
 		EventName = eventName;
 	}
 
-	public SoundAsset( SoundEvent soundEvent )
+	public Sound( SoundEvent soundEvent )
 	{
 		EventName = soundEvent.ResourceName;
 		Event = soundEvent;
@@ -60,7 +60,7 @@ public class SoundAsset : IAsset
 
 	public void Play()
 	{
-		Handle = Sound.Play( EventName );
+		Handle = Sandbox.Sound.Play( EventName );
 	}
 
 	public void Stop( float fadeTime = 0 )

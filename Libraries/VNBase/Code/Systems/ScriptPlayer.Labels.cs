@@ -23,7 +23,7 @@ public sealed partial class ScriptPlayer
 		label.Characters.ForEach( State.Characters.Add );
 		State.SpeakingCharacter = label.SpeakingCharacter;
 
-		foreach ( SoundAsset sound in label.Assets.OfType<SoundAsset>() )
+		foreach ( Assets.Sound sound in label.Assets.OfType<Assets.Sound>() )
 		{
 			sound.Play();
 
@@ -35,11 +35,11 @@ public sealed partial class ScriptPlayer
 
 		try
 		{
-			State.Background = label.Assets.OfType<BackgroundAsset>().SingleOrDefault()?.Path;
+			State.Background = label.Assets.OfType<Background>().SingleOrDefault()?.Path;
 		}
 		catch ( InvalidOperationException )
 		{
-			Log.Error( $"There can only be one {nameof( BackgroundAsset )} in label {label.Name}!" );
+			Log.Error( $"There can only be one {nameof( Background )} in label {label.Name}!" );
 			State.Background = null;
 		}
 
