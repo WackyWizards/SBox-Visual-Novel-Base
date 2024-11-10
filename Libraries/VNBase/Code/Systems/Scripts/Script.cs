@@ -82,12 +82,7 @@ public class Script : IAsset
 	/// </summary>
 	public virtual IEnvironment GetEnvironment()
 	{
-		_environment ??= new EnvironmentMap( new Dictionary<string, Value>()
-		{
-			// You may manually assign unique script variables here.
-		} );
-
-		return _environment;
+		return _environment ??= new EnvironmentMap( new Dictionary<string, Value>() );
 	}
 
 	private IEnvironment? _environment;
