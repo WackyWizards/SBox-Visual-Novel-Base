@@ -33,8 +33,10 @@
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
       "NoWarn": "1701;1702;1591;",
       "WarningsAsErrors": "",
+      "TreatWarningsAsErrors": false,
       "Nullables": true,
       "Whitelist": true,
+      "ReleaseMode": "Debug",
       "AssemblyReferences": [],
       "IgnoreFolders": [
         "editor",
