@@ -1,11 +1,28 @@
 {
-  "__guid": "afa4764d-9f78-44c4-8bc0-dbd1c4b690dc",
+  "__guid": "0d5120fb-9b35-4e6c-b16b-ae7384f6657a",
   "GameObjects": [
+    {
+      "__guid": "c3d718bb-f649-47da-9aeb-f73006e7013b",
+      "Flags": 0,
+      "Name": "Scene Information",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.SceneInformation",
+          "__guid": "5bfd8ad2-a65b-4945-bec1-6ba8138d58b3",
+          "Description": "",
+          "SceneTags": "",
+          "Title": "example"
+        }
+      ]
+    },
     {
       "__guid": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
       "Flags": 0,
       "Name": "Player",
       "Enabled": true,
+      "NetworkMode": 1,
+      "NetworkOrphaned": 1,
       "Components": [
         {
           "__type": "Sandbox.ScreenPanel",
@@ -19,24 +36,7 @@
         {
           "__type": "VNBase.ScriptPlayer",
           "__guid": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
-          "ActiveLabel": {
-            "Name": "",
-            "Text": {
-              "Text": ""
-            },
-            "Characters": [],
-            "Choices": [],
-            "Assets": []
-          },
-          "ActiveScript": {
-            "Dialogue": "",
-            "NextScript": {
-              "Dialogue": "",
-              "Path": ""
-            },
-            "Path": ""
-          },
-          "Characters": [],
+          "AutomaticMode": false,
           "DialogueFinished": false,
           "Hud": {
             "_type": "component",
@@ -45,6 +45,7 @@
             "component_type": "VNHud"
           },
           "InitialScript": "/scripts/startscript.vnscript",
+          "IsScriptActive": false,
           "Settings": {
             "_type": "component",
             "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
@@ -138,9 +139,13 @@
     "MaxFixedUpdates": 5,
     "NetworkFrequency": 30,
     "NetworkInterpolation": true,
+    "PhysicsSubSteps": 1,
     "ThreadedAnimation": true,
     "TimeScale": 1,
     "UseFixedUpdate": true,
+    "Metadata": {
+      "Title": "example"
+    },
     "NavMesh": {
       "Enabled": false,
       "IncludeStaticBodies": true,
@@ -154,10 +159,9 @@
       "IncludedBodies": ""
     }
   },
+  "ResourceVersion": 2,
   "Title": "example",
-  "Description": "",
-  "ResourceVersion": 1,
+  "Description": null,
   "__references": [],
-  "IsValid": true,
-  "__version": 1
+  "__version": 2
 }
