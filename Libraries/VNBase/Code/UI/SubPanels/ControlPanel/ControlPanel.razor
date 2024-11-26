@@ -7,8 +7,9 @@
 
 <root>
     <div class="buttons" @ref=ControlButtons>
-        <button class="control-button" id="DialogueHistory">History</button>
+        <button class="control-button" onclick="@ToggleAutomaticMode">@(IsAutomaticMode ? "Manual" : "Auto")</button>
         <button class="control-button" onclick="@ToggleUI">@(UIVisible ? "Hide UI" : "Show UI")</button>
+        <button class="control-button" id="DialogueHistory">History</button>
     </div>
 
     <DialogueHistory class="hidden" Player="@Player" Settings="@Player.Settings" Hud="@this.Hud" />
@@ -19,6 +20,7 @@
 
     public bool UIVisible { get; private set; } = true;
 
+    private bool IsAutomaticMode => Player?.AutomaticMode ?? false;
     private bool IsInputPressed => Settings?.HideUIInputs.Any(x => x.Pressed) ?? false;
 
     public override void Tick()
@@ -29,17 +31,22 @@
         }
     }
 
+    public void ToggleAutomaticMode()
+    {
+        Player.AutomaticMode = !Player.AutomaticMode;
+    }
+
     public void ToggleUI()
     {
         // Panels that should not be hidden
-        Type[] panelsToNotHide = new Type[]
+        Type[] ignoredPanels = new Type[]
         {
             typeof(CharacterPortraits)
         };
 
         var panelsToHide = Parent.ChildrenOfType<SubPanel>()
-            .Skip(1)
-            .Where(x => !panelsToNotHide.Contains(x.GetType()));
+            .Where(x => !ignoredPanels.Contains(x.GetType()))
+            .Skip(1);
 
         foreach (var panel in panelsToHide)
         {
@@ -51,7 +58,7 @@
 
     private SubPanel GetSubPanelFromId(string id)
     {
-        return this.ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
+        return ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
     }
 
     protected override void OnAfterTreeRender(bool firstTime)

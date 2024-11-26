@@ -1,24 +1,26 @@
-@import "Colors.scss";
 @import "Fonts.scss";
 
 $button-font: $text-font;
 $button-font-size: $text-font-size;
+$button-primary-color: white;
+$button-hover-color: red;
+$button-background-color: rgba(35,35,35,0.9);
 
 // Generic Buttons.
 .button {
     width: 100%;
     height: 50px;
+    cursor: pointer;
     color: $button-primary-color;
     font-family: $button-font;
     font-size: $button-font-size;
-    text-shadow: 0px 0px 2px 5px black;
-    margin: 10px 0px 10px 0px;
+    text-shadow: 0 0 2px 5px black;
+    margin: 10px 0 10px 0;
     align-items: center;
     justify-content: center;
-    background-color: rgba(35,35,35,0.9);
-    box-shadow: 0px 0px 10px 2px rgba(35,35,35,0.9);
-    transition: all 0.1s linear;
-    cursor: pointer;
+    background-color: $button-background-color;
+    box-shadow: 0 0 10px 2px $button-background-color;
+    transition: all 0.1s;
 
     &:hover {
         color: $button-hover-color;
@@ -28,7 +30,7 @@ $button-font-size: $text-font-size;
     &:active {
         sound-in: "ui-click";
     }
-    
+
     &.hidden {
         display: none;
     }
@@ -43,8 +45,8 @@ $button-font-size: $text-font-size;
     font-size: $button-font-size;
     margin: 0 0 0 0;
     background-color: rgba(35,35,35,0);
-    box-shadow: 0px 0px 10px 2px rgba(35,35,35,0);
-    transition: all 0.1s linear;
+    box-shadow: 0 0 10px 2px rgba(35,35,35,0);
+    transition: all 0.1s;
 
     &:hover {
         color: $button-hover-color;
@@ -59,23 +61,22 @@ $button-font-size: $text-font-size;
 // Choice Selection Buttons.
 .choice {
     width: 100%;
-    height: 50px;
+    cursor: pointer;
     color: $button-primary-color;
     font-family: $button-font;
     font-size: $button-font-size;
-    text-shadow: 0px 0px 2px 2px black;
-    cursor: pointer;
+    text-shadow: 0 0 2px 2px black;
     background-color: rgba(0,0,0,0.85);
-    box-shadow: 0px 0px 8px 2px rgba(0,0,0,0.85);
+    box-shadow: 0 0 8px 2px rgba(0,0,0,0.85);
     align-items: center;
     justify-content: center;
     margin: 10px 0 0 0;
-    transition: all 0.1s linear;
+    transition: all 0.1s;
 
     &:hover {
         color: $button-hover-color;
         background-color: rgba(0,0,0,0.95);
-        box-shadow: 0px 0px 8px 2px rgba(0,0,0,0.95);
+        box-shadow: 0 0 8px 2px rgba(0,0,0,0.95);
         sound-in: "ui-hover";
     }
 

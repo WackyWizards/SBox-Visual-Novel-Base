@@ -11,9 +11,9 @@ TextInput {
         pointer-events: all;
         width: 500px;
         height: 75px;
-        font-size: $font-size;
         color: white;
+        font-size: $font-size;
         background-color: rgba(0,0,0,0.5);
-        box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.5);
+        box-shadow: 0 0 8px 4px rgba(0,0,0,0.5);
     }
 }
