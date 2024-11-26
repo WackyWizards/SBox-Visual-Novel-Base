@@ -3,10 +3,11 @@
 *.vpk
 *.los
 *.vmap
-tools_*_*.bin
 accesslist.txt
 *bakeresourcecache*
+tools_*_*.bin
 tools_asset_info.bin
+tools_thumbnail_cache.bin
 
 # Ignore compiled products
 *.generated.*
@@ -14,13 +15,15 @@ tools_asset_info.bin
 
 # Misc stuff
 *.csproj
+*.csproj.user
+*.sln
+*.code-workspace
 code/obj/
 code/properties/
 .intermediate/
 .vs/
 code/.vs
 code/*.csproj
-tools_thumbnail_cache.bin
 docs/html
 docs/doxygen/bin/
 
