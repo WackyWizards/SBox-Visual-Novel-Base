@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Collections.Generic;
 using VNBase.Assets;
 using VNBase.UI;
 using SandLang;
@@ -15,6 +14,7 @@ namespace VNBase;
 /// </summary>
 [Title( "VN Script Player" )]
 [Category( "VNBase" )]
+[Icon( "menu_book" )]
 public sealed partial class ScriptPlayer : Component
 {
 	[Property] public bool IsScriptActive { get; set; }
@@ -37,12 +37,17 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The <see cref="ScriptState"/>.
 	/// </summary>
-	[Property, Group( "Script" ), ReadOnly] public ScriptState State { get; private set; } = new();
+	[Property, Group( "Script" )] public ScriptState State { get; } = new();
 
 	/// <summary>
 	/// If the dialogue has finished writing text.
 	/// </summary>
 	[Property, Group( "Dialogue" )] public bool DialogueFinished { get; set; }
+
+	/// <summary>
+	/// Automatic mode moves through dialogues without choices automatically.
+	/// </summary>
+	[Property, Group( "Dialogue" )] public bool AutomaticMode { get; set; }
 
 	[Property, RequireComponent] public Settings? Settings { get; set; }
 
@@ -74,18 +79,25 @@ public sealed partial class ScriptPlayer : Component
 			return;
 		}
 
+		if ( ActiveScript is null || ActiveLabel is null )
+		{
+			return;
+		}
+
 		if ( SkipActionPressed )
 		{
-			if ( ActiveScript is null || ActiveLabel is null )
-			{
-				return;
-			}
-
 			if ( !DialogueFinished )
 			{
-				SkipDialogue();
+				SkipEffect();
 			}
-			else if ( !State.Choices.Any() )
+			else if ( State.Choices.Count == 0 )
+			{
+				ExecuteAfterLabel();
+			}
+		}
+		else if ( AutomaticMode )
+		{
+			if ( DialogueFinished && State.Choices.Count == 0 )
 			{
 				ExecuteAfterLabel();
 			}
@@ -123,13 +135,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <param name="script">Script to load.</param>
 	public void LoadScript( Script script )
 	{
-		if ( script is null )
-		{
-			Log.Error( "Unable to load script! Script is null!" );
-			return;
-		}
-
-		string? scriptName = string.Empty;
+		var scriptName = string.Empty;
 		if ( script.FromFile )
 		{
 			scriptName = Path.GetFileNameWithoutExtension( script.Path );
@@ -143,7 +149,7 @@ public sealed partial class ScriptPlayer : Component
 		ActiveScript = script;
 		script.OnLoad();
 
-		List<SParen> codeblocks = SParen.ParseText( ActiveScript.Dialogue ).ToList();
+		var codeblocks = SParen.ParseText( ActiveScript.Dialogue ).ToList();
 		_activeDialogue = Dialogue.ParseDialogue( codeblocks );
 
 		SetEnvironment( _activeDialogue );
@@ -194,7 +200,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// Skip the currently active text effect.
 	/// </summary>
-	public void SkipDialogue()
+	public void SkipEffect()
 	{
 		if ( !DialogueFinished && _cts is not null )
 		{

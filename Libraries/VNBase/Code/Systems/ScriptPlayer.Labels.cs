@@ -1,9 +1,9 @@
-using Sandbox;
 using System;
 using System.Linq;
-using SandLang;
+using System.Threading;
 using VNBase.UI;
 using VNBase.Assets;
+using SandLang;
 
 namespace VNBase;
 
@@ -23,7 +23,7 @@ public sealed partial class ScriptPlayer
 		label.Characters.ForEach( State.Characters.Add );
 		State.SpeakingCharacter = label.SpeakingCharacter;
 
-		foreach ( Assets.Sound sound in label.Assets.OfType<Assets.Sound>() )
+		foreach ( var sound in label.Assets.OfType<Sound>() )
 		{
 			sound.Play();
 
@@ -43,10 +43,10 @@ public sealed partial class ScriptPlayer
 			State.Background = null;
 		}
 
-		_cts = new();
+		_cts = new CancellationTokenSource();
 
-		IEnvironment environment = _environment;
-		string formattedText = label.Text.Format( environment );
+		var environment = _environment;
+		var formattedText = label.Text.Format( environment );
 		if ( Settings?.TextEffectEnabled ?? false && Settings.TextEffect is not null )
 		{
 			try
@@ -64,12 +64,15 @@ public sealed partial class ScriptPlayer
 		}
 
 		AddHistory( label );
-		DialogueFinished = true;
 
-		if ( ActiveScript is not null )
+		// If we are in Automatic Mode, wait a bit
+		// before ending the dialogue.
+		if ( AutomaticMode && label.Choices.Count == 0 )
 		{
-			State.Choices = label.Choices;
+			await Task.DelaySeconds( Settings.AutoDelay );
 		}
+
+		EndDialogue();
 	}
 
 	private void ExecuteAfterLabel()
@@ -82,47 +85,66 @@ public sealed partial class ScriptPlayer
 
 		var afterLabel = ActiveLabel.AfterLabel;
 
-		if ( afterLabel is not null )
+		if ( afterLabel is null )
 		{
-			foreach ( var codeBlock in afterLabel.CodeBlocks )
-			{
-				codeBlock.Execute( ActiveScript.GetEnvironment() );
-			}
+			return;
+		}
 
-			bool hasInput = ActiveLabel.ActiveInput is not null;
-			if ( hasInput && Hud is not null )
-			{
-				var input = Hud.GetSubPanel<TextInput>();
+		foreach ( var codeBlock in afterLabel.CodeBlocks )
+		{
+			codeBlock.Execute( ActiveScript.GetEnvironment() );
+		}
 
-				if ( input is not null && string.IsNullOrWhiteSpace( input.Entry.Text ) )
-				{
-					return;
-				}
-			}
+		var hasInput = ActiveLabel.ActiveInput is not null;
+		if ( hasInput && Hud is not null )
+		{
+			var input = Hud.GetSubPanel<TextInput>();
 
-			if ( afterLabel.IsLastLabel )
+			if ( string.IsNullOrWhiteSpace( input.Entry.Text ) )
 			{
-				UnloadScript();
 				return;
-			}
-
-			if ( afterLabel.ScriptPath is not null )
-			{
-				LoadScript( afterLabel.ScriptPath );
-				return;
-			}
-
-			if ( afterLabel.TargetLabel is not null )
-			{
-				if ( _activeDialogue is null )
-				{
-					Log.Error( "There is no active dialogue set, unable to switch active labels!" );
-					return;
-				}
-
-				SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 			}
 		}
+
+		if ( afterLabel.IsLastLabel )
+		{
+			UnloadScript();
+			return;
+		}
+
+		if ( afterLabel.ScriptPath is not null )
+		{
+			LoadScript( afterLabel.ScriptPath );
+			return;
+		}
+
+		if ( afterLabel.TargetLabel is null )
+		{
+			return;
+		}
+
+		if ( _activeDialogue is null )
+		{
+			Log.Error( "There is no active dialogue set, unable to switch active labels!" );
+			return;
+		}
+
+		SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 	}
 
+	private void EndDialogue()
+	{
+		if ( ActiveScript is null || ActiveLabel is null )
+		{
+			Log.Warning( "Unable to end the active dialogue; there is none!" );
+			return;
+		}
+
+		DialogueFinished = true;
+
+		if ( ActiveScript is not null )
+		{
+			State.Choices = ActiveLabel.Choices;
+		}
+	}
 }

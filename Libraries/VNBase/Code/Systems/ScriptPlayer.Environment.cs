@@ -27,7 +27,7 @@ public sealed partial class ScriptPlayer
 			return;
 		}
 
-		IEnvironment environment = ActiveScript.GetEnvironment();
+		var environment = ActiveScript.GetEnvironment();
 
 		foreach ( var variable in dialogue.Variables )
 		{

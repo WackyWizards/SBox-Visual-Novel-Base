@@ -11,6 +11,7 @@ namespace VNBase;
 /// </summary>
 [Title( "VN Settings" )]
 [Category( "VNBase" )]
+[Icon( "settings" )]
 public class Settings : Component
 {
 	[Property, ToggleGroup( "TextEffectEnabled" )]
@@ -76,6 +77,11 @@ public class Settings : Component
 	/// Path to the character resources.
 	/// </summary>
 	public const string CharacterResourcesPath = "/characters/";
+
+	/// <summary>
+	/// The amount of time to wait if we are in automatic mode before switching labels.
+	/// </summary>
+	public const float AutoDelay = 3f;
 }
 
 public class Input : IEquatable<InputAction>
