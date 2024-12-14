@@ -32,7 +32,7 @@ public class FormattableText : IEquatable<string>
     /// <returns>The formatted text.</returns>
     public virtual string Format( IEnvironment environment )
     {
-        return Regex.Replace( Text, "\\{(\\w+)\\}", match =>
+        return Regex.Replace( Text, @"\{(\w+)\}", match =>
         {
             var variableName = match.Groups[1].Value;
             return GetVariableValue( environment, variableName ).ToString();

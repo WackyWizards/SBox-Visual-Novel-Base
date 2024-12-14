@@ -10,7 +10,7 @@ public class Sound : IAsset
 	/// <summary>
 	/// The name of the <see cref="SoundEvent"/> this asset is tied to.
 	/// </summary>
-	public string EventName { get; set; } = string.Empty;
+	public string EventName { get; set; }
 
 	/// <summary>
 	/// If this asset is constructed with a SoundEvent, this is that event. Otherwise null.
@@ -30,14 +30,7 @@ public class Sound : IAsset
 	{
 		get
 		{
-			if ( Event is not null )
-			{
-				return Event.ResourcePath;
-			}
-			else
-			{
-				return _path;
-			}
+			return Event is not null ? Event.ResourcePath : _path;
 		}
 		set
 		{

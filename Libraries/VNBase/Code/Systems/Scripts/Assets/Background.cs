@@ -5,7 +5,7 @@ namespace VNBase.Assets;
 /// </summary>
 public class Background : IAsset
 {
-	public string Path { get; set; } = string.Empty;
+	public string Path { get; set; }
 
 	public Background( string path )
 	{

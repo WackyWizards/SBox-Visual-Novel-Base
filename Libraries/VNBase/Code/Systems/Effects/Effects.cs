@@ -21,16 +21,16 @@ public static class Effects
 	{
 		public async Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken )
 		{
-			string newText = "";
+			var newText = "";
 
-			for ( int i = 0; i < text.Length; i++ )
+			foreach (var character in text)
 			{
 				if ( cancellationToken.IsCancellationRequested )
 				{
 					return false;
 				}
 
-				newText += text[i];
+				newText += character;
 				callback( newText );
 				await Task.Delay( delay, cancellationToken );
 			}

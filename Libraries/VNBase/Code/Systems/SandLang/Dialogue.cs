@@ -262,7 +262,7 @@ public class Dialogue
 
 	private static int AfterJumpArgument( SParen arguments, int index, AfterLabel after )
 	{
-		string labelName = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
+		var labelName = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
 		after.TargetLabel = labelName;
 		return 1;
 	}
@@ -341,8 +341,8 @@ public class Dialogue
 
 	private static int TextSayArgument( SParen arguments, int index, Label label )
 	{
-		string characterName = ((Value.VariableReferenceValue)arguments[3])!.Name;
-		Character? character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
+		var characterName = ((Value.VariableReferenceValue)arguments[3])!.Name;
+		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
 		label.SpeakingCharacter = character;
 
 		return 1;
@@ -350,8 +350,8 @@ public class Dialogue
 
 	private static void LabelCharacterArgument( SParen arguments, Label label )
 	{
-		string characterName = ((Value.VariableReferenceValue)arguments[1])!.Name;
-		Character? character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to add character, character resource with name {characterName} couldn't be found!", characterName );
+		var characterName = ((Value.VariableReferenceValue)arguments[1])!.Name;
+		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to add character, character resource with name {characterName} couldn't be found!", characterName );
 		label.Characters.Add( character );
 
 		for ( var i = 2; i < arguments.Count; i++ )
@@ -382,7 +382,7 @@ public class Dialogue
 	{
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 
-		string soundName = argument.Name;
+		var soundName = argument.Name;
 		label.Assets.Add( new VNBase.Assets.Sound( soundName ) );
 	}
 
@@ -390,7 +390,7 @@ public class Dialogue
 	{
 		if ( arguments[1] is not Value.VariableReferenceValue argument ) throw new InvalidParametersException( new[] { arguments[1] } );
 
-		string backgroundName = argument.Name;
+		var backgroundName = argument.Name;
 		label.Assets.Add( new Background( $"{Settings.BackgroundsPath}{backgroundName}" ) );
 	}
 
@@ -411,13 +411,6 @@ public class Dialogue
 
 	private static Character? GetCharacterResource( string characterName )
 	{
-		if ( ResourceLibrary.TryGet<Character>( $"{Settings.CharacterResourcesPath}{characterName}.char", out var loadedCharacter ) )
-		{
-			return loadedCharacter;
-		}
-		else
-		{
-			return null;
-		}
+		return ResourceLibrary.TryGet<Character>( $"{Settings.CharacterResourcesPath}{characterName}.char", out var loadedCharacter ) ? loadedCharacter : null;
 	}
 }

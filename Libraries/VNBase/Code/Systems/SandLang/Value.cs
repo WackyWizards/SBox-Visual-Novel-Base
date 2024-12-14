@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace SandLang;
@@ -52,7 +53,7 @@ public abstract record Value
 				return environment.GetVariable( Name );
 			}
 
-			if ( BooleanValue.BooleanMap.TryGetValue( Name, out bool value ) )
+			if ( BooleanValue.BooleanMap.TryGetValue( Name, out var value ) )
 			{
 				return new BooleanValue( value );
 			}
@@ -95,7 +96,7 @@ public abstract record Value
 	{
 		public override string ToString()
 		{
-			return Number.ToString();
+			return Number.ToString( CultureInfo.CurrentCulture );
 		}
 	}
 

@@ -51,16 +51,14 @@ internal static class BuiltinFunctions
 			throw new InvalidParametersException( new[] { v1, v2 } );
 		}
 
-		if ( v2 is Value.BooleanValue booleanValue )
+		return v2 switch
 		{
-			return new Value.BooleanValue( ((Value.BooleanValue)v1).Boolean.Equals( booleanValue.Boolean ) );
-		}
-		else if ( v2 is Value.NumberValue number )
-		{
-			return new Value.BooleanValue( ((Value.NumberValue)v1).Number.Equals( number.Number ) );
-		}
-
-		return Value.NoneValue.None;
+			Value.BooleanValue booleanValue => new Value.BooleanValue(
+				((Value.BooleanValue)v1).Boolean.Equals( booleanValue.Boolean ) ),
+			Value.NumberValue number =>
+				new Value.BooleanValue( ((Value.NumberValue)v1).Number.Equals( number.Number ) ),
+			_ => Value.NoneValue.None
+		};
 	}
 
 	private static Value ExpressionBodyFunction( IEnvironment environment, Value[] values )
@@ -88,12 +86,7 @@ internal static class BuiltinFunctions
 			return values[1].Evaluate( environment );
 		}
 
-		if ( values.Length > 2 )
-		{
-			return values[2].Evaluate( environment );
-		}
-
-		return Value.NoneValue.None;
+		return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
 	}
 
 	private static Value MulFunction( IEnvironment environment, Value[] values )
@@ -129,13 +122,13 @@ internal static class BuiltinFunctions
 
 		var body = (values[1] as Value.ListValue)!.ValueList;
 
-		return new Value.FunctionValue( ( _, arglist ) =>
+		return new Value.FunctionValue( ( e, arglist ) =>
 		{
 			var env = new EnvironmentMap( environment );
 
 			for ( var i = 0; i < MathF.Min( argnames.Length, arglist.Length ); i++ )
 			{
-				env.SetVariable( argnames[i], arglist[i].Evaluate( _ ) );
+				env.SetVariable( argnames[i], arglist[i].Evaluate( e ) );
 			}
 
 			return body.Execute( env );

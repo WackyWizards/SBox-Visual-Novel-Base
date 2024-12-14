@@ -33,7 +33,7 @@ public class InvalidParametersException : Exception
 /// </summary>
 public class ResourceNotFoundException : FileNotFoundException
 {
-	public string ResourceName { get; private set; } = string.Empty;
+	public string ResourceName { get; private set; }
 
 	public ResourceNotFoundException( string message, string? resourceName = null, string? fileName = null, Exception? innerException = null )
 		: base( message, fileName )
@@ -154,21 +154,20 @@ public class SParen : IReadOnlyList<Value>
 					symbolStart = i + 1;
 					continue;
 				}
-				else if ( text[i] == '"' )
+
+				switch (text[i])
 				{
-					isInQuote = true;
-				}
-				else if ( text[i] == '/' && i + 1 < text.Length && text[i + 1] == '/' )
-				{
-					isInSingleLineComment = true;
-					i++; // Skip '/'
-					continue;
-				}
-				else if ( text[i] == '/' && i + 1 < text.Length && text[i + 1] == '*' )
-				{
-					isInMultiLineComment = true;
-					i++; // Skip '*'
-					continue;
+					case '"':
+						isInQuote = true;
+						break;
+					case '/' when i + 1 < text.Length && text[i + 1] == '/':
+						isInSingleLineComment = true;
+						i++; // Skip '/'
+						continue;
+					case '/' when i + 1 < text.Length && text[i + 1] == '*':
+						isInMultiLineComment = true;
+						i++; // Skip '*'
+						continue;
 				}
 			}
 

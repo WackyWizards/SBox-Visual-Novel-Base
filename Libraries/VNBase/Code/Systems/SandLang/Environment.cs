@@ -97,5 +97,5 @@ public static class GlobalEnvironment
 	/// <summary>
 	/// Clears the global environment.
 	/// </summary>
-	public static void Clear() => Map = new();
+	public static void Clear() => Map = new EnvironmentMap();
 }
