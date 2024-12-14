@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using SandLang;
 
 namespace VNBase;
@@ -19,7 +18,7 @@ public sealed partial class ScriptPlayer
 			return;
 		}
 
-		Dialogue.Label targetLabel = _activeDialogue.Labels[choice.TargetLabel];
+		var targetLabel = _activeDialogue.Labels[choice.TargetLabel];
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
 			SetLabel( targetLabel );

@@ -68,12 +68,12 @@ public class Script : IAsset
 	}
 
 	/// <summary>
-	/// This is called when the script is run.
+	/// Called when the script is loaded by the <see cref="ScriptPlayer"/>
 	/// </summary>
 	public virtual void OnLoad() { }
 
 	/// <summary>
-	/// This is called after the script has finished.
+	/// Called after the script has finished executing by the <see cref="ScriptPlayer"/>
 	/// </summary>
 	public virtual void OnUnload() { }
 

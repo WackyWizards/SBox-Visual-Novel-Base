@@ -1,54 +1,36 @@
 (label breezing-wind
 	(text "A gentle breeze rustles through your hair, birds chirp melodiously, and the sun shines brightly. It's a perfect day.")
-	(choice "Look around your surroundings" jump look-around)
-	(choice "Sit down in the grass to admire the day" jump sit-down)
-	(choice "Spin around in a circle" jump loop)
+	(after jump look-around)
 	(bg meadow.jpg)
 )
 
 (label look-around
 	(text "Ahead of you is a path, and to your right is the road. It seems you are in the countryside.")
-	(choice "Follow the path" jump follow-the-path)
+	(after jump follow-the-path)
 	(bg meadow.jpg)
 )
 
 (label follow-the-path
 	(text "You follow the path for a while until you come across a small village. In the distance, you see a small house that looks abandoned. Perhaps there's something valuable inside?")
-	(choice "Head towards the house" jump head-towards-house)
-	(choice "Continue on the path" jump continue-on-the-path)
+	(after jump head-towards-house)
 	(bg meadow.jpg)
 )
 
 (label head-towards-house
 	(text "You approach the house, which appears run-down and abandoned. You notice a small window on the second floor. Maybe you can climb up and explore?")
-	(choice "Climb up the house" jump climb-up-house)
-	(choice "Continue on the path" jump continue-on-the-path)
+	(after jump climb-up-house)
 	(bg meadow.jpg)
 )
 
 (label climb-up-house
 	(text "You climb up to the second floor and find a small chest. Inside, you discover a few coins and a rusty sword.")
-	(choice "Take the coins and sword" jump sit-down)
-	(choice "Leave the house and continue on the path" jump continue-on-the-path)
+	(after jump sit-down)
 	(bg meadow.jpg)
-)
-
-(label continue-on-the-path
-	(text "Deciding the house isn't worth your time, you continue along the pathway.")
-	(bg meadow.jpg)
-	(after load-script /Scripts/ExampleScript.vnscript)
 )
 
 (label sit-down
 	(text "You sit down to admire your surroundings. It's truly beautiful. You rest your eyes, lying on the grass and taking shade under a large tree.")
-	(bg meadow.jpg)
 	(after load-script /Scripts/ExampleScript.vnscript)
-)
-
-(label loop
-	(text "You spin around in place. What next?")
-	(choice "Return to the start" jump breezing-wind)
-	(choice "Spin Again" jump loop)
 	(bg meadow.jpg)
 )
 

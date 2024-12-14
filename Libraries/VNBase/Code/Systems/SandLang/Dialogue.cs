@@ -97,7 +97,7 @@ public class Dialogue
 			environment.SetVariable( VariableName, value );
 			_environment = environment;
 
-			if ( Game.IsEditor )
+			if ( ScriptPlayer.LoggingEnabled )
 			{
 				Log.Info( $"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );
 			}
@@ -105,7 +105,7 @@ public class Dialogue
 	}
 
 	/// <summary>
-	/// In labels that do not have choices, represents code to execute as well as the new label to direct towards.
+	/// Represents code to execute as well as the new label to direct towards.
 	/// </summary>
 	public class AfterLabel
 	{
@@ -122,6 +122,7 @@ public class Dialogue
 	{
 		var dialogue = new Dialogue();
 		dialogue.Parse( codeBlocks );
+
 		return dialogue;
 	}
 
