@@ -21,6 +21,7 @@ tools_thumbnail_cache.bin
 code/obj/
 code/properties/
 .intermediate/
+.idea/
 .vs/
 code/.vs
 code/*.csproj
