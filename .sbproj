@@ -5,7 +5,7 @@
   "Ident": "vnbase",
   "Schema": 1,
   "IncludeSourceFiles": false,
-  "Resources": "/Assets/*\n/Code/*\n/Materials/*\n*.vnscript",
+  "Resources": "/Assets/*\n/Code/*\n/Materials/*\n/Sounds/*\n*.vnscript",
   "PackageReferences": [],
   "EditorReferences": null,
   "IsWhitelistDisabled": false,
