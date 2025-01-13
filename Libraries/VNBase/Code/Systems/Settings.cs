@@ -28,7 +28,7 @@ public class Settings : Component
 	/// Time used for the active text effect to determine text delays.
 	/// </summary>
 	[Property, ToggleGroup( "TextEffectEnabled" )]
-	public int TextEffectDelay { get; set; } = 55;
+	public TextSpeed TextEffectSpeed { get; set; } = TextSpeed.Normal;
 
 	/// <summary>
 	/// The actions to skip the currently active text effect.
@@ -53,15 +53,43 @@ public class Settings : Component
 	[InlineEditor]
 	[Title( "History Inputs" )]
 	[Property, Group( "Actions" )]
-	public List<Input> HistoryInputs { get; set; } = new();
+	public List<Input> HistoryInputs { get; set; } = [];
 
+	/// <summary>
+	/// The Inputs to show the settings UI.
+	/// </summary>
+	[InlineEditor]
+	[Title( "Settings Inputs" )]
+	[Property, Group( "Actions" )]
+	public List<Input> SettingsInputs { get; set; } = [];
+	
 	/// <summary>
 	/// The Inputs to toggle the UI.
 	/// </summary>
 	[InlineEditor]
 	[Title( "Hide UI Inputs" )]
 	[Property, Group( "Actions" )]
-	public List<Input> HideUIInputs { get; set; } = new();
+	// ReSharper disable once InconsistentNaming
+	public List<Input> HideUIInputs { get; set; } = [];
+
+	/// <summary>
+	/// When a script is unloaded, should we end all music playback from it?
+	/// </summary>
+	[Property, Group( "Audio" )]
+	public bool StopMusicPlaybackOnUnload { get; set; } = true;
+
+	/// <summary>
+	/// If we should show the control panel.
+	/// </summary>
+	[Property]
+	public bool ControlPanelEnabled { get; set; } = true;
+	
+	/// <summary>
+	/// If we should show the settings UI.
+	/// If your game implements its own, you can disable this.
+	/// </summary>
+	[Property]
+	public bool SettingsEnabled { get; set; } = true;
 
 	/// <summary>
 	/// Path to the background image assets.
@@ -82,24 +110,31 @@ public class Settings : Component
 	/// The amount of time to wait if we are in automatic mode before switching labels.
 	/// </summary>
 	public const float AutoDelay = 3f;
+
+	public enum TextSpeed
+	{
+		Slow = 105,
+		Normal = 70,
+		Fast = 30
+	}
 }
 
 public class Input : IEquatable<InputAction>
 {
-	[InputAction]
-	public string Action { get; set; } = string.Empty;
+	[InputAction] public string Action { get; set; } = string.Empty;
 
 	public bool Equals( InputAction? other )
 	{
 		return Action == other?.Name;
 	}
 
-	[Hide, JsonIgnore]
-	public bool Pressed => Sandbox.Input.Pressed( this );
+	[Hide, JsonIgnore] public bool Pressed => Sandbox.Input.Pressed( this );
 
-	[Hide, JsonIgnore]
-	public bool Down => Sandbox.Input.Down( this );
+	[Hide, JsonIgnore] public bool Down => Sandbox.Input.Down( this );
 
 	public static implicit operator string( Input input ) => input.Action;
-	public static implicit operator Input( string action ) => new() { Action = action };
+	public static implicit operator Input( string action ) => new()
+	{
+		Action = action
+	};
 }
