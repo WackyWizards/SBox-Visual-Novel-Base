@@ -10,9 +10,19 @@
         {
           "__type": "Sandbox.SceneInformation",
           "__guid": "5bfd8ad2-a65b-4945-bec1-6ba8138d58b3",
+          "Author": null,
+          "Changes": "",
           "Description": "",
+          "Group": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "SceneTags": "",
-          "Title": "example"
+          "Title": "example",
+          "Version": null
         }
       ]
     },
@@ -28,6 +38,12 @@
           "__type": "Sandbox.ScreenPanel",
           "__guid": "781d3d86-e7f3-4e9e-8fd6-efd61851a831",
           "AutoScreenScale": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "Opacity": 1,
           "Scale": 1,
           "ScaleStrategy": "ConsistentHeight",
@@ -37,25 +53,41 @@
           "__type": "VNBase.ScriptPlayer",
           "__guid": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
           "AutomaticMode": false,
-          "DialogueFinished": false,
           "Hud": {
             "_type": "component",
             "component_id": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "VNHud"
           },
-          "InitialScript": "/scripts/startscript.vnscript",
-          "IsScriptActive": false,
+          "InitialScript": "/scripts/examplescript.vnscript",
+          "IsAutomaticModeAvailable": true,
+          "IsScriptActive": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "Settings": {
             "_type": "component",
             "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "Settings"
+          },
+          "State": {
+            "DialogueText": null,
+            "Background": null,
+            "SpeakingCharacter": null,
+            "Characters": [],
+            "Choices": [],
+            "Sounds": [],
+            "IsDialogueFinished": false
           }
         },
         {
           "__type": "VNBase.Settings",
           "__guid": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
+          "ControlPanelEnabled": true,
           "HideUIInputs": [
             {
               "Action": "Score"
@@ -66,18 +98,33 @@
               "Action": "Menu"
             }
           ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SettingsEnabled": true,
+          "SettingsInputs": [],
           "SkipActionEnabled": true,
           "SkipActions": [
             {
               "Action": "jump"
             }
           ],
-          "TextEffectDelay": 55,
-          "TextEffectEnabled": true
+          "StopMusicPlaybackOnUnload": true,
+          "TextEffectEnabled": true,
+          "TextEffectSpeed": "Normal"
         },
         {
           "__type": "VNBase.UI.VNHud",
           "__guid": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "Player": {
             "_type": "component",
             "component_id": "b88925e4-83e8-4577-9a3d-08b7f8eb9059",
@@ -102,6 +149,12 @@
           "FogMode": "Enabled",
           "FogStrength": 1,
           "LightColor": "0.91373,0.98039,1,1",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "Shadows": true,
           "SkyColor": "0.05882,0.07451,0.08235,1"
         }
@@ -121,6 +174,12 @@
           "ClearFlags": "All",
           "FieldOfView": 60,
           "IsMainCamera": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
           "Orthographic": false,
           "OrthographicHeight": 1204,
           "Priority": 1,
