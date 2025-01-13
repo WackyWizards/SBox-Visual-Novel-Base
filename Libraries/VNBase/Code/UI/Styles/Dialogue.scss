@@ -1,63 +1,84 @@
 @import "Fonts.scss";
 
 $dialogue-color: white;
-$dialogue-font: $text-font;
-$dialogue-font-size: 38px;
+$dialogue-text-shadow: 0 2px 2px black;
+$dialogue-font-size: 35px;
+$dialogue-font-size-small: 30px;
+$dialogue-text-padding: 5px;
 
-$dialogue-box-background-color: rgba(0,0,0,0.98);
+$dialogue-box-background-color: #141414FC;
+$dialogue-box-shadow: 0 0 10px 1px #00000099;
+$dialogue-box-border-radius: 8px;
+$dialogue-box-padding: 20px;
 
 DialogueBox {
-    position: absolute;
-    pointer-events: none;
-    width: 100%;
-    height: 45%;
-    bottom: 0;
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  bottom: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: $dialogue-box-padding;
+
+  .characterPanel {
+    width: 450px;
+    background-color: $dialogue-box-background-color;
+    text-shadow: $dialogue-text-shadow;
+    border-radius: $dialogue-box-border-radius;
+    box-shadow: $dialogue-box-shadow;
+    padding: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
-    justify-content: flex-end;
 
-    .characterPanel {
-        width: 450px;
-        background-color: $dialogue-box-background-color;
-        box-shadow: 0 0 10px 5px $dialogue-box-background-color;
-        flex-direction: column;
-        margin-bottom: 10px;
-
-        .character {
-            font-size: 38px;
-            font-weight: bold;
-            align-items: center;
-        }
-
-        .title {
-            height: 100%;
-            font-size: 30px;
-        }
+    .character {
+      font-size: 38px;
+      font-weight: bold;
+      color: $dialogue-color;
+      margin-bottom: 2px;
     }
 
-    .dialoguePanel {
-        width: 100%;
-        height: 250px;
-        background-color: $dialogue-box-background-color;
-        box-shadow: 0 0 5px 5px $dialogue-box-background-color;
-        justify-content: center;
-        align-items: center;
-        padding: 0 10%;
-
-        .finished-icon {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            bottom: 0;
-            margin-bottom: 10px;
-            animation: blink infinite;
-        }
+    .title {
+      font-size: 28px;
+      font-style: italic;
+      color: lighten($dialogue-color, 20%);
     }
+  }
+
+  .dialoguePanel {
+    width: 100%;
+    height: 300px;
+    font-family: $dialogue-font;
+    background-color: $dialogue-box-background-color;
+    border-radius: $dialogue-box-border-radius;
+    box-shadow: $dialogue-box-shadow;
+    align-items: center;
+    justify-content: center;
+    padding: 100px;
+
+    .finished-icon {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      bottom: 45px;
+      filter: drop-shadow(0 0 8px black);
+      animation: blink 1.5s infinite;
+
+      @keyframes blink {
+        50% {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
 }
 
 .dialoguePanel {
-    .label {
-        color: $dialogue-color;
-        font-family: $text-font;
-        font-size: $dialogue-font-size;
-    }
+  .label {
+    color: $dialogue-color;
+    font-family: $dialogue-font;
+    font-size: $dialogue-font-size;
+    text-shadow: $dialogue-text-shadow;
+  }
 }

@@ -1,50 +1,77 @@
 @import "Buttons.scss";
 @import "Dialogue.scss";
 
-$dialogue-history-background-color: rgba(30,30,30,1);
+$dialogue-history-background-color: #141414FC;
+$dialogue-history-box-shadow: 0 0 5px 1px #00000099;
+$dialogue-history-border-radius: 10px;
 
 DialogueHistory {
-    width: 60%;
-    height: 65%;
-    pointer-events: all;
-    background-color: rgba(0,0,0,1);
-    box-shadow: 0px 0px 5px 5px rgba(0,0,0,1);
+  width: 60%;
+  height: 65%;
+  pointer-events: all;
+  border-radius: 10px;
+  background-color: $dialogue-history-background-color;
+  box-shadow: $dialogue-history-box-shadow;
+  flex-direction: column;
+  transition: opacity 0.2s ease-in-out;
+
+  > .header {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    flex-shrink: 0;
+    border-bottom: 2px solid lighten($dialogue-history-background-color, 75%);
+
+    > .title {
+      color: white;
+      font-family: $text-font;
+      font-size: 35px;
+      font-weight: bold;
+    }
+  }
+
+  .history {
     flex-direction: column;
-    transition: opacity 0.1s;
+    overflow-y: scroll;
+    padding: 10px;
+    flex-grow: 1;
 
-    .title {
-        color: white;
-        font-family: $text-font;
-        font-size: 34px;
+    .dialogue {
+      font-family: $dialogue-font;
+      background-color: lighten($dialogue-history-background-color, 75%);
+      border-radius: $dialogue-history-border-radius;
+      box-shadow: 0 2px 2px black;
+      padding: 14px;
+      margin: 4px 8px;
+      flex-shrink: 0;
+      flex-direction: column;
+
+      .character {
         font-weight: bold;
-        text-align: center;
-        flex-shrink: 0;
-        margin: 4px 0;
+        font-size: $text-font-size;
+        color: lighten($dialogue-color, 20%);
+        margin-bottom: 4px;
+      }
+
+      .text {
+        color: $dialogue-color;
+        font-size: $text-font-size-small;
+      }
     }
+  }
 
-    .history {
-        flex-direction: column;
-        overflow: scroll;
-        flex-grow: 1;
+  > .footer {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-top: 2px solid lighten($dialogue-history-background-color, 75%);
 
-        .dialogue {
-            font-family: $dialogue-font;
-            background-color: $dialogue-history-background-color;
-            box-shadow: 0 0 5px 4px $dialogue-history-background-color;
-            padding: 8px;
-            margin: 6px 0;
-            flex-direction: column;
-            flex-shrink: 0;
+    > .button {
+      width: 100%;
 
-            .character {
-                font-weight: bold;
-                font-size: $text-font-size;
-            }
-
-            .text {
-                color: $dialogue-color;
-                font-size: $text-font-size-small;
-            }
-        }
+      &:active {
+        transform: scale(0.99);
+      }
     }
+  }
 }

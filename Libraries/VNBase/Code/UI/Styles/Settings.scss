@@ -1,0 +1,73 @@
+﻿@import "Buttons.scss";
+@import "Elements.scss";
+
+$settings-background-color: #141414FC;
+$settings-box-shadow: 0 0 5px 1px #00000099;
+$settings-border-radius: 10px;
+
+SettingsPanel {
+  position: absolute;
+  width: 60%;
+  height: 65%;
+  pointer-events: all;
+  border-radius: 10px;
+  background-color: $settings-background-color;
+  box-shadow: $settings-box-shadow;
+  flex-direction: column;
+  transition: opacity 0.2s ease-in-out;
+
+  > .header {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    flex-shrink: 0;
+    border-bottom: 2px solid lighten($settings-background-color, 75%);
+
+    > .title {
+      color: white;
+      font-family: $text-font;
+      font-size: 35px;
+      font-weight: bold;
+    }
+  }
+
+  > .container {
+    overflow-y: scroll;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 10px;
+  }
+
+  .setting {
+    color: $dialogue-color;
+    font-family: $dialogue-font;
+    background-color: lighten($settings-background-color, 75%);
+    border-radius: $settings-border-radius;
+    box-shadow: 0 2px 2px black;
+    padding: 14px;
+    margin: 4px 8px;
+    flex-shrink: 0;
+    align-items: center;
+
+    > .setting-title {
+      width: 350px;
+      font-size: 34px;
+    }
+  }
+
+  > .footer {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-top: 2px solid lighten($settings-background-color, 75%);
+    gap: 8px;
+
+    > .button {
+      width: 100%;
+
+      &:active {
+        transform: scale(0.99);
+      }
+    }
+  }
+}

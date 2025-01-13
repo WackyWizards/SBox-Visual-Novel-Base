@@ -1,0 +1,7 @@
+﻿@import "/UI/Styles/Settings.scss";
+
+SettingsPanel {
+  &.hidden {
+    opacity: 0;
+  }
+}

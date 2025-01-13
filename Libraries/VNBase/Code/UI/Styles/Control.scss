@@ -1,19 +1,23 @@
 @import "Buttons.scss";
 
 ControlPanel {
-    pointer-events: none;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 
-    .buttons {
-        position: absolute;
-        pointer-events: all;
-        width: 100%;
-        height: 50px;
-        bottom: 0;
-        justify-content: flex-end;
-    }
+  .control-buttons {
+    position: absolute;
+    pointer-events: all;
+    width: 100%;
+    height: 115px;
+    top: 0;
+    margin-right: 20px;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-end;
+  }
 }
