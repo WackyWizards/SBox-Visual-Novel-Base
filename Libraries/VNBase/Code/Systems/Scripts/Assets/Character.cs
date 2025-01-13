@@ -6,29 +6,29 @@ namespace VNBase.Assets;
 /// <summary>
 /// Defines a VNBase character.
 /// </summary>
-[GameResource( "Character", "char", "Defines a VNBase character.", Category = "VNBase" )]
-public class Character : AssetResource
+[GameResource( "Character", "char", "Defines a VNBase character.", Category = "VNBase", Icon = "person" )]
+public sealed class Character : AssetResource
 {
 	/// <summary>
 	/// The name of the character.
 	/// </summary>
-	public virtual string Name { get; set; } = string.Empty;
+	public string Name { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The title of the character.
 	/// If blank, we assume no title.
 	/// </summary>
-	public virtual string? Title { get; set; }
+	public string? Title { get; set; }
 
 	/// <summary>
 	/// The color of the character's name.
 	/// </summary>
-	public virtual Color NameColor { get; set; } = Color.White;
+	public Color NameColor { get; set; } = Color.White;
 
 	/// <summary>
 	/// The color of the character's title.
 	/// </summary>
-	public virtual Color TitleColor { get; set; } = Color.White;
+	public Color TitleColor { get; set; } = Color.White;
 
 	/// <summary>
 	/// The name of the active portrait image.
@@ -38,8 +38,8 @@ public class Character : AssetResource
 	public string? ActivePortrait { get; set; }
 
 	/// <summary>
-	/// Path to the active portrait.
+	/// Path to the active portrait image.
 	/// </summary>
 	[JsonIgnore, Hide]
-	public string ActivePortraitPath => Settings.CharacterPortraitsPath + ActivePortrait;
+	public string ActivePortraitPath => $"{Settings.CharacterPortraitsPath}/{Name}/{ActivePortrait}";
 }

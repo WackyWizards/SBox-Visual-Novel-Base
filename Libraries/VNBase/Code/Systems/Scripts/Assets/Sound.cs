@@ -1,19 +1,20 @@
 using Sandbox;
+using Sandbox.Audio;
 
 namespace VNBase.Assets;
 
 /// <summary>
 /// A playable sound asset.
 /// </summary>
-public class Sound : IAsset
+public class Sound( string eventName ) : IAsset
 {
 	/// <summary>
 	/// The name of the <see cref="SoundEvent"/> this asset is tied to.
 	/// </summary>
-	public string EventName { get; set; }
+	public string EventName { get; set; } = eventName;
 
 	/// <summary>
-	/// If this asset is constructed with a SoundEvent, this is that event. Otherwise null.
+	/// If this asset is constructed with a SoundEvent, this is that event. Otherwise, null.
 	/// </summary>
 	public SoundEvent? Event { get; private set; }
 
@@ -21,6 +22,11 @@ public class Sound : IAsset
 	/// Handle to interface with the playing sound. If this asset isn't playing, this is null.
 	/// </summary>
 	public SoundHandle? Handle { get; private set; }
+	
+	/// <summary>
+	/// The name of the target mixer.
+	/// </summary>
+	public string MixerName { get; set; } = string.Empty;
 
 	/// <summary>
 	/// If this asset is constructed with a SoundEvent, returns the path to the event on disk.
@@ -40,20 +46,26 @@ public class Sound : IAsset
 
 	private string _path = string.Empty;
 
-	public Sound( string eventName )
-	{
-		EventName = eventName;
-	}
-
-	public Sound( SoundEvent soundEvent )
-	{
-		EventName = soundEvent.ResourceName;
-		Event = soundEvent;
-	}
-
-	public void Play()
+	public SoundHandle Play()
 	{
 		Handle = Sandbox.Sound.Play( EventName );
+		return Handle;
+	}
+
+	public SoundHandle Play( string mixerName )
+	{
+		var handle = Play();
+
+		if ( Mixer.FindMixerByName( mixerName ) is not {} mixer )
+		{
+			Log.Warning( $"No mixer found with the name: {mixerName}." );
+			return handle;
+		}
+		
+		handle.TargetMixer = mixer;
+		MixerName = handle.TargetMixer.Name;
+
+		return handle;
 	}
 
 	public void Stop( float fadeTime = 0 )
