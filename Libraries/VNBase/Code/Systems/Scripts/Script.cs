@@ -17,7 +17,7 @@ public class Script : IAsset
 	/// <summary>
 	/// This is where you want to write your script.
 	/// </summary>
-	protected virtual string Dialogue { get; set; } = string.Empty;
+	public virtual string Dialogue { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The script to run after this one has finished.
