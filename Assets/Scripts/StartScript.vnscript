@@ -1,7 +1,0 @@
-(label start
-    (text "Welcome to the VNBase Example Game!")
-	(after load-script /Scripts/ExampleScript.vnscript)
-)
-
-(set $access false)
-(start-dialogue start)

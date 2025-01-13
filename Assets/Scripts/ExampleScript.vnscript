@@ -11,8 +11,6 @@
 	(choice "Story Example" jump load-storyscript)
 	(choice "Condition Example" jump load-conditionscript)
 	(choice "Input Example" jump load-inputscript)
-	(choice "Global Variable Example" jump load-variableexample)
-	(choice "Global Variable Access" cond (= $access true) jump global-variable)
 )
 
 (label load-storyscript
@@ -28,16 +26,6 @@
 (label load-inputscript
 	(text "Loading input example")
 	(after load-script /Scripts/InputExample.vnscript)
-)
-
-(label load-variableexample
-	(text "Loading variable example")
-	(after load-script /Scripts/VariableExample.vnscript)
-)
-
-(label global-variable
-	(text "Global variable accessed!")
-	(after jump start)
 )
 
 /* 
