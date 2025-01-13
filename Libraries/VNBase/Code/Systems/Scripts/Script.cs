@@ -1,7 +1,11 @@
 using Sandbox;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SandLang;
+
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace VNBase.Assets;
 
@@ -13,7 +17,7 @@ public class Script : IAsset
 	/// <summary>
 	/// This is where you want to write your script.
 	/// </summary>
-	public virtual string Dialogue { get; set; } = string.Empty;
+	protected virtual string Dialogue { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The script to run after this one has finished.
@@ -34,6 +38,7 @@ public class Script : IAsset
 	/// <summary>
 	/// Called when a choice is selected from this script.
 	/// </summary>
+	[Hide]
 	public Action<Dialogue.Choice>? OnChoiceSelected { get; set; }
 
 	/// <summary>
@@ -85,5 +90,12 @@ public class Script : IAsset
 		return _environment ??= new EnvironmentMap( new Dictionary<string, Value>() );
 	}
 
+	[Hide]
 	private IEnvironment? _environment;
+	
+	internal Dialogue ParseDialogue()
+	{
+		var codeBlocks = SParen.ParseText( Dialogue ).ToList();
+		return SandLang.Dialogue.ParseDialogue( codeBlocks );
+	}
 }
