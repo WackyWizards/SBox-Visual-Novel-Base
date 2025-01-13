@@ -44,6 +44,10 @@
       ],
       "DistinctAssemblyReferences": []
     },
-    "ControlModes": {}
+    "ControlModes": {
+      "Keyboard": true,
+      "VR": false,
+      "Gamepad": true
+    }
   }
 }
