@@ -1,50 +1,73 @@
 @using Sandbox;
-@using Sandbox.UI;
 @using System;
 @using System.Linq;
+@using SandLang;
 
 @namespace VNBase.UI
 
-@attribute [Title("VN Hud")]
-@attribute [Category("VNBase")]
+@attribute [Title( "VN Hud" )]
+@attribute [Category( "VNBase" )]
 @inherits PanelComponent
 
-@if (Player is not null)
+@if ( Player is not null )
 {
-    <root class="@(Player.IsScriptActive ? "" : "hidden")" style="background-image: url('@(Player.State.Background)')">
-        <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this" />
-        <TextInput class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this" />
-        <Choices class="centered" Player="@Player" Settings="@Player.Settings" Hud="@this" />
-        <DialogueBox Player="@Player" Settings="@Player.Settings" Hud="@this" />
-        <ControlPanel Player="@Player" Settings="@Player.Settings" Hud="@this" />
+    <root class="@( Player.IsScriptActive ? "" : "hidden" )" style="background-image: url('@( Player.State.Background )')">
+        <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+        <Choices Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+        <DialogueBox Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+
+        @if ( ShouldShowInput )
+        {
+            <TextInput Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+        }
+
+        @if ( Player.Settings is not null && Player.Settings.ControlPanelEnabled )
+        {
+            <ControlPanel Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+        }
     </root>
 }
 
 @code {
-    [Property, RequireComponent] public ScriptPlayer Player { get; set; }
+    #nullable enable
+    [Property, RequireComponent] public ScriptPlayer? Player { get; set; }
+
+    private Dialogue.Input? Input => Player?.ActiveLabel?.ActiveInput;
+    private bool ShouldShowInput => Player?.State.IsDialogueFinished == true && Input is not null;
 
     protected override void OnStart()
     {
-        if (Player is null)
+        // This is an ugly hack to replace default FP styles
+        StyleHack();
+
+        try
         {
-            try
-            {
-                Player = Scene.GetAllComponents<ScriptPlayer>().First();
-            }
-            catch (InvalidOperationException)
-            {
-                ScriptPlayer.Log.Warning("No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!");
-            }
+            Player = Scene.GetAllComponents<ScriptPlayer>().First();
+        }
+        catch ( InvalidOperationException )
+        {
+            ScriptPlayer.Log.Warning( "No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!" );
         }
     }
 
-    public T GetSubPanel<T>() where T : SubPanel
+    public T? GetSubPanel<T>() where T : SubPanel
     {
-        return Panel.Children.OfType<T>().FirstOrDefault();
+        return Panel.ChildrenOfType<T>().FirstOrDefault();
+    }
+
+    private void StyleHack()
+    {
+        var root = Panel.FindRootPanel();
+        foreach ( var stylesheet in root.AllStyleSheets.ToList() )
+        {
+            root.StyleSheet.Remove( stylesheet );
+        }
+
+        root.StyleSheet.Load( "/UI/VNHud.razor.scss" );
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player, Player?.IsScriptActive, Player?.ActiveScript, Player?.State.Background);
+        return HashCode.Combine( Player, Player?.IsScriptActive, Player?.ActiveScript, Player?.State.GetHashCode() );
     }
 }

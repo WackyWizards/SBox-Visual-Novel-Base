@@ -1,11 +1,13 @@
-@using Sandbox;
-@using Sandbox.UI;
 @using System;
 @using System.Linq;
-@using System.Collections.Generic;
 
 @namespace VNBase.UI
 @inherits SubPanel
+
+@if ( Player is null )
+{
+    return;
+}
 
 <root>
     @if (Player.State.SpeakingCharacter is not null)
@@ -20,25 +22,22 @@
     }
 
     <div class="dialoguePanel">
-        <label class="dialogueText">@Player.State.DialogueText</label>
+        <label class="dialogueText">@Player?.State.DialogueText</label>
 
         @if (CanContinue)
         {
-            <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" />
+            <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" alt=""/>
         }
     </div>
 </root>
 
 @code {
-    private TextInput TextInput => Hud.GetSubPanel<TextInput>();
-
-    private bool CanContinue
-    {
-        get => Player.DialogueFinished && !Player.State.Choices.Any() && (TextInput?.Entry is null || TextInput.CanContinue);
-    }
-
+#nullable enable
+    private TextInput? TextInput => Hud?.GetSubPanel<TextInput>();
+    private bool CanContinue => Player?.State.IsDialogueFinished == true && !Player.State.Choices.Any() && (TextInput?.CanContinue ?? true);
+    
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player.State.DialogueText, Player.DialogueFinished, Player.State.SpeakingCharacter, Player.State.Choices.Count, TextInput?.CanContinue);
+        return HashCode.Combine(Player?.State.DialogueText, Player?.State.IsDialogueFinished, Player?.State.SpeakingCharacter, Player?.State.Choices.Count, TextInput?.CanContinue);
     }
 }

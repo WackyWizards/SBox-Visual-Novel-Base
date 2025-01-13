@@ -1,0 +1,140 @@
+﻿@using System;
+@using System.Linq;
+@using Sandbox.UI;
+@using Sandbox.Audio;
+
+@namespace VNBase.UI
+@inherits SubPanel
+
+<root>
+    <div class="header">
+        <label class="title">Settings</label>
+    </div>
+
+    <div class="container">
+        <div class="setting">
+            <label class="setting-title">Master Volume</label>
+            <SliderControl Value:bind="@Mixer.Master.Volume" Min="@( 0 )" Max="@( 1 )" Step="@( 0.1f )"></SliderControl>
+        </div>
+
+        @foreach ( var mixer in Mixers )
+        {
+            <div class="setting">
+                <label class="setting-title">@( mixer.Name ) Volume</label>
+                <SliderControl Value:bind="@mixer.Volume" Min="@( 0 )" Max="@( 1 )" Step="@( 0.1f )"></SliderControl>
+            </div>
+        }
+
+        @if ( Settings?.TextEffectEnabled ?? false )
+        {
+            <div class="setting">
+                <label class="setting-title">Text Speed</label>
+                <select value="Normal" onchange="@OnFilterChanged" @ref=" _speedDropdown">
+                    @foreach ( var speedChoice in Enum.GetNames<Settings.TextSpeed>() )
+                    {
+                        <option class="option">@speedChoice</option>
+                    }
+                </select>
+            </div>
+        }
+    </div>
+
+    <div class="footer">
+        <button icon="refresh" class="@( IsDirty() ? "" : "disabled" )" onclick="@Reset">Reset</button>
+        <button icon="close" onclick="@Hide">Close</button>
+    </div>
+</root>
+
+@code {
+    #nullable enable
+    private bool IsInputPressed => Settings?.SettingsInputs.Any( x => x.Pressed ) ?? false;
+
+    private static Mixer MasterMixer => Mixer.Master;
+    private static Mixer[] Mixers => Mixer.Master.GetChildren();
+
+    private DropDown? _speedDropdown;
+
+    public override void Tick()
+    {
+        if ( IsInputPressed )
+        {
+            ToggleVisibility();
+        }
+    }
+
+    private bool IsDirty()
+    {
+        var masterVolume = MasterMixer.Volume;
+
+        if ( Settings is null )
+        {
+            return false;
+        }
+
+        var textSpeed = Settings.TextEffectSpeed;
+        var anyMixerVolumeNotOne = Mixers.Any( mixer => mixer.Volume != 1f );
+
+        return masterVolume != 1f || anyMixerVolumeNotOne || textSpeed != Settings.TextSpeed.Normal;
+    }
+
+    public void Reset()
+    {
+        MasterMixer.Volume = 1f;
+        
+        foreach ( var mixer in Mixers )
+        {
+            mixer.Volume = 1f;
+        }
+
+        if ( Settings is null )
+            return;
+
+        Settings.TextEffectSpeed = Settings.TextSpeed.Normal;
+
+        if ( _speedDropdown is not null )
+        {
+            _speedDropdown.Value = Enum.GetName( Settings.TextEffectSpeed );
+        }
+    }
+
+    private void OnFilterChanged()
+    {
+        if ( Settings is null )
+        {
+            return;
+        }
+
+        var stringValue = (string?)_speedDropdown?.Value;
+        if ( stringValue is not null )
+        {
+            Settings.TextEffectSpeed = Enum.Parse<Settings.TextSpeed>( stringValue );
+        }
+    }
+
+    protected override void OnAfterTreeRender( bool firstTime )
+    {
+        if ( !firstTime )
+        {
+            return;
+        }
+
+        if ( _speedDropdown is null )
+        {
+            return;
+        }
+
+        if ( Settings is null )
+        {
+            return;
+        }
+
+        _speedDropdown.Value = Enum.GetName( Settings.TextEffectSpeed );
+
+        base.OnAfterTreeRender( firstTime );
+    }
+
+    protected override int BuildHash()
+    {
+        return HashCode.Combine( Player?.DialogueHistory.Count, Settings?.TextEffectSpeed );
+    }
+}
