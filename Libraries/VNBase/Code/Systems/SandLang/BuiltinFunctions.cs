@@ -48,7 +48,7 @@ internal static class BuiltinFunctions
 
 		if ( v1.GetType() != v2.GetType() )
 		{
-			throw new InvalidParametersException( new[] { v1, v2 } );
+			throw new InvalidParametersException( [v1, v2] );
 		}
 
 		return v2 switch
@@ -76,17 +76,18 @@ internal static class BuiltinFunctions
 	private static Value IfFunction( IEnvironment environment, Value[] values )
 	{
 		var cond = values[0].Evaluate( environment ) as Value.NumberValue;
-		if ( cond!.Number < 0 )
+		if ( cond!.Number >= 0 )
 		{
-			if ( values.Length == 1 )
-			{
-				throw new InvalidParametersException( values );
-			}
-
-			return values[1].Evaluate( environment );
+			return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
 		}
 
-		return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
+		if ( values.Length == 1 )
+		{
+			throw new InvalidParametersException( values );
+		}
+
+		return values[1].Evaluate( environment );
+
 	}
 
 	private static Value MulFunction( IEnvironment environment, Value[] values )
@@ -94,7 +95,7 @@ internal static class BuiltinFunctions
 		return new Value.NumberValue( values.Select( p => p.Evaluate( environment ) ).Select( p => p switch
 		{
 			Value.NumberValue numberValue => numberValue.Number,
-			_ => throw new InvalidParametersException( new[] { p } )
+			_ => throw new InvalidParametersException( [p] )
 		} ).Aggregate( ( acc, v ) => acc + v ) );
 	}
 
@@ -142,7 +143,7 @@ internal static class BuiltinFunctions
 
 		if ( varname is not Value.VariableReferenceValue vrv )
 		{
-			throw new InvalidParametersException( new[] { varname } );
+			throw new InvalidParametersException( [varname] );
 		}
 
 		var value = values[1].Evaluate( environment );

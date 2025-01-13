@@ -8,7 +8,7 @@ public sealed partial class ScriptPlayer
 	/// <summary>
 	/// All previously shown labels.
 	/// </summary>
-	public List<Dialogue.Label> DialogueHistory { get; set; } = new();
+	public List<Dialogue.Label> DialogueHistory { get; } = [];
 
 	private void AddHistory( Dialogue.Label label )
 	{

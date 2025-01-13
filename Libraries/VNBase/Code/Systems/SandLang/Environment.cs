@@ -18,20 +18,12 @@ public interface IEnvironment
 /// <summary>
 /// A map of environment variables.
 /// </summary>
-public class EnvironmentMap : IEnvironment
+public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironment
 {
-	protected readonly Dictionary<string, Value> Variables;
+	protected readonly Dictionary<string, Value> Variables = variables;
 	internal static Logger Log { get; } = new( "Environment" );
 
-	public EnvironmentMap( Dictionary<string, Value> variables )
-	{
-		Variables = variables;
-	}
-
-	public EnvironmentMap() : this( new Dictionary<string, Value>() )
-	{
-
-	}
+	public EnvironmentMap() : this( new Dictionary<string, Value>() ) { }
 
 	public EnvironmentMap( IEnvironment copy ) : this()
 	{
