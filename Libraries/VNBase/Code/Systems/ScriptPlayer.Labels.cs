@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using System.Threading;
+using Sandbox.Audio;
+using SandLang;
 using VNBase.UI;
 using VNBase.Assets;
-using SandLang;
+using Sound=VNBase.Assets.Sound;
 
 namespace VNBase;
 
@@ -11,71 +13,87 @@ public sealed partial class ScriptPlayer
 {
 	private async void SetLabel( Dialogue.Label label )
 	{
-		ActiveLabel = label;
-		DialogueFinished = false;
-
-		if ( LoggingEnabled )
+		try
 		{
-			Log.Info( $"Loading Label {label.Name}" );
-		}
-
-		State.Characters.Clear();
-		label.Characters.ForEach( State.Characters.Add );
-		State.SpeakingCharacter = label.SpeakingCharacter;
-
-		foreach ( var sound in label.Assets.OfType<Sound>() )
-		{
-			sound.Play();
+			// Clean up any existing text effect before starting a new one
+			SkipDialogueEffect();
+			ActiveLabel = label;
 
 			if ( LoggingEnabled )
 			{
-				Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
+				Log.Info( $"Loading Label {label.Name}" );
 			}
-		}
 
-		try
-		{
-			State.Background = label.Assets.OfType<Background>().SingleOrDefault()?.Path;
-		}
-		catch ( InvalidOperationException )
-		{
-			Log.Error( $"There can only be one {nameof( Background )} in label {label.Name}!" );
-			State.Background = null;
-		}
+			State.Characters.Clear();
+			label.Characters.ForEach( State.Characters.Add );
+			State.SpeakingCharacter = label.SpeakingCharacter;
 
-		_cts = new CancellationTokenSource();
+			foreach ( var sound in label.Assets.OfType<Sound>() )
+			{
+				State.Sounds.Add( sound );
 
-		var environment = _environment;
-		var formattedText = label.Text.Format( environment );
-		if ( Settings?.TextEffectEnabled ?? false && Settings.TextEffect is not null )
-		{
+				if ( string.IsNullOrEmpty( sound.MixerName ) )
+				{
+					sound.Play();
+				}
+				else
+				{
+					sound.Play( sound.MixerName );
+				}
+
+				if ( sound is Music && sound.Handle is not null )
+				{
+					sound.Handle.TargetMixer = Mixer.FindMixerByName( "Music" );
+				}
+
+				if ( LoggingEnabled )
+				{
+					Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
+				}
+			}
+
 			try
 			{
-				await Settings.TextEffect.Play( formattedText, Settings.TextEffectDelay, ( text ) => State.DialogueText = text, _cts.Token );
+				State.Background = label.Assets.OfType<Background>().SingleOrDefault()?.Path;
 			}
-			catch ( OperationCanceledException )
+			catch ( InvalidOperationException )
 			{
-				State.DialogueText = formattedText;
+				Log.Error( $"There can only be one {nameof( Background )} in label {label.Name}!" );
+				State.Background = null;
+			}
+
+			AddHistory( label );
+			OnLabelSet?.Invoke( label );
+
+			var formattedText = label.Text.Format( _environment );
+
+			if ( Settings?.TextEffectEnabled ?? false )
+			{
+				_cts = new CancellationTokenSource();
+
+				try
+				{
+					await Settings.TextEffect.Play( formattedText, (int)Settings.TextEffectSpeed, UpdateDialogueText, _cts.Token );
+					EndDialogue( formattedText, label );
+				}
+				catch ( OperationCanceledException )
+				{
+					EndDialogue( formattedText, label );
+				}
+			}
+			else
+			{
+				// Skip the text effect entirely
+				EndDialogue( formattedText, label );
 			}
 		}
-		else
+		catch ( Exception e )
 		{
-			State.DialogueText = formattedText;
+			Log.Error( e.Message );
 		}
-
-		AddHistory( label );
-
-		// If we are in Automatic Mode, wait a bit
-		// before ending the dialogue.
-		if ( AutomaticMode && label.Choices.Count == 0 )
-		{
-			await Task.DelaySeconds( Settings.AutoDelay );
-		}
-
-		EndDialogue();
 	}
 
-	private void ExecuteAfterLabel()
+	public void ExecuteAfterLabel()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{
@@ -84,10 +102,15 @@ public sealed partial class ScriptPlayer
 		}
 
 		var afterLabel = ActiveLabel.AfterLabel;
-
 		if ( afterLabel is null )
 		{
 			return;
+		}
+
+		foreach ( var sound in State.Sounds.Where( sound => sound is not Music ).ToArray() )
+		{
+			sound.Stop();
+			State.Sounds.Remove( sound );
 		}
 
 		foreach ( var codeBlock in afterLabel.CodeBlocks )
@@ -95,12 +118,16 @@ public sealed partial class ScriptPlayer
 			codeBlock.Execute( ActiveScript.GetEnvironment() );
 		}
 
+		// Do not let us continue if there is an empty input box.
 		var hasInput = ActiveLabel.ActiveInput is not null;
 		if ( hasInput && Hud is not null )
 		{
 			var input = Hud.GetSubPanel<TextInput>();
 
-			if ( string.IsNullOrWhiteSpace( input.Entry.Text ) )
+			if ( input is null )
+				return;
+
+			if ( string.IsNullOrWhiteSpace( input.Entry?.Text ) )
 			{
 				return;
 			}
@@ -112,7 +139,7 @@ public sealed partial class ScriptPlayer
 			return;
 		}
 
-		if ( afterLabel.ScriptPath is not null )
+		if ( !string.IsNullOrEmpty( afterLabel.ScriptPath ) )
 		{
 			LoadScript( afterLabel.ScriptPath );
 			return;
@@ -132,19 +159,42 @@ public sealed partial class ScriptPlayer
 		SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 	}
 
-	private void EndDialogue()
+	private async void EndDialogue( string dialogueText, Dialogue.Label label )
 	{
-		if ( ActiveScript is null || ActiveLabel is null )
+		try
 		{
-			Log.Warning( "Unable to end the active dialogue; there is none!" );
-			return;
-		}
+			if ( ActiveScript is null || ActiveLabel is null )
+			{
+				Log.Warning( "Unable to end the active dialogue; there is none!" );
+				return;
+			}
 
-		DialogueFinished = true;
+			// If we are in Automatic Mode, wait a bit before ending the dialogue.
+			if ( AutomaticMode && label.Choices.Count == 0 )
+			{
+				try
+				{
+					await Task.DelaySeconds( Settings.AutoDelay );
+				}
+				catch ( OperationCanceledException )
+				{
+					State.IsDialogueFinished = false;
+				}
+			}
 
-		if ( ActiveScript is not null )
-		{
+			State.DialogueText = dialogueText;
 			State.Choices = ActiveLabel.Choices;
+			State.IsDialogueFinished = true;
 		}
+		catch ( Exception e )
+		{
+			Log.Error( e.Message );
+		}
+	}
+
+	private void UpdateDialogueText( string text )
+	{
+		State.DialogueText = text;
+		State.IsDialogueFinished = false;
 	}
 }

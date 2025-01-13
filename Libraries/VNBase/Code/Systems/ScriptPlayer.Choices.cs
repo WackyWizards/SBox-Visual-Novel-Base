@@ -17,12 +17,13 @@ public sealed partial class ScriptPlayer
 			Log.Error( "Unable to execute choice: No active dialogue." );
 			return;
 		}
-
+		
 		var targetLabel = _activeDialogue.Labels[choice.TargetLabel];
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
 			SetLabel( targetLabel );
 			ActiveScript.OnChoiceSelected?.Invoke( choice );
+			State.IsDialogueFinished = false;
 		}
 		else
 		{

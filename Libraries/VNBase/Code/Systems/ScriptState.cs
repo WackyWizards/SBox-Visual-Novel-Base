@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Sandbox;
+using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using VNBase.Assets;
 using SandLang;
 
@@ -17,6 +20,7 @@ public class ScriptState
 	/// <summary>
 	/// Path to the currently active background image.
 	/// </summary>
+	[ImageAssetPath]
 	public string? Background { get; set; }
 
 	/// <summary>
@@ -27,12 +31,22 @@ public class ScriptState
 	/// <summary>
 	/// Characters to display for this label.
 	/// </summary>
-	public List<Character> Characters { get; set; } = new();
+	public List<Character> Characters { get; set; } = [];
 
 	/// <summary>
 	/// The choices for this dialogue.
 	/// </summary>
-	public List<Dialogue.Choice> Choices { get; set; } = new();
+	public List<Dialogue.Choice> Choices { get; set; } = [];
+	
+	/// <summary>
+	/// Any currently playing sounds.
+	/// </summary>
+	public List<Assets.Sound> Sounds { get; set; } = [];
+	
+	/// <summary>
+	/// If the dialogue has finished writing text.
+	/// </summary>
+	public bool IsDialogueFinished { get; set; }
 
 	/// <summary>
 	/// Clears the active ScriptState.
@@ -42,8 +56,14 @@ public class ScriptState
 		DialogueText = null;
 		SpeakingCharacter = null;
 		Background = null;
+		IsDialogueFinished = false;
 		Characters.Clear();
 		Choices.Clear();
 	}
-}
 
+	public override int GetHashCode()
+	{
+		// ReSharper disable NonReadonlyMemberInGetHashCode
+		return HashCode.Combine( DialogueText, Background, SpeakingCharacter, Characters.Count, Choices.Count );
+	}
+}

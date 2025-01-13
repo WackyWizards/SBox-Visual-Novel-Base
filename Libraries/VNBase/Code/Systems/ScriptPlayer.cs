@@ -17,13 +17,6 @@ namespace VNBase;
 [Icon( "menu_book" )]
 public sealed partial class ScriptPlayer : Component
 {
-	[Property] public bool IsScriptActive { get; set; }
-
-	/// <summary>
-	/// If not empty, will load the script at this path on initial component start.
-	/// </summary>
-	[Property, Group( "Script" )] public string? InitialScript { get; set; }
-
 	/// <summary>
 	/// The currently active script.
 	/// </summary>
@@ -35,26 +28,42 @@ public sealed partial class ScriptPlayer : Component
 	public Dialogue.Label? ActiveLabel { get; private set; }
 
 	/// <summary>
+	/// If there is an active playing script.
+	/// </summary>
+	[Property]
+	public bool IsScriptActive { get; private set; }
+
+	/// <summary>
+	/// If not empty, will load the script at this path on initial component start.
+	/// </summary>
+	[Property, Group( "Script" )]
+	public string? InitialScript { get; set; }
+
+	/// <summary>
 	/// The <see cref="ScriptState"/>.
 	/// </summary>
-	[Property, Group( "Script" )] public ScriptState State { get; } = new();
+	[Property, Group( "Script" )]
+	public ScriptState State { get; } = new();
 
-	/// <summary>
-	/// If the dialogue has finished writing text.
-	/// </summary>
-	[Property, Group( "Dialogue" )] public bool DialogueFinished { get; set; }
+    /// <summary>
+    /// Automatic mode moves through dialogues without choices automatically.
+    /// </summary>
+    [Property, Group( "Dialogue" )]
+    public bool AutomaticMode { get; set; }
 
-	/// <summary>
-	/// Automatic mode moves through dialogues without choices automatically.
-	/// </summary>
-	[Property, Group( "Dialogue" )] public bool AutomaticMode { get; set; }
+    /// <summary>
+    /// If automatic mode can be enabled.
+    /// </summary>
+    [Property, Group( "Dialogue" )]
+    public bool IsAutomaticModeAvailable { get; set; } = true;
 
-	[Property, RequireComponent] public Settings? Settings { get; set; }
+	[Property, RequireComponent, Group( "Components" )]
+	public Settings? Settings { get; set; }
 
-	[Property, RequireComponent] public VNHud? Hud { get; set; }
+	[Property, RequireComponent, Group( "Components" )]
+	public VNHud? Hud { get; set; }
 
 	private Dialogue? _activeDialogue;
-
 	private CancellationTokenSource? _cts;
 
 	protected override void OnStart()
@@ -74,21 +83,21 @@ public sealed partial class ScriptPlayer : Component
 
 	protected override void OnUpdate()
 	{
-		if ( !Settings?.SkipActionEnabled ?? false )
+		if ( ActiveScript is null || ActiveLabel is null )
 		{
 			return;
 		}
 
-		if ( ActiveScript is null || ActiveLabel is null )
+		if ( !Settings?.SkipActionEnabled ?? false )
 		{
 			return;
 		}
 
 		if ( SkipActionPressed )
 		{
-			if ( !DialogueFinished )
+			if ( !State.IsDialogueFinished )
 			{
-				SkipEffect();
+				SkipDialogueEffect();
 			}
 			else if ( State.Choices.Count == 0 )
 			{
@@ -97,7 +106,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 		else if ( AutomaticMode )
 		{
-			if ( DialogueFinished && State.Choices.Count == 0 )
+			if ( State is { IsDialogueFinished: true, Choices.Count: 0 } )
 			{
 				ExecuteAfterLabel();
 			}
@@ -146,14 +155,24 @@ public sealed partial class ScriptPlayer : Component
 			Log.Info( $"Loading script: {scriptName}" );
 		}
 
+		if ( Settings?.StopMusicPlaybackOnUnload ?? true )
+		{
+			// Stop all previously playing songs.
+			foreach ( var music in State.Sounds.OfType<Music>() )
+			{
+				music.Stop();
+			}
+		}
+
 		ActiveScript = script;
+		_activeDialogue = ActiveScript.ParseDialogue();
+
 		script.OnLoad();
-
-		var codeblocks = SParen.ParseText( ActiveScript.Dialogue ).ToList();
-		_activeDialogue = Dialogue.ParseDialogue( codeblocks );
-
+		OnScriptLoad?.Invoke( script );
+		
 		SetEnvironment( _activeDialogue );
 		SetLabel( _activeDialogue.InitialLabel );
+		
 		IsScriptActive = true;
 	}
 
@@ -162,7 +181,7 @@ public sealed partial class ScriptPlayer : Component
 	/// </summary>
 	public void UnloadScript()
 	{
-		if ( ActiveScript is null )
+		if ( ActiveScript is null || ActiveLabel is null )
 		{
 			return;
 		}
@@ -177,8 +196,8 @@ public sealed partial class ScriptPlayer : Component
 		}
 
 		State.Clear();
-
 		ActiveScript.OnUnload();
+		OnScriptUnload?.Invoke( ActiveScript );
 		IsScriptActive = false;
 
 		var nextScript = ActiveScript.NextScript;
@@ -200,11 +219,20 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// Skip the currently active text effect.
 	/// </summary>
-	public void SkipEffect()
+	public void SkipDialogueEffect()
 	{
-		if ( !DialogueFinished && _cts is not null )
+		if ( ActiveScript is null || ActiveLabel is null )
 		{
-			_cts.Cancel();
+			return;
 		}
+
+		if ( AutomaticMode )
+		{
+			return;
+		}
+		
+		_cts?.Cancel();
+		_cts?.Dispose();
+		_cts = null;
 	}
 }
