@@ -189,14 +189,20 @@ public class SParen : IReadOnlyList<Value>
 				symbolStart = i + 1;
 			}
 
-			if ( text[i] == ')' )
+			if ( text[i] != ')' )
 			{
-				yield return new Token.CloseParen();
-				symbolStart = i + 1;
+				continue;
 			}
+
+			yield return new Token.CloseParen();
+			symbolStart = i + 1;
 		}
 
-		if ( symbolStart < text.Length )
+		if ( symbolStart >= text.Length )
+		{
+			yield break;
+		}
+
 		{
 			var sym = text[symbolStart..];
 			if ( sym.All( IsFloatChar ) )
@@ -214,7 +220,7 @@ public class SParen : IReadOnlyList<Value>
 
 	private static bool IsValidSymbolName( char symChar )
 	{
-		return char.IsLetterOrDigit( symChar ) || symChar is '=' or '<' or '>' or '-' or '+' or '/' or '*' or '.';
+		return char.IsLetterOrDigit( symChar ) || symChar is '=' or '<' or '>' or '-' or '+' or '/' or '*' or '.' or '_';
 	}
 
 	public static IEnumerable<SParen> ParseText( string text )
@@ -248,7 +254,7 @@ public class SParen : IReadOnlyList<Value>
 
 					if ( tokenDepth == 1 )
 					{
-						currentParen = new SParen( new List<Value>() );
+						currentParen = new SParen( [] );
 					}
 
 					else
@@ -266,8 +272,7 @@ public class SParen : IReadOnlyList<Value>
 							if ( subDepth == 0 ) break;
 						}
 
-						foreach ( var sub in ProcessTokens(
-									 tokenList.GetRange( tokenIndex, subToken - tokenIndex + 1 ) ) )
+						foreach ( var sub in ProcessTokens( tokenList.GetRange( tokenIndex, subToken - tokenIndex + 1 ) ) )
 						{
 							currentParen!._backingList.Add( new Value.ListValue( sub ) );
 						}

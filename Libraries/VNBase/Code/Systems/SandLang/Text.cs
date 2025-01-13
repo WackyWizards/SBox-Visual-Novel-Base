@@ -6,14 +6,9 @@ namespace SandLang;
 /// <summary>
 /// Represents text that can be formatted.
 /// </summary>
-public class FormattableText : IEquatable<string>
+public sealed class FormattableText( string text ) : IEquatable<string>
 {
-    public string Text { get; set; }
-
-    public FormattableText( string text )
-    {
-        Text = text;
-    }
+    public string Text { get; set; } = text;
 
     public bool Equals( string? other )
     {
@@ -30,7 +25,7 @@ public class FormattableText : IEquatable<string>
     /// </summary>
     /// <param name="environment">The environment to format the text with.</param>
     /// <returns>The formatted text.</returns>
-    public virtual string Format( IEnvironment environment )
+    public string Format( IEnvironment environment )
     {
         return Regex.Replace( Text, @"\{(\w+)\}", match =>
         {
