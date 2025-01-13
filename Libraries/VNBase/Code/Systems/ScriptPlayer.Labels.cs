@@ -165,7 +165,6 @@ public sealed partial class ScriptPlayer
 		{
 			if ( ActiveScript is null || ActiveLabel is null )
 			{
-				Log.Warning( "Unable to end the active dialogue; there is none!" );
 				return;
 			}
 

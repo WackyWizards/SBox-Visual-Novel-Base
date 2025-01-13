@@ -35,6 +35,14 @@ public sealed partial class ScriptPlayer
 			{
 				return;
 			}
+
+			if ( currentLabel.AfterLabel is null || !currentLabel.AfterLabel.IsLastLabel )
+			{
+				continue;
+			}
+			
+			UnloadScript();
+			return;
 		}
 	}
 
