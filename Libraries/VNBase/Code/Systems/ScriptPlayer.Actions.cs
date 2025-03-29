@@ -6,9 +6,9 @@ namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-	public Action<Script>? OnScriptLoad { get; set; }
+	public event Action<Script>? OnScriptLoad;
 	
-	public Action<Script>? OnScriptUnload { get; set; }
+	public event Action<Script>? OnScriptUnload;
 	
-	public Action<Dialogue.Label>? OnLabelSet { get; set; }
+	public event Action<Dialogue.Label>? OnLabelSet;
 }
