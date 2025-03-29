@@ -8,7 +8,7 @@
   "Resources": "/Assets/*\n/Code/*\n/Materials/*\n/Sounds/*\n*.vnscript",
   "PackageReferences": [],
   "EditorReferences": null,
-  "IsWhitelistDisabled": false,
+  "IsStandaloneOnly": false,
   "Metadata": {
     "MaxPlayers": 1,
     "MinPlayers": 1,
@@ -23,7 +23,7 @@
     "ProjectTemplate": null,
     "CsProjName": "",
     "StartupScene": "example.scene",
-    "Summary": "System for creating Visual Novels or Dialogue Systems for S\u0026Box Games",
+    "Summary": "System for creating Visual Novels or Dialogue Systems for S&Box Games",
     "Public": true,
     "HttpAllowList": null,
     "TickRate": 50,
