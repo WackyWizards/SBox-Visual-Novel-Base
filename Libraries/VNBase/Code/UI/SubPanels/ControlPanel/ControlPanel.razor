@@ -34,7 +34,7 @@
 
     private SubPanel? ActiveSubPanel;
 
-    private bool IsAutomaticMode => Player?.AutomaticMode ?? false;
+    private bool IsAutomaticMode => Player?.IsAutomaticMode ?? false;
     private bool IsInputPressed => Settings?.HideUIInputs.Any(x => x.Pressed) ?? false;
 
     public override void Tick()
@@ -57,7 +57,7 @@
             return;
         }
         
-        Player.AutomaticMode = !Player.AutomaticMode;
+        Player.IsAutomaticMode = !Player.IsAutomaticMode;
     }
 
     // ReSharper disable once InconsistentNaming

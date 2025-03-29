@@ -49,7 +49,7 @@ public sealed partial class ScriptPlayer : Component
     /// Automatic mode moves through dialogues without choices automatically.
     /// </summary>
     [Property, Group( "Dialogue" )]
-    public bool AutomaticMode { get; set; }
+    public bool IsAutomaticMode { get; set; }
 
     /// <summary>
     /// If automatic mode can be enabled.
@@ -104,7 +104,7 @@ public sealed partial class ScriptPlayer : Component
 				ExecuteAfterLabel();
 			}
 		}
-		else if ( AutomaticMode )
+		else if ( IsAutomaticMode )
 		{
 			if ( State is { IsDialogueFinished: true, Choices.Count: 0 } )
 			{
@@ -226,7 +226,7 @@ public sealed partial class ScriptPlayer : Component
 			return;
 		}
 
-		if ( AutomaticMode )
+		if ( IsAutomaticMode )
 		{
 			return;
 		}

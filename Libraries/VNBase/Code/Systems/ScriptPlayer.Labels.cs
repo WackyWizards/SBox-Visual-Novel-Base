@@ -169,7 +169,7 @@ public sealed partial class ScriptPlayer
 			}
 
 			// If we are in Automatic Mode, wait a bit before ending the dialogue.
-			if ( AutomaticMode && label.Choices.Count == 0 )
+			if ( IsAutomaticMode && label.Choices.Count == 0 )
 			{
 				try
 				{

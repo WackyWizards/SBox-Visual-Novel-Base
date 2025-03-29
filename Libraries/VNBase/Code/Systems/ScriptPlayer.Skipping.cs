@@ -57,7 +57,8 @@ public sealed partial class ScriptPlayer
 		}
 
 		// TODO: Automatic mode skipping is broken. Investigate.
-		if ( AutomaticMode )
+		// For now we just don't allow skipping if we are in automatic mode.
+		if ( IsAutomaticMode )
 		{
 			return false;
 		}
