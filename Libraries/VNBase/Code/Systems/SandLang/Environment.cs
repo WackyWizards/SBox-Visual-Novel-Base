@@ -21,7 +21,7 @@ public interface IEnvironment
 public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironment
 {
 	protected readonly Dictionary<string, Value> Variables = variables;
-	internal static Logger Log { get; } = new( "Environment" );
+	protected static Logger Log { get; } = new( "Environment" );
 
 	public EnvironmentMap() : this( new Dictionary<string, Value>() ) { }
 
@@ -56,7 +56,7 @@ public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironmen
 
 	public void SetVariable( string name, Value value )
 	{
-		if ( name.StartsWith( Value.GlobalDenoter ) )
+		if ( name.StartsWith( Value.GlobalPrefix ) )
 		{
 			GlobalEnvironment.Map.Variables[name] = value;
 			return;

@@ -6,10 +6,7 @@ namespace SandLang;
 
 public abstract record Value
 {
-	/// <summary>
-	/// The denoter of global variables.
-	/// </summary>
-	public const char GlobalDenoter = '$';
+	public const char GlobalPrefix = '$';
 
 	public virtual Value Evaluate( IEnvironment environment )
 	{
@@ -106,7 +103,9 @@ public abstract record Value
 		public override Value Evaluate( IEnvironment environment )
 		{
 			if ( ValueList.Count <= 0 )
+			{
 				return this;
+			}
 
 			var firstValue = ValueList[0];
 
