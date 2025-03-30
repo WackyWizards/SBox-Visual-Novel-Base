@@ -8,38 +8,38 @@
 
 <root>
     <div class="control-buttons" @ref="ControlButtons">
-        <button icon="skip_next" class="control-button @(Player?.CanSkip() == true ? "" : "disabled")" onclick="@Skip">Skip</button>
-        <button icon="@(IsAutomaticMode ? "chat" : "autorenew")" class="control-button @(Player?.IsAutomaticModeAvailable == true ? "" : "disabled")" onclick="@ToggleAutomaticMode">@(IsAutomaticMode ? "Manual" : "Auto")</button>
-        <button icon="@(UIVisible ? "visibility_off" : "visibility")" class="control-button" onclick="@ToggleUI">@(UIVisible ? "Hide UI" : "Show UI")</button>
+        <button icon="skip_next" class="control-button @( Player?.CanSkip() == true ? "" : "disabled" )" onclick="@Skip">Skip</button>
+        <button icon="@( IsAutomaticMode ? "chat" : "autorenew" )" class="control-button @( Player?.IsAutomaticModeAvailable == true ? "" : "disabled" )" onclick="@ToggleAutomaticMode">@( IsAutomaticMode ? "Manual" : "Auto" )</button>
+        <button icon="@( UIVisible ? "visibility_off" : "visibility" )" class="control-button" onclick="@ToggleUI">@( UIVisible ? "Hide UI" : "Show UI" )</button>
         <button icon="history" class="control-button" id="DialogueHistory">History</button>
-        @if (Settings?.SettingsEnabled ?? false)
+        @if ( Settings?.SettingsEnabled ?? false )
         {
             <button icon="settings" class="control-button" id="SettingsPanel">Settings</button>
         }
     </div>
 
     <DialogueHistory class="hidden" Player="@Player" Settings="@Player?.Settings" Hud="@Hud"></DialogueHistory>
-    @if (Settings?.SettingsEnabled ?? false)
+    @if ( Settings?.SettingsEnabled ?? false )
     {
         <SettingsPanel class="hidden" Player="@Player" Settings="@Player?.Settings" Hud="@Hud"></SettingsPanel>
     }
 </root>
 
 @code {
-#nullable enable
+    #nullable enable
     public Panel? ControlButtons { get; set; }
 
     @* ReSharper disable once InconsistentNaming *@
     public bool UIVisible { get; private set; } = true;
 
-    private SubPanel? ActiveSubPanel;
+    private SubPanel? _activeSubPanel;
 
     private bool IsAutomaticMode => Player?.IsAutomaticMode ?? false;
-    private bool IsInputPressed => Settings?.HideUIInputs.Any(x => x.Pressed) ?? false;
+    private bool IsInputPressed => Settings?.HideUIInputs.Any( x => x.Pressed ) ?? false;
 
     public override void Tick()
     {
-        if (IsInputPressed)
+        if ( IsInputPressed )
         {
             ToggleUI();
         }
@@ -56,7 +56,7 @@
         {
             return;
         }
-        
+
         Player.IsAutomaticMode = !Player.IsAutomaticMode;
     }
 
@@ -66,14 +66,14 @@
         // Panels that should not be hidden
         var ignoredPanels = new Type[]
         {
-            typeof(CharacterPortraits)
+            typeof( CharacterPortraits )
         };
 
         var panelsToHide = Parent.ChildrenOfType<SubPanel>()
-            .Where(x => !ignoredPanels.Contains(x.GetType()))
-            .Skip(1);
+            .Where( x => !ignoredPanels.Contains( x.GetType() ) )
+            .Skip( 1 );
 
-        foreach (var panel in panelsToHide)
+        foreach ( var panel in panelsToHide )
         {
             panel.ToggleVisibility();
         }
@@ -81,50 +81,55 @@
         UIVisible = !UIVisible;
     }
 
-    public void ToggleSubPanel(string id)
+    public void ToggleSubPanel( string id )
     {
-        var panel = GetSubPanelFromId(id);
+        var panel = GetSubPanelFromId( id );
 
-        if (panel is null)
+        if ( !panel.IsValid() )
         {
-            Log.Warning($"Unable to find sub panel with id: {id}");
+            Log.Warning( $"Unable to find sub panel with id: {id}" );
             return;
         }
 
-        if (ActiveSubPanel is not null && ActiveSubPanel != panel)
+        if ( _activeSubPanel.IsValid() && _activeSubPanel != panel )
         {
-            ActiveSubPanel.Hide();
+            _activeSubPanel.Hide();
         }
 
-        ActiveSubPanel = panel;
+        _activeSubPanel = panel;
         panel.ToggleVisibility();
     }
 
-    private SubPanel? GetSubPanelFromId(string id)
+    private SubPanel? GetSubPanelFromId( string id )
     {
-        return ChildrenOfType<SubPanel>().SingleOrDefault(x => x.ElementName == id.ToLower());
+        return ChildrenOfType<SubPanel>().SingleOrDefault( x => x.ElementName == id.ToLower() );
     }
 
-    protected override void OnAfterTreeRender(bool firstTime)
+    protected override void OnAfterTreeRender( bool firstTime )
     {
-        if (!firstTime)
+        if ( !firstTime )
         {
             return;
         }
 
-        foreach (var button in ControlButtons!.ChildrenOfType<Button>())
+        if ( !ControlButtons.IsValid() )
         {
-            if (button.Id is null)
+            return;
+        }
+
+        foreach ( var button in ControlButtons.ChildrenOfType<Button>() )
+        {
+            if ( button.Id is null )
             {
                 continue;
             }
 
-            button.AddEventListener("onclick", panelEvent => ToggleSubPanel(panelEvent.This.Id));
+            button.AddEventListener( "onclick", panelEvent => ToggleSubPanel( panelEvent.This.Id ) );
         }
     }
 
     protected override int BuildHash()
     {
-        return HashCode.Combine(UIVisible, ActiveSubPanel, Player?.CanSkip(), Player?.IsAutomaticModeAvailable, Player?.State.GetHashCode());
+        return HashCode.Combine( UIVisible, _activeSubPanel, Player?.CanSkip(), Player?.IsAutomaticModeAvailable, Player?.State.GetHashCode() );
     }
 }

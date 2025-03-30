@@ -1,22 +1,25 @@
 @using System;
 @using System.Linq;
+@using Sandbox;
 
 @namespace VNBase.UI
 @inherits SubPanel
 
-@if ( Player is null )
+@if ( !Player.IsValid() )
 {
     return;
 }
 
 <root>
-    @if (Player.State.SpeakingCharacter is not null)
+    @if ( Player.State.SpeakingCharacter is not null )
     {
         <div class="characterPanel">
-            <label class="character" style="color: @Player.State.SpeakingCharacter.NameColor.Rgba">@Player.State.SpeakingCharacter.Name</label>
-            @if (!string.IsNullOrEmpty(Player.State.SpeakingCharacter.Title))
+            <label class="character"
+                   style="color: @Player.State.SpeakingCharacter.NameColor.Rgba">@Player.State.SpeakingCharacter.Name</label>
+            @if ( !string.IsNullOrEmpty( Player.State.SpeakingCharacter.Title ) )
             {
-                <label class="title" style="color: @Player.State.SpeakingCharacter.TitleColor.Rgba">@Player.State.SpeakingCharacter.Title</label>
+                <label class="title"
+                       style="color: @Player.State.SpeakingCharacter.TitleColor.Rgba">@Player.State.SpeakingCharacter.Title</label>
             }
         </div>
     }
@@ -24,7 +27,7 @@
     <div class="dialoguePanel">
         <label class="dialogueText">@Player?.State.DialogueText</label>
 
-        @if (CanContinue)
+        @if ( CanContinue )
         {
             <img class="finished-icon" src="/materials/ui/icons/dialoguefinished.png" alt=""/>
         }
@@ -32,12 +35,12 @@
 </root>
 
 @code {
-#nullable enable
+    #nullable enable
     private TextInput? TextInput => Hud?.GetSubPanel<TextInput>();
     private bool CanContinue => Player?.State.IsDialogueFinished == true && !Player.State.Choices.Any() && (TextInput?.CanContinue ?? true);
-    
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player?.State.DialogueText, Player?.State.IsDialogueFinished, Player?.State.SpeakingCharacter, Player?.State.Choices.Count, TextInput?.CanContinue);
+        return HashCode.Combine( Player?.State.DialogueText, Player?.State.IsDialogueFinished, Player?.State.SpeakingCharacter, Player?.State.Choices.Count, TextInput?.CanContinue );
     }
 }

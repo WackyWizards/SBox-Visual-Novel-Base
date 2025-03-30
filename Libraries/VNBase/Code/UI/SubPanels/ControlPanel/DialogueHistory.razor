@@ -1,10 +1,11 @@
 @using System;
 @using System.Linq;
+@using Sandbox;
 
 @namespace VNBase.UI
 @inherits SubPanel
 
-@if ( Player is null )
+@if ( !Player.IsValid() )
 {
     return;
 }
@@ -13,14 +14,15 @@
     <div class="header">
         <label class="title">History</label>
     </div>
-    
+
     <div class="history">
-        @foreach (var dialogue in Player.DialogueHistory)
+        @foreach ( var dialogue in Player.DialogueHistory )
         {
             <div class="dialogue">
-                @if (dialogue.SpeakingCharacter is not null)
+                @if ( dialogue.SpeakingCharacter.IsValid() )
                 {
-                    <div class="character" style="color: @dialogue.SpeakingCharacter.NameColor.Rgba">@(dialogue.SpeakingCharacter.Name):</div>
+                    <div class="character" style="color: @dialogue.SpeakingCharacter.NameColor.Rgba">@( dialogue.SpeakingCharacter.Name ):
+                    </div>
                 }
                 <div class="text">@dialogue.Text</div>
             </div>
@@ -33,19 +35,19 @@
 </root>
 
 @code {
-#nullable enable
-    private bool IsInputPressed => Settings?.HistoryInputs.Any(x => x.Pressed) ?? false;
+    #nullable enable
+    private bool IsInputPressed => Settings?.HistoryInputs.Any( x => x.Pressed ) ?? false;
 
     public override void Tick()
     {
-        if (IsInputPressed)
+        if ( IsInputPressed )
         {
             ToggleVisibility();
         }
     }
-    
+
     protected override int BuildHash()
     {
-        return HashCode.Combine(Player?.DialogueHistory.Count);
+        return HashCode.Combine( Player?.DialogueHistory.Count );
     }
 }

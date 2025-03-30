@@ -1,5 +1,4 @@
-﻿using System;
-using VNBase.UI;
+﻿using VNBase.UI;
 
 namespace VNBase;
 
