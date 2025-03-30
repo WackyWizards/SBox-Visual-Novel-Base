@@ -18,7 +18,7 @@ public class Dialogue
 
 	internal Dictionary<Value, Value> Variables { get; } = new();
 
-	internal static Logger Log { get; } = new("SandLang");
+	protected static Logger Log { get; } = new( "SandLang" );
 
 	/// <summary>
 	/// Represents a dialogue step.
@@ -32,7 +32,7 @@ public class Dialogue
 		public Input? ActiveInput { get; set; }
 
 		public Character? SpeakingCharacter { get; set; }
-		
+
 		public List<Character> Characters { get; set; } = [];
 
 		public List<Choice> Choices { get; set; } = [];
@@ -99,8 +99,7 @@ public class Dialogue
 
 			if ( ScriptPlayer.LoggingEnabled )
 			{
-				Log.Info(
-					$"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );
+				Log.Info( $"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );
 			}
 		}
 	}
@@ -142,9 +141,15 @@ public class Dialogue
 		var functionEnvironment = new EnvironmentMap();
 		var functions = new Dictionary<string, Value.FunctionValue>
 		{
-			{ "label", new Value.FunctionValue( CreateLabel ) },
-			{ "start-dialogue", new Value.FunctionValue( SetStartDialogue ) },
-			{ "set", new Value.FunctionValue( SetVariable ) },
+			{
+				"label", new Value.FunctionValue( CreateLabel )
+			},
+			{
+				"start-dialogue", new Value.FunctionValue( SetStartDialogue )
+			},
+			{
+				"set", new Value.FunctionValue( SetVariable )
+			},
 		};
 
 		foreach ( var function in functions )
@@ -233,7 +238,7 @@ public class Dialogue
 	private delegate int SoundArgument( SParen argument, int index, Label label, VNBase.Assets.Sound sound );
 
 	private delegate int MusicArgument( SParen argument, int index, Label label );
-	
+
 	private delegate int BackgroundArgument( SParen argument, int index, Label label );
 
 	private delegate int AfterArgument( SParen argument, int index, AfterLabel after );
@@ -386,9 +391,9 @@ public class Dialogue
 	{
 		if ( arguments[3] is not Value.VariableReferenceValue argument )
 		{
-			throw new InvalidParametersException( [ arguments[3]] );
+			throw new InvalidParametersException( [arguments[3]] );
 		}
-		
+
 		character.ActivePortrait = argument.Name;
 		return 1;
 	}
@@ -403,7 +408,7 @@ public class Dialogue
 		var soundName = argument.Text;
 		var sound = new VNBase.Assets.Sound( soundName );
 		label.Assets.Add( sound );
-		
+
 		for ( var i = 2; i < arguments.Count; i++ )
 		{
 			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
@@ -438,7 +443,7 @@ public class Dialogue
 		{
 			throw new InvalidParametersException( [arguments[1]] );
 		}
-		
+
 		var musicName = argument.Text;
 		label.Assets.Add( new Music( musicName ) );
 	}
@@ -466,12 +471,15 @@ public class Dialogue
 			throw new InvalidOperationException( "Cannot have a text input in a label with choices!" );
 		}
 
-		label.ActiveInput = new Input { VariableName = argument.Name };
+		label.ActiveInput = new Input
+		{
+			VariableName = argument.Name
+		};
 	}
 
-	private static Character? GetCharacterResource(string characterName)
+	private static Character? GetCharacterResource( string characterName )
 	{
 		var characterPath = $"{Settings.CharacterResourcesPath}{characterName}.char";
-		return ResourceLibrary.TryGet<Character>(characterPath, out var loadedCharacter) ? loadedCharacter : null;
+		return ResourceLibrary.TryGet<Character>( characterPath, out var loadedCharacter ) ? loadedCharacter : null;
 	}
 }

@@ -93,7 +93,7 @@ public sealed partial class ScriptPlayer
 		}
 	}
 
-	public void ExecuteAfterLabel()
+	private void ExecuteAfterLabel()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{
@@ -159,7 +159,7 @@ public sealed partial class ScriptPlayer
 		SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 	}
 
-	private async void EndDialogue( string dialogueText, Dialogue.Label label )
+	private async void EndDialogue( string text, Dialogue.Label label )
 	{
 		try
 		{
@@ -181,7 +181,7 @@ public sealed partial class ScriptPlayer
 				}
 			}
 
-			State.DialogueText = dialogueText;
+			State.DialogueText = text;
 			State.Choices = ActiveLabel.Choices;
 			State.IsDialogueFinished = true;
 		}

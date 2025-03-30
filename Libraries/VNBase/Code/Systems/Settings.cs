@@ -36,10 +36,7 @@ public class Settings : Component
 	/// </summary>
 	[InlineEditor]
 	[Property, ToggleGroup( "SkipActionEnabled" )]
-	public List<Input> SkipActions { get; set; } = new()
-	{
-		"jump"
-	};
+	public List<Input> SkipActions { get; set; } = ["jump"];
 
 	/// <summary>
 	/// If we are able to skip the active text effect using a skip action.
@@ -62,7 +59,7 @@ public class Settings : Component
 	[Title( "Settings Inputs" )]
 	[Property, Group( "Actions" )]
 	public List<Input> SettingsInputs { get; set; } = [];
-	
+
 	/// <summary>
 	/// The Inputs to toggle the UI.
 	/// </summary>
@@ -83,7 +80,7 @@ public class Settings : Component
 	/// </summary>
 	[Property]
 	public bool ControlPanelEnabled { get; set; } = true;
-	
+
 	/// <summary>
 	/// If we should show the settings UI.
 	/// If your game implements its own, you can disable this.

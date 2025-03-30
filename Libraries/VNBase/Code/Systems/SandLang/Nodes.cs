@@ -94,7 +94,6 @@ public class SParen : IReadOnlyList<Value>
 	/// Tokenizes a string into a list of tokens.
 	/// </summary>
 	/// <param name="text">The string to tokenize.</param>
-	/// <returns>An enumerable of tokens.</returns>
 	private static IEnumerable<Token> TokenizeText( string text )
 	{
 		var symbolStart = 0;

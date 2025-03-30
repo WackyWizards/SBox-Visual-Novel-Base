@@ -8,5 +8,5 @@ public sealed partial class ScriptPlayer
 	[ConVar( "vnbase_logging" )]
 	public static bool LoggingEnabled { get; set; } = false;
 
-	public static readonly Logger Log = new( "VNBase" );
+	internal static readonly Logger Log = new( "VNBase" );
 }

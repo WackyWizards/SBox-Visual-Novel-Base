@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SandLang;
 
-internal static class BuiltinFunctions
+static class BuiltinFunctions
 {
 	/// <summary>
 	/// Contains mappings from symbols to builtin executable functions
@@ -25,7 +25,7 @@ internal static class BuiltinFunctions
 		["body"] = new Value.FunctionValue( ExpressionBodyFunction ),
 	};
 
-	private static Value GreaterThanFunction( IEnvironment environment, Value[] values )
+	private static Value.BooleanValue GreaterThanFunction( IEnvironment environment, Value[] values )
 	{
 		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
 		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
@@ -33,7 +33,7 @@ internal static class BuiltinFunctions
 		return new Value.BooleanValue( v1!.Number > v2!.Number );
 	}
 
-	private static Value LessThanFunction( IEnvironment environment, Value[] values )
+	private static Value.BooleanValue LessThanFunction( IEnvironment environment, Value[] values )
 	{
 		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
 		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
@@ -87,10 +87,9 @@ internal static class BuiltinFunctions
 		}
 
 		return values[1].Evaluate( environment );
-
 	}
 
-	private static Value MulFunction( IEnvironment environment, Value[] values )
+	private static Value.NumberValue MulFunction( IEnvironment environment, Value[] values )
 	{
 		return new Value.NumberValue( values.Select( p => p.Evaluate( environment ) ).Select( p => p switch
 		{
@@ -99,22 +98,22 @@ internal static class BuiltinFunctions
 		} ).Aggregate( ( acc, v ) => acc + v ) );
 	}
 
-	private static Value PowFunction( IEnvironment environment, Value[] values )
+	private static Value.NumberValue PowFunction( IEnvironment environment, Value[] values )
 	{
 		var baseVal = values[0].Evaluate( environment ) as Value.NumberValue;
 		var exponentVal = values[1].Evaluate( environment ) as Value.NumberValue;
 		return new Value.NumberValue( new decimal( Math.Pow( (double)baseVal!.Number, (double)exponentVal!.Number ) ) );
 	}
 
-	private static Value SqrtFunction( IEnvironment environment, Value[] values )
+	private static Value.NumberValue SqrtFunction( IEnvironment environment, Value[] values )
 	{
 		var val = values[0].Evaluate( environment ) as Value.NumberValue;
 		return new Value.NumberValue( new decimal( Math.Sqrt( (double)val!.Number ) ) );
 	}
 
-	private static Value DefineFunction( IEnvironment environment, Value[] values )
+	private static Value.FunctionValue DefineFunction( IEnvironment environment, Value[] values )
 	{
-		var argnames = (values[0] as Value.ListValue)!.ValueList.Select( p => p switch
+		var argNames = (values[0] as Value.ListValue)!.ValueList.Select( p => p switch
 		{
 			Value.StringValue stringValue => stringValue.Text,
 			Value.VariableReferenceValue variableReferenceValue => variableReferenceValue.Name,
@@ -127,9 +126,9 @@ internal static class BuiltinFunctions
 		{
 			var env = new EnvironmentMap( environment );
 
-			for ( var i = 0; i < MathF.Min( argnames.Length, arglist.Length ); i++ )
+			for ( var i = 0; i < MathF.Min( argNames.Length, arglist.Length ); i++ )
 			{
-				env.SetVariable( argnames[i], arglist[i].Evaluate( e ) );
+				env.SetVariable( argNames[i], arglist[i].Evaluate( e ) );
 			}
 
 			return body.Execute( env );
@@ -139,11 +138,11 @@ internal static class BuiltinFunctions
 	private static Value SetFunction( IEnvironment environment, params Value[] values )
 	{
 		if ( values.Length != 2 ) throw new InvalidParametersException( values );
-		var varname = values[0];
+		var varName = values[0];
 
-		if ( varname is not Value.VariableReferenceValue vrv )
+		if ( varName is not Value.VariableReferenceValue vrv )
 		{
-			throw new InvalidParametersException( [varname] );
+			throw new InvalidParametersException( [varName] );
 		}
 
 		var value = values[1].Evaluate( environment );
@@ -180,10 +179,10 @@ internal static class BuiltinFunctions
 
 		return values[0] switch
 		{
-			Value.StringValue => new Value.StringValue(
+			Value.StringValue => new Value.StringValue( 
 				values.Select( v => (v as Value.StringValue)!.Text ).Aggregate( ( acc, v ) => acc + v ) ),
-			Value.NumberValue =>
-				new Value.NumberValue( values.Select( v => (v as Value.NumberValue)!.Number ).Sum() ),
+			Value.NumberValue => new Value.NumberValue( 
+				values.Select( v => (v as Value.NumberValue)!.Number ).Sum() ),
 			_ => Value.NoneValue.None
 		};
 	}
