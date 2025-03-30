@@ -39,7 +39,7 @@
 )
 
 (label visit-vendor
-	(text "You approach the vendor and see a variety of rare artifacts. One item catches your eye - a glowing amulet. The vendor tells you it has magical properties.")
+	(text "You approach the vendor and browse his wares. One item catches your eye - a glowing amulet. The vendor tells you it has magical properties.")
 	(bg "meadow.jpg")
 	(after jump buy-artifact)
 )

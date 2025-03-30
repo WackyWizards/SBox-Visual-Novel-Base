@@ -57,6 +57,13 @@ DialogueBox {
     justify-content: center;
     padding: 100px;
 
+    .dialogueText {
+      color: $dialogue-color;
+      font-family: $dialogue-font;
+      font-size: $dialogue-font-size;
+      text-shadow: $dialogue-text-shadow;
+    }
+    
     .finished-icon {
       position: absolute;
       width: 35px;
@@ -71,14 +78,5 @@ DialogueBox {
         }
       }
     }
-  }
-}
-
-.dialoguePanel {
-  .label {
-    color: $dialogue-color;
-    font-family: $dialogue-font;
-    font-size: $dialogue-font-size;
-    text-shadow: $dialogue-text-shadow;
   }
 }
