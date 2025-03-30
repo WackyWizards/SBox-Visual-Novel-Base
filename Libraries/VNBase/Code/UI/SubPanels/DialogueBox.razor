@@ -11,15 +11,13 @@
 }
 
 <root>
-    @if ( Player.State.SpeakingCharacter is not null )
+    @if ( Player.State.SpeakingCharacter.IsValid() )
     {
         <div class="characterPanel">
-            <label class="character"
-                   style="color: @Player.State.SpeakingCharacter.NameColor.Rgba">@Player.State.SpeakingCharacter.Name</label>
+            <label class="character" style="color: @Player.State.SpeakingCharacter.NameColor.Rgba">@Player.State.SpeakingCharacter.Name</label>
             @if ( !string.IsNullOrEmpty( Player.State.SpeakingCharacter.Title ) )
             {
-                <label class="title"
-                       style="color: @Player.State.SpeakingCharacter.TitleColor.Rgba">@Player.State.SpeakingCharacter.Title</label>
+                <label class="title" style="color: @Player.State.SpeakingCharacter.TitleColor.Rgba">@Player.State.SpeakingCharacter.Title</label>
             }
         </div>
     }
