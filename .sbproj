@@ -8,6 +8,7 @@
   "Resources": "/Assets/*\n/Code/*\n/Materials/*\n/Sounds/*\n*.vnscript",
   "PackageReferences": [],
   "EditorReferences": null,
+  "Mounts": null,
   "IsStandaloneOnly": false,
   "Metadata": {
     "MaxPlayers": 1,
