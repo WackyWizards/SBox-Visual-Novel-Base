@@ -39,7 +39,7 @@ public class ResourceNotFoundException : FileNotFoundException
 		: base( message, fileName )
 	{
 		ResourceName = resourceName ?? string.Empty;
-		if ( innerException != null )
+		if ( innerException is not null )
 		{
 			base.Data["InnerException"] = innerException;
 		}
