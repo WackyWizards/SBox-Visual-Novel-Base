@@ -22,8 +22,7 @@ public class Settings
 	/// <summary>
 	/// The currently active text effect.
 	/// </summary>
-	[JsonIgnore]
-	[Property, ToggleGroup( "TextEffectEnabled" )]
+	[JsonIgnore, Hide]
 	public ITextEffect TextEffect { get; set; } = new Typewriter();
 
 	/// <summary>

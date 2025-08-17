@@ -82,7 +82,7 @@
           "InitialScript": "Scripts\\ExampleScript.vnscript",
           "IsAutomaticMode": false,
           "IsAutomaticModeAvailable": true,
-          "IsScriptActive": true,
+          "IsScriptActive": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
