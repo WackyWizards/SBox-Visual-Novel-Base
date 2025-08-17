@@ -14,7 +14,7 @@ namespace VNBase;
 [Title( "VN Settings" )]
 [Category( "VNBase" )]
 [Icon( "settings" )]
-public class Settings : Component
+public class Settings
 {
 	[Property, ToggleGroup( "TextEffectEnabled" )]
 	public bool TextEffectEnabled { get; set; } = true;
@@ -84,8 +84,8 @@ public class Settings : Component
 	public bool ControlPanelEnabled { get; set; } = true;
 
 	/// <summary>
-	/// If we should show the settings UI.
-	/// If your game implements its own, you can disable this.
+	/// If we should show the settings UI button.
+	/// If your game implements its own settings menu, you can disable this.
 	/// </summary>
 	[Property]
 	public bool SettingsEnabled { get; set; } = true;

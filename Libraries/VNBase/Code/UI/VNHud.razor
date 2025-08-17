@@ -21,7 +21,7 @@
             <TextInput Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         }
 
-        @if ( Player.Settings.IsValid() && Player.Settings.ControlPanelEnabled )
+        @if ( Player.Settings.ControlPanelEnabled )
         {
             <ControlPanel Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         }

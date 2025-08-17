@@ -28,7 +28,7 @@ public partial class SettingsPanel
 	{
 		var masterVolume = MasterMixer.Volume;
 
-		if ( !Settings.IsValid() )
+		if ( Settings is null )
 		{
 			return false;
 		}
@@ -48,7 +48,7 @@ public partial class SettingsPanel
 			mixer.Volume = 1f;
 		}
 
-		if ( !Settings.IsValid() )
+		if ( Settings is null )
 		{
 			return;
 		}
@@ -63,7 +63,7 @@ public partial class SettingsPanel
 
 	private void OnFilterChanged()
 	{
-		if ( !Settings.IsValid() )
+		if ( Settings is null )
 		{
 			return;
 		}
@@ -87,7 +87,7 @@ public partial class SettingsPanel
 			return;
 		}
 
-		if ( !Settings.IsValid() )
+		if ( Settings is null )
 		{
 			return;
 		}

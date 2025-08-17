@@ -57,8 +57,8 @@ public sealed partial class ScriptPlayer : Component
     [Property, Group( "Dialogue" )]
     public bool IsAutomaticModeAvailable { get; set; } = true;
 
-	[Property, RequireComponent, Group( "Components" )]
-	public Settings? Settings { get; set; }
+    [Property]
+    public Settings Settings { get; set; } = new();
 
 	[Property, RequireComponent, Group( "Components" )]
 	public VNHud? Hud { get; set; }
