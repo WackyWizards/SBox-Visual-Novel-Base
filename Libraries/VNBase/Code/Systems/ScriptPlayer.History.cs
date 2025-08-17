@@ -13,15 +13,9 @@ public sealed partial class ScriptPlayer
 	/// <summary>
 	/// Adds a dialogue entry to history
 	/// </summary>
-	private void AddToHistory( string displayedText, Dialogue.Label label )
+	private void AddToHistory( string text, Dialogue.Label label )
 	{
-		var historyEntry = new HistoryEntry
-		{
-			Text = displayedText,
-			Label = label
-		};
-
-		DialogueHistory.Add( historyEntry );
+		DialogueHistory.Add( new HistoryEntry( text, label ) );
 	}
 	
 	/// <summary>
@@ -29,7 +23,7 @@ public sealed partial class ScriptPlayer
 	/// </summary>
 	public readonly struct HistoryEntry( string text, Dialogue.Label label )
 	{
-		public string Text { get; init; } = text;
-		public Dialogue.Label Label { get; init; } = label;
+		public string Text { get; } = text;
+		public Dialogue.Label Label { get; } = label;
 	}
 }
