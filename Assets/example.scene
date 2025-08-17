@@ -75,7 +75,7 @@
           "__enabled": true,
           "Hud": {
             "_type": "component",
-            "component_id": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
+            "component_id": "3de1311b-44b9-4b6e-bd9b-539e5979651c",
             "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
             "component_type": "VNHud"
           },
@@ -90,10 +90,28 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Settings": {
-            "_type": "component",
-            "component_id": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
-            "go": "75f37a7b-79ed-480b-b7d8-33aa992da0c0",
-            "component_type": "Settings"
+            "TextEffectEnabled": true,
+            "TextEffectSpeed": "Normal",
+            "SkipActions": [
+              {
+                "Action": "Jump"
+              }
+            ],
+            "SkipActionEnabled": true,
+            "HistoryInputs": [
+              {
+                "Action": "Menu"
+              }
+            ],
+            "SettingsInputs": [],
+            "HideUIInputs": [
+              {
+                "Action": "Score"
+              }
+            ],
+            "StopMusicPlaybackOnUnload": true,
+            "ControlPanelEnabled": true,
+            "SettingsEnabled": true
           },
           "State": {
             "DialogueText": null,
@@ -106,41 +124,8 @@
           }
         },
         {
-          "__type": "VNBase.Settings",
-          "__guid": "b86a756c-f3a5-4df6-b838-b0dfbb8d1b27",
-          "__enabled": true,
-          "ControlPanelEnabled": true,
-          "HideUIInputs": [
-            {
-              "Action": "Score"
-            }
-          ],
-          "HistoryInputs": [
-            {
-              "Action": "Menu"
-            }
-          ],
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "SettingsEnabled": true,
-          "SettingsInputs": [],
-          "SkipActionEnabled": true,
-          "SkipActions": [
-            {
-              "Action": "jump"
-            }
-          ],
-          "StopMusicPlaybackOnUnload": true,
-          "TextEffectEnabled": true,
-          "TextEffectSpeed": "Normal"
-        },
-        {
           "__type": "VNBase.UI.VNHud",
-          "__guid": "6addd3d3-fe6a-4ae2-a464-03eec35d9a15",
+          "__guid": "3de1311b-44b9-4b6e-bd9b-539e5979651c",
           "__enabled": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
