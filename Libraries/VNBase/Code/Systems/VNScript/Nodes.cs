@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SandLang;
+namespace VNScript;
 
 /// <summary>
 /// Exception thrown when a variable is not found in the environment.

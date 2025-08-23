@@ -6,12 +6,12 @@ using System.Linq;
 using VNBase;
 using VNBase.Assets;
 
-namespace SandLang;
+namespace VNScript;
 
 /// <summary>
 /// This class contains the dialogue structures as well as the functions to process dialogue and labels from the S-expression code
 /// </summary>
-public class Dialogue
+public class Script
 {
 	public Dictionary<string, Label> Labels { get; } = new();
 
@@ -19,7 +19,7 @@ public class Dialogue
 
 	internal Dictionary<Value, Value> Variables { get; } = new();
 
-	private static Logger Log { get; } = new( "SandLang" );
+	private static Logger Log { get; } = new( "VNScript" );
 
 	/// <summary>
 	/// Represents a dialogue step.
@@ -28,9 +28,9 @@ public class Dialogue
 	{
 		public string Name { get; set; } = string.Empty;
 
-		public List<string> Text => FormattableText.Select( x => x.Format( Environment ) ).ToList();
+		public List<string> Dialogue => FormattableDialogue.Select( x => x.Format( Environment ) ).ToList();
 		
-		internal List<FormattableText> FormattableText { get; set; } = [];
+		internal List<FormattableText> FormattableDialogue { get; set; } = [];
 
 		public Input? ActiveInput { get; set; }
 
@@ -121,9 +121,9 @@ public class Dialogue
 		public string? TargetLabel { get; set; }
 	}
 
-	public static Dialogue ParseDialogue( List<SParen> codeBlocks )
+	public static Script ParseDialogue( List<SParen> codeBlocks )
 	{
-		var dialogue = new Dialogue();
+		var dialogue = new Script();
 		dialogue.Parse( codeBlocks );
 
 		return dialogue;
@@ -208,8 +208,8 @@ public class Dialogue
 
 		LabelArgument labelArgument = argumentType switch
 		{
-			"text" =>
-				LabelTextArgument,
+			"dialogue" =>
+				LabelDialogueArgument,
 			"choice" =>
 				LabelChoiceArgument,
 			"char" =>
@@ -232,7 +232,7 @@ public class Dialogue
 
 	private delegate void LabelArgument( SParen argument, Label label );
 
-	private delegate int TextArgument( SParen argument, int index, Label label );
+	private delegate int DialogueArgument( SParen argument, int index, Label label );
 
 	private delegate int ChoiceArgument( SParen argument, int index, Choice choice );
 
@@ -333,14 +333,14 @@ public class Dialogue
 		return 1;
 	}
 
-	private static void LabelTextArgument( SParen arguments, Label label )
+	private static void LabelDialogueArgument( SParen arguments, Label label )
 	{
 		if ( arguments[1] is not Value.StringValue argument )
 		{
 			throw new InvalidParametersException( [arguments[1]] );
 		}
     
-		label.FormattableText.Add( argument.Text );
+		label.FormattableDialogue.Add( argument.Text );
 
 		for ( var i = 2; i < arguments.Count; i++ )
 		{
@@ -349,17 +349,17 @@ public class Dialogue
 				throw new InvalidParametersException( [arguments[i]] );
 			}
 
-			TextArgument textArgument = variableReferenceValue.Name switch
+			DialogueArgument dialogueArgument = variableReferenceValue.Name switch
 			{
-				"say" => TextSayArgument,
+				"speaker" => DialogueSpeakerArgument,
 				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
 			};
 
-			i += textArgument( arguments, i, label );
+			i += dialogueArgument( arguments, i, label );
 		}
 	}
 
-	private static int TextSayArgument( SParen arguments, int index, Label label )
+	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label )
 	{
 		var characterName = ((Value.VariableReferenceValue)arguments[3])!.Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );

@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace SandLang;
+namespace VNScript;
 
 /// <summary>
 /// Represents text that can be formatted.

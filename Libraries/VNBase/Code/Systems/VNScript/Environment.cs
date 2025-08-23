@@ -2,7 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Sandbox.Diagnostics;
 
-namespace SandLang;
+namespace VNScript;
 
 /// <summary>
 /// Interface for an environment that can store and retrieve variables.
@@ -20,8 +20,8 @@ public interface IEnvironment
 /// </summary>
 public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironment
 {
-	protected readonly Dictionary<string, Value> Variables = variables;
-	protected static Logger Log { get; } = new( "Environment" );
+	private readonly Dictionary<string, Value> _variables = variables;
+	protected static readonly Logger Log = new( "Environment" );
 
 	public EnvironmentMap() : this( new Dictionary<string, Value>() ) { }
 
@@ -43,10 +43,10 @@ public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironmen
 	{
 		if ( GlobalEnvironment.Map.VariableSet().Contains( name ) )
 		{
-			return GlobalEnvironment.Map.Variables[name];
+			return GlobalEnvironment.Map._variables[name];
 		}
 
-		if ( !Variables.TryGetValue( name, out var value ) )
+		if ( !_variables.TryGetValue( name, out var value ) )
 		{
 			throw new UndefinedVariableException( name );
 		}
@@ -58,21 +58,21 @@ public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironmen
 	{
 		if ( name.StartsWith( Value.GlobalPrefix ) )
 		{
-			GlobalEnvironment.Map.Variables[name] = value;
+			GlobalEnvironment.Map._variables[name] = value;
 			return;
 		}
 
-		Variables[name] = value;
+		_variables[name] = value;
 	}
 
 	public IEnumerable<string> VariableSet()
 	{
-		return Variables.Keys;
+		return _variables.Keys;
 	}
 
 	public Dictionary<string, Value> GetVariables()
 	{
-		return Variables;
+		return _variables;
 	}
 }
 
