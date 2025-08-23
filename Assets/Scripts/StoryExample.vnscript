@@ -2,38 +2,38 @@
 // More information available on the vnbase wiki page: https://github.com/KUO-Team/SBox-Visual-Novel-Base/wiki
 
 (label breezing-wind
-	(text "A gentle breeze rustles through your hair, birds chirp melodiously, and the sun shines brightly. It's a perfect day.")
-	(text "You take a moment to enjoy the beautiful scenery around you. The tranquility of the meadow fills you with peace.")
+	(dialogue "A gentle breeze rustles through your hair, birds chirp melodiously, and the sun shines brightly. It's a perfect day.")
+	(dialogue "You take a moment to enjoy the beautiful scenery around you. The tranquility of the meadow fills you with peace.")
 	(bg "meadow.jpg")
 	(after jump look-around)
 )
 
 (label look-around
-	(text "Ahead of you is a path, and to your right is the road. It seems you are in the countryside.")
+	(dialogue "Ahead of you is a path, and to your right is the road. It seems you are in the countryside.")
 	(choice "Follow the path" jump follow-the-path)
 	(choice "Take the road" jump take-the-road)
 	(bg "meadow.jpg")
 )
 
 (label follow-the-path
-	(text "You follow the path for a while until you come across a small village. In the distance, you see a small house that looks abandoned. Perhaps there's something valuable inside?")
-	(text "You approach the house, which appears run-down and abandoned. You notice a small window on the second floor. Your mind races with thoughts; maybe you can climb up and explore?")
-	(text "You climb up to the second floor and find a small chest. Inside, you discover a few coins and a rusty sword. You grab them, stuffing the coins into your pockets and wield the sword with your right hand.")
+	(dialogue "You follow the path for a while until you come across a small village. In the distance, you see a small house that looks abandoned. Perhaps there's something valuable inside?")
+	(dialogue "You approach the house, which appears run-down and abandoned. You notice a small window on the second floor. Your mind races with thoughts; maybe you can climb up and explore?")
+	(dialogue "You climb up to the second floor and find a small chest. Inside, you discover a few coins and a rusty sword. You grab them, stuffing the coins into your pockets and wield the sword with your right hand.")
 	(bg "meadow.jpg")
 	(after jump sit-down)
 )
 
 (label take-the-road
-	(text "You take the road and walk for a while until you reach a bustling town. There are shops, people, and a lot of activity. Maybe you can find something interesting here?")
-	(text "You explore the town and find a market. There are various stalls selling different items. You notice a mysterious vendor selling rare artifacts.")
-	(text "You approach the vendor and browse his wares. One item catches your eye - a glowing amulet. The vendor tells you it has magical properties.")
-	(text "You grounge up whatever savings you have left to buy the amulet and attach it to your collar. Time to get going.")
+	(dialogue "You take the road and walk for a while until you reach a bustling town. There are shops, people, and a lot of activity. Maybe you can find something interesting here?")
+	(dialogue "You explore the town and find a market. There are various stalls selling different items. You notice a mysterious vendor selling rare artifacts.")
+	(dialogue "You approach the vendor and browse his wares. One item catches your eye - a glowing amulet. The vendor tells you it has magical properties.")
+	(dialogue "You grounge up whatever savings you have left to buy the amulet and attach it to your collar. Time to get going.")
 	(bg "meadow.jpg")
 	(after jump sit-down)
 )
 
 (label sit-down
-	(text "You sit down to admire your surroundings. It's truly beautiful. You rest your eyes, lying on the grass and taking shade under a large tree.")
+	(dialogue "You sit down to admire your surroundings. It's truly beautiful. You rest your eyes, lying on the grass and taking shade under a large tree.")
 	(bg "meadow.jpg")
 	(after load /Scripts/ExampleScript.vnscript)
 )

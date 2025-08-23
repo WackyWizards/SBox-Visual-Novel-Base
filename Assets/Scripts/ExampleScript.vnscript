@@ -7,24 +7,24 @@
 */
 
 (label beginning
-	(text "Which example do you want to load?")
+	(dialogue "Which example do you want to load?")
 	(choice "Story Example" jump storyscript)
 	(choice "Condition Example" jump conditionscript)
 	(choice "Input Example" jump inputscript)
 )
 
 (label storyscript
-	(text "Loading story example")
+	(dialogue "Loading story example")
 	(after load /Scripts/StoryExample.vnscript)
 )
 
 (label conditionscript
-	(text "Loading condition example")
+	(dialogue "Loading condition example")
 	(after load /Scripts/ConditionExample.vnscript)
 )
 
 (label inputscript
-	(text "Loading input example")
+	(dialogue "Loading input example")
 	(after load /Scripts/InputExample.vnscript)
 )
 

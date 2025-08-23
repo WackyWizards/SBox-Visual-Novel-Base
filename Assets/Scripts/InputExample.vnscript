@@ -1,5 +1,5 @@
 (label beginning
-    (text "What's your name?")
+    (dialogue "What's your name?")
 
     // Input allows us to display an input box.
     // It then takes the input and stores it in the provided variable.
@@ -11,7 +11,7 @@
 (label display
     // We interpolate the variable "name" into the text.
     // This is done by using curly braces around the variable name.
-    (text "So your name is {name}, huh? Nice to meet you!")
+    (dialogue "So your name is {name}, huh? Nice to meet you!")
 	(after load /Scripts/ExampleScript.vnscript)
 )
 
