@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Sandbox.Diagnostics;
-using SandLang;
+using VNScript;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 // ReSharper disable VirtualMemberCallInConstructor
@@ -12,7 +12,7 @@ using SandLang;
 namespace VNBase.Assets;
 
 /// <summary>
-/// Defines a VNBase script.
+/// Defines a VNBase script asset.
 /// </summary>
 public class Script : IAsset
 {
@@ -41,7 +41,7 @@ public class Script : IAsset
 	/// Called when a choice is selected from this script.
 	/// </summary>
 	[Hide]
-	public Action<Dialogue.Choice>? OnChoiceSelected { get; set; }
+	public Action<VNScript.Script.Choice>? OnChoiceSelected { get; set; }
 
 	[Hide]
 	private IEnvironment? _environment;
@@ -98,9 +98,9 @@ public class Script : IAsset
 		return _environment ??= new EnvironmentMap( new Dictionary<string, Value>() );
 	}
 
-	internal Dialogue ParseDialogue()
+	internal VNScript.Script Parse()
 	{
 		var codeBlocks = SParen.ParseText( Dialogue ).ToList();
-		return SandLang.Dialogue.ParseDialogue( codeBlocks );
+		return VNScript.Script.ParseDialogue( codeBlocks );
 	}
 }
