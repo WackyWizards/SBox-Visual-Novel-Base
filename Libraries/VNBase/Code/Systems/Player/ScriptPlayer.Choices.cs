@@ -1,10 +1,10 @@
-using SandLang;
+using VNScript;
 
 namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-	public void ExecuteChoice( Dialogue.Choice choice )
+	public void ExecuteChoice( Script.Choice choice )
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{

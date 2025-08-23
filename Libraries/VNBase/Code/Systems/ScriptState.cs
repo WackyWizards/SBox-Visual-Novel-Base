@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using VNBase.Assets;
-using SandLang;
+using VNScript;
+using Script = VNScript.Script;
 
 namespace VNBase;
 
@@ -39,7 +40,7 @@ public class ScriptState
 	/// The choices for this dialogue.
 	/// </summary>
 	[ReadOnly]
-	public List<Dialogue.Choice> Choices { get; set; } = [];
+	public List<Script.Choice> Choices { get; set; } = [];
 	
 	/// <summary>
 	/// Any currently playing sounds.

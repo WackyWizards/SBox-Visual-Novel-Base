@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Sandbox.Audio;
-using SandLang;
+using VNScript;
 using VNBase.UI;
 using VNBase.Assets;
+using Script = VNScript.Script;
 using Sound=VNBase.Assets.Sound;
 
 namespace VNBase;
@@ -17,7 +18,7 @@ public sealed partial class ScriptPlayer
     /// </summary>
     private int _currentTextIndex = 0;
 
-    private async void SetLabel( Dialogue.Label label )
+    private async void SetLabel( Script.Label label )
     {
         try
         {
@@ -85,19 +86,19 @@ public sealed partial class ScriptPlayer
 
     private async Task DisplayCurrentTextSegment()
     {
-        if ( ActiveLabel is null || ActiveLabel.Text.Count == 0 )
+        if ( ActiveLabel is null || ActiveLabel.Dialogue.Count == 0 )
         {
             Log.Error("No text segments available in current label");
             return;
         }
 
-        if ( _currentTextIndex >= ActiveLabel.Text.Count )
+        if ( _currentTextIndex >= ActiveLabel.Dialogue.Count )
         {
             Log.Error( $"Text index {_currentTextIndex} out of range for label {ActiveLabel.Name}" );
             return;
         }
 
-        var currentText = ActiveLabel.FormattableText[_currentTextIndex];
+        var currentText = ActiveLabel.FormattableDialogue[_currentTextIndex];
         var formattedText = currentText.Format( _environment );
 
         if ( Settings?.TextEffectEnabled ?? false )
@@ -135,7 +136,7 @@ public sealed partial class ScriptPlayer
         _currentTextIndex++;
 
         // If we have more text segments, display the next one
-        if ( _currentTextIndex < ActiveLabel.Text.Count )
+        if ( _currentTextIndex < ActiveLabel.Dialogue.Count )
         {
             _ = DisplayCurrentTextSegment();
         }
@@ -214,7 +215,7 @@ public sealed partial class ScriptPlayer
         SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
     }
 
-    private async void EndDialogue( string text, Dialogue.Label label )
+    private async void EndDialogue( string text, Script.Label label )
     {
         try
         {

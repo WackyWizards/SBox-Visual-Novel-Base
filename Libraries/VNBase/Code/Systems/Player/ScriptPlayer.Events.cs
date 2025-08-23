@@ -1,14 +1,13 @@
 ﻿using System;
-using SandLang;
-using VNBase.Assets;
+using Script = VNScript.Script;
 
 namespace VNBase;
 
 public sealed partial class ScriptPlayer
 {
-	public event Action<Script>? OnScriptLoad;
+	public event Action<Assets.Script>? OnScriptLoad;
 	
-	public event Action<Script>? OnScriptUnload;
+	public event Action<Assets.Script>? OnScriptUnload;
 	
-	public event Action<Dialogue.Label>? OnLabelSet;
+	public event Action<Script.Label>? OnLabelSet;
 }

@@ -1,11 +1,11 @@
 ﻿using System;
-using SandLang;
+using VNScript;
 
 namespace VNBase.UI;
 
 public partial class Choices
 {
-	private void ExecuteChoice( Dialogue.Choice choice )
+	private void ExecuteChoice( Script.Choice choice )
 	{
 		Player?.ExecuteChoice( choice );
 	}

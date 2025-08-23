@@ -1,4 +1,4 @@
-﻿using SandLang;
+﻿using VNScript;
 using System.Collections.Generic;
 
 namespace VNBase;
@@ -13,7 +13,7 @@ public sealed partial class ScriptPlayer
 	/// <summary>
 	/// Adds a dialogue entry to history
 	/// </summary>
-	private void AddToHistory( string text, Dialogue.Label label )
+	private void AddToHistory( string text, Script.Label label )
 	{
 		DialogueHistory.Add( new HistoryEntry( text, label ) );
 	}
@@ -21,9 +21,9 @@ public sealed partial class ScriptPlayer
 	/// <summary>
 	/// Represents a single dialogue entry that was actually displayed to the player
 	/// </summary>
-	public readonly struct HistoryEntry( string text, Dialogue.Label label )
+	public readonly struct HistoryEntry( string text, Script.Label label )
 	{
 		public string Text { get; } = text;
-		public Dialogue.Label Label { get; } = label;
+		public Script.Label Label { get; } = label;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Sandbox;
 using Sandbox.UI;
-using SandLang;
+using VNScript;
 
 namespace VNBase.UI;
 
@@ -9,7 +9,7 @@ public partial class TextInput
 {
 	public TextEntry? Entry { get; private set; }
 	public bool CanContinue => !string.IsNullOrWhiteSpace( Entry?.Text );
-	private Dialogue.Input? Input => Player?.ActiveLabel?.ActiveInput;
+	private Script.Input? Input => Player?.ActiveLabel?.ActiveInput;
 
 	private void Submit()
 	{

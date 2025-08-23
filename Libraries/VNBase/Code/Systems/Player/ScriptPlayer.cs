@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading;
 using VNBase.Assets;
 using VNBase.UI;
-using SandLang;
+using VNScript;
+using Script = VNScript.Script;
 
 namespace VNBase;
 
@@ -20,12 +21,12 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// The currently active script.
 	/// </summary>
-	public Script? ActiveScript { get; private set; }
+	public Assets.Script? ActiveScript { get; private set; }
 
 	/// <summary>
 	/// The currently active script label.
 	/// </summary>
-	public Dialogue.Label? ActiveLabel { get; private set; }
+	public Script.Label? ActiveLabel { get; private set; }
 
 	/// <summary>
 	/// If there is an active playing script.
@@ -34,14 +35,15 @@ public sealed partial class ScriptPlayer : Component
 	public bool IsScriptActive { get; private set; }
 
 	/// <summary>
-	/// If not empty, will load the script at this path on initial component start.
+	/// If not empty, will load the script asset at this path on initial component start.
 	/// </summary>
 	[Property, Group( "Script" ), FilePath( Extension = "vnscript" )]
 	public string? InitialScript { get; set; }
 
 	/// <summary>
-	/// The <see cref="ScriptState"/>.
+	/// The active <see cref="ScriptState"/>.
 	/// </summary>
+	/// <seealso cref="ScriptState"/>
 	[Property, Group( "Script" )]
 	public ScriptState State { get; } = new();
 
@@ -57,13 +59,13 @@ public sealed partial class ScriptPlayer : Component
     [Property, Group( "Dialogue" )]
     public bool IsAutomaticModeAvailable { get; set; } = true;
 
-    [Property]
-    public Settings Settings { get; set; } = new();
-
 	[Property, RequireComponent, Group( "Components" )]
 	public VNHud? Hud { get; set; }
 
-	private Dialogue? _activeDialogue;
+	[Property]
+	public Settings Settings { get; } = new();
+
+	private Script? _activeDialogue;
 	private CancellationTokenSource? _cts;
 
 	protected override void OnStart()
@@ -117,6 +119,7 @@ public sealed partial class ScriptPlayer : Component
 	/// Read and load the script at the provided path.
 	/// </summary>
 	/// <param name="path">Path to the script to load.</param>
+	// ReSharper disable once MemberCanBePrivate.Global
 	public void LoadScript( string path )
 	{
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
@@ -129,7 +132,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			Script script = new( path );
+			Assets.Script script = new( path );
 			LoadScript( script );
 		}
 		else
@@ -142,7 +145,8 @@ public sealed partial class ScriptPlayer : Component
 	/// Load the provided Script object.
 	/// </summary>
 	/// <param name="script">Script to load.</param>
-	public void LoadScript( Script script )
+	// ReSharper disable once MemberCanBePrivate.Global
+	public void LoadScript( Assets.Script script )
 	{
 		var scriptName = string.Empty;
 		if ( script.FromFile )
@@ -165,7 +169,7 @@ public sealed partial class ScriptPlayer : Component
 		}
 
 		ActiveScript = script;
-		_activeDialogue = ActiveScript.ParseDialogue();
+		_activeDialogue = ActiveScript.Parse();
 
 		script.OnLoad();
 		OnScriptLoad?.Invoke( script );
@@ -179,6 +183,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// Unloads the currently active script.
 	/// </summary>
+	// ReSharper disable once MemberCanBePrivate.Global
 	public void UnloadScript()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
@@ -191,7 +196,7 @@ public sealed partial class ScriptPlayer : Component
 		{
 			foreach ( var @delegate in ActiveScript.OnChoiceSelected.GetInvocationList() )
 			{
-				ActiveScript.OnChoiceSelected -= (Action<Dialogue.Choice>)@delegate;
+				ActiveScript.OnChoiceSelected -= (Action<Script.Choice>)@delegate;
 			}
 		}
 
@@ -219,6 +224,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// Skip the currently active text effect.
 	/// </summary>
+	// ReSharper disable once MemberCanBePrivate.Global
 	public void SkipDialogueEffect()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )

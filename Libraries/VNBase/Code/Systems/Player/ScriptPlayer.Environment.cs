@@ -1,4 +1,4 @@
-﻿using SandLang;
+﻿using VNScript;
 
 namespace VNBase;
 
@@ -19,7 +19,7 @@ public sealed partial class ScriptPlayer
 	/// <summary>
 	/// Sets the active dialogue environment.
 	/// </summary>
-	private void SetEnvironment( Dialogue dialogue )
+	private void SetEnvironment( Script script )
 	{
 		if ( ActiveScript is null )
 		{
@@ -29,7 +29,7 @@ public sealed partial class ScriptPlayer
 
 		var environment = ActiveScript.GetEnvironment();
 
-		foreach ( var variable in dialogue.Variables )
+		foreach ( var variable in script.Variables )
 		{
 			var variableName = ((Value.VariableReferenceValue)variable.Key).Name;
 
@@ -43,7 +43,7 @@ public sealed partial class ScriptPlayer
 			}
 		}
 
-		foreach ( var label in dialogue.Labels.Values )
+		foreach ( var label in script.Labels.Values )
 		{
 			label.Environment = environment;
 		}
