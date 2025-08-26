@@ -30,6 +30,7 @@ public class Script : IAsset
 	/// If this script is initialized from a file,
 	/// this is the path to that script file.
 	/// </summary>
+	[FilePath]
 	public string Path { get; set; } = string.Empty;
 
 	/// <summary>
