@@ -33,7 +33,7 @@ public class InvalidParametersException : Exception
 /// </summary>
 public class ResourceNotFoundException : FileNotFoundException
 {
-	public string ResourceName { get; private set; }
+	private string ResourceName { get; set; }
 
 	public ResourceNotFoundException( string message, string? resourceName = null, string? fileName = null, Exception? innerException = null )
 		: base( message, fileName )
@@ -128,7 +128,10 @@ public class SParen : IReadOnlyList<Value>
 
 			if ( isInQuote )
 			{
-				if ( text[i] != '"' ) continue;
+				if ( text[i] != '"' )
+				{
+					continue;
+				}
 				if ( text[i] == '"' )
 				{
 					yield return new Token.String( text.Substring( symbolStart, i - symbolStart + 1 ) );
@@ -202,6 +205,7 @@ public class SParen : IReadOnlyList<Value>
 			yield break;
 		}
 
+		// New scope for sym.
 		{
 			var sym = text[symbolStart..];
 			if ( sym.All( IsFloatChar ) )
@@ -225,8 +229,10 @@ public class SParen : IReadOnlyList<Value>
 	public static IEnumerable<SParen> ParseText( string text )
 	{
 		var tokenList = TokenizeText( text ).ToList();
-
-		foreach ( var token in ProcessTokens( tokenList ) ) yield return token;
+		foreach ( var token in ProcessTokens( tokenList ) )
+		{
+			yield return token;
+		}
 	}
 
 	private static IEnumerable<SParen> ProcessTokens( List<Token> tokenList )
@@ -285,8 +291,7 @@ public class SParen : IReadOnlyList<Value>
 					currentParen!._backingList.Add( new Value.NumberValue( decimal.Parse( number.Value ) ) );
 					break;
 				case Token.String str:
-					currentParen!._backingList.Add(
-						new Value.StringValue( str.Text[1..^1] ) );
+					currentParen!._backingList.Add( new Value.StringValue( str.Text[1..^1] ) );
 					break;
 				case Token.Symbol symbol:
 					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) );
