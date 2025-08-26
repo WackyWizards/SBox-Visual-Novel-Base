@@ -1,4 +1,6 @@
-﻿namespace VNScript;
+﻿using Sandbox;
+
+namespace VNScript;
 
 public partial class Script
 {
@@ -11,6 +13,7 @@ public partial class Script
 
 		public string TargetLabel { get; set; } = string.Empty;
 
+		[Hide]
 		public SParen? Condition { get; set; }
 
 		/// <summary>
