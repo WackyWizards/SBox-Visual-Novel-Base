@@ -11,7 +11,7 @@ namespace VNScript;
 /// <summary>
 /// This class contains the dialogue structures as well as the functions to process dialogue and labels from the S-expression code
 /// </summary>
-public class Script
+public partial class Script
 {
 	public Dictionary<string, Label> Labels { get; } = new();
 
@@ -20,107 +20,6 @@ public class Script
 	internal Dictionary<Value, Value> Variables { get; } = new();
 
 	private static Logger Log { get; } = new( "VNScript" );
-
-	/// <summary>
-	/// Represents a dialogue step.
-	/// </summary>
-	public class Label
-	{
-		public string Name { get; set; } = string.Empty;
-
-		public List<string> Dialogue => FormattableDialogue.Select( x => x.Format( Environment ) ).ToList();
-		
-		internal List<FormattableText> FormattableDialogue { get; set; } = [];
-
-		public Input? ActiveInput { get; set; }
-
-		public Character? SpeakingCharacter { get; set; }
-
-		public List<Character> Characters { get; set; } = [];
-
-		public List<Choice> Choices { get; set; } = [];
-
-		public List<IAsset> Assets { get; set; } = [];
-
-		public AfterLabel? AfterLabel { get; set; }
-
-		internal IEnvironment Environment { get; set; } = new EnvironmentMap();
-	}
-
-	/// <summary>
-	/// Represents a choice by the player, possible required conditions for it to be a viable choice, and the new label to direct towards.
-	/// </summary>
-	public class Choice
-	{
-		public FormattableText Text { get; set; } = string.Empty;
-
-		public string TargetLabel { get; set; } = string.Empty;
-
-		public SParen? Condition { get; set; }
-
-		/// <summary>
-		/// Returns whether this condition is available to the player.
-		/// </summary>
-		public bool IsAvailable( IEnvironment environment )
-		{
-			if ( Condition is null )
-			{
-				return true;
-			}
-
-			var value = Condition.Execute( environment );
-
-			if ( value is Value.BooleanValue boolValue )
-			{
-				return boolValue.Boolean;
-			}
-
-			return false;
-		}
-	}
-
-	/// <summary>
-	/// Represents an input from the player, and the variable to store the input in.
-	/// </summary>
-	public class Input
-	{
-		public string VariableName { get; set; } = string.Empty;
-
-		public Value? Variable => _environment?.GetVariable( VariableName );
-
-		private IEnvironment? _environment;
-
-		/// <summary>
-		/// Sets the value of the input variable in the environment.
-		/// </summary>
-		/// <param name="environment">The environment to set the value in.</param>
-		/// <param name="value">The value to set the variable to.</param>
-		public void SetValue( IEnvironment environment, Value value )
-		{
-			environment.SetVariable( VariableName, value );
-			_environment = environment;
-
-			if ( ScriptPlayer.LoggingEnabled )
-			{
-				Log.Info( $"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );
-			}
-		}
-	}
-
-	/// <summary>
-	/// Represents code to execute as well as the new label to direct towards.
-	/// </summary>
-	public class AfterLabel
-	{
-		public List<SParen> CodeBlocks { get; set; } = [];
-
-		public bool IsLastLabel { get; set; }
-
-		[FilePath]
-		public string? ScriptPath { get; set; }
-
-		public string? TargetLabel { get; set; }
-	}
 
 	public static Script ParseDialogue( List<SParen> codeBlocks )
 	{
