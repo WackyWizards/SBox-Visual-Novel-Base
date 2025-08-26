@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace VNScript;
 
-static class BuiltinFunctions
+internal static class BuiltinFunctions
 {
 	/// <summary>
 	/// Contains mappings from symbols to builtin executable functions

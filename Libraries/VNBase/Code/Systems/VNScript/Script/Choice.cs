@@ -27,7 +27,6 @@ public partial class Script
 			}
 
 			var value = Condition.Execute( environment );
-
 			if ( value is Value.BooleanValue boolValue )
 			{
 				return boolValue.Boolean;

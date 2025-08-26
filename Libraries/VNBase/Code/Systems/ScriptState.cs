@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using VNBase.Assets;
-using VNScript;
 using Script = VNScript.Script;
 
 namespace VNBase;
