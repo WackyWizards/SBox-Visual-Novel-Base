@@ -20,6 +20,6 @@ public interface IAsset
 /// </summary>
 public abstract class AssetResource : GameResource, IAsset
 {
-	[Hide]
+	[Hide, FilePath]
 	public string Path { get => ResourcePath; set => ResourcePath = value; }
 }

@@ -40,6 +40,6 @@ public sealed class Character : AssetResource
 	/// <summary>
 	/// Path to the active portrait image.
 	/// </summary>
-	[JsonIgnore, Hide]
+	[JsonIgnore, Hide, FilePath]
 	public string ActivePortraitPath => $"{Settings.CharacterPortraitsPath}/{Name}/{ActivePortrait}";
 }

@@ -116,6 +116,7 @@ public class Script
 
 		public bool IsLastLabel { get; set; }
 
+		[FilePath]
 		public string? ScriptPath { get; set; }
 
 		public string? TargetLabel { get; set; }
