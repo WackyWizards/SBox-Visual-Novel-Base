@@ -1,6 +1,7 @@
 @using Sandbox;
 @using System;
 @using System.Linq;
+@using Sandbox.UI;
 @using VNScript;
 
 @namespace VNBase.UI
@@ -65,6 +66,31 @@
         }
 
         root.StyleSheet.Load( "/UI/VNHud.razor.scss" );
+    }
+
+    // If the user clicks on the screen, allow advancing the dialogue.
+    protected override void OnMouseDown(MousePanelEvent e)
+    {
+        if ( Player is null )
+        {
+            return;
+        }
+        
+        // Clicking UI buttons shouldn't continue.
+        if ( e.Target.GetType() == typeof(Button) )
+        {
+            return;
+        }
+        
+        // If the dialogue isn't finished, skip the effect, otherwise just advance if we can.
+        if ( !Player.State.IsDialogueFinished )
+        {
+            Player.SkipDialogueEffect();
+        }
+        else if ( Player.State.Choices.Count == 0 )
+        {
+            Player.AdvanceText();
+        }
     }
 
     protected override int BuildHash()

@@ -125,7 +125,7 @@ public sealed partial class ScriptPlayer
     /// <summary>
     /// Advances to the next text segment in the current label, or executes AfterLabel if there are no more segments
     /// </summary>
-    private void AdvanceText()
+    public void AdvanceText()
     {
         if ( ActiveLabel is null )
         {
