@@ -8,7 +8,7 @@
     return;
 }
 
-<root>
+<root class="@( HasCharacters ? "" : "hidden" )">
     @foreach ( var character in Player.State.Characters )
     {
         <CharacterPortrait Character="@character" Player="@Player" Settings="@Settings" Hud="@Hud"/>

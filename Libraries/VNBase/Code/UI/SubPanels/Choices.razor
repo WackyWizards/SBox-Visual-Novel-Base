@@ -9,8 +9,8 @@
     return;
 }
 
-<root class="centered">
-    @if ( Player.State.Choices.Any() && Player.State.IsDialogueFinished )
+<root class="centered @( HasChoices ? "" : "hidden" )">
+    @if ( HasChoices && Player.State.IsDialogueFinished )
     {
         <div class="choicePanel">
             @foreach ( var choice in Player.State.Choices )
