@@ -25,14 +25,6 @@ public abstract record Value
 	}
 
 	/// <summary>
-	/// For representing C# world variables (such as components) in SandLang.
-	/// </summary>
-	/// <remarks>
-	/// Cannot be used with builtins, only really useful for environment-defined functions.
-	/// </remarks>
-	public record WrapperValue<T>( T Value ) : Value;
-
-	/// <summary>
 	/// Represents symbols, that is anything that isn't a number or a string and hasn't been dereferenced to a variable yet
 	/// </summary>
 	public record VariableReferenceValue( string Name ) : Value
@@ -116,7 +108,7 @@ public abstract record Value
 
 			if ( firstValue is FunctionValue functionValue )
 			{
-				return functionValue.Function( environment, ValueList.Skip( 1 ).ToArray() ) ?? NoneValue.None;
+				return functionValue.Function( environment, ValueList.Skip( 1 ).ToArray() );
 			}
 
 			return this;
