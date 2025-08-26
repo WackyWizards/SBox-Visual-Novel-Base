@@ -9,7 +9,7 @@ public static class EditorEvents
 {
 	private const string DefaultFileName = "Untitled";
 	private const string Extension = ".vnscript";
-
+	
 	[Event( "folder.contextmenu" )]
 	private static void FolderContextMenu( FolderContextMenu obj )
 	{
@@ -26,9 +26,10 @@ public static class EditorEvents
 
 		var browser = assetList.Browser;
 		var option = new Option( "VNScript", "description", () => CreateNewFile( browser ) );
-		newMenu.AddOption( option );
+		var subMenu = newMenu.FindOrCreateMenu( "VNBase" );
+		subMenu.AddOption( option );
 	}
-
+	
 	private static void CreateNewFile( IBrowser browser )
 	{
 		var directoryPath = browser.CurrentLocation.Path;
@@ -55,7 +56,7 @@ public static class EditorEvents
 			Log.Error( $"Failed to create VNScript file: {ex}" );
 		}
 	}
-
+	
 	private static string GetScriptTemplate()
 	{
 		return """
