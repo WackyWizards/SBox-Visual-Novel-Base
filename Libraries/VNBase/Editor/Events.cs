@@ -61,12 +61,12 @@ public static class EditorEvents
 		return """
 		       // This is a basic vnscript template.
 		       // For more information, please refer to the wiki: https://github.com/KUO-Team/SBox-Visual-Novel-Base/wiki/How-To-Write-Your-First-Script
-		       (label start
-		           (text "This is a starting example script!")
-		           (after end-dialogue)
+		       (label beginning
+		           (dialogue "This is a starting example script!")
+		           (after end)
 		       )
 
-		       (start-dialogue start)
+		       (start beginning)
 		       """;
 	}
 }
