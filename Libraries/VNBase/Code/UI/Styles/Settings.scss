@@ -34,6 +34,7 @@ SettingsPanel {
 
   > .container {
     overflow-y: scroll;
+    overflow-x: hidden;
     flex-direction: column;
     flex-grow: 1;
     padding: 10px;
