@@ -59,15 +59,7 @@ public partial class VNHud
 			return;
 		}
 
-		// If the dialogue isn't finished, skip the effect, otherwise just advance if we can.
-		if ( !Player.State.IsDialogueFinished )
-		{
-			Player.SkipDialogueEffect();
-		}
-		else if ( Player.State.Choices.Count == 0 )
-		{
-			Player.AdvanceText();
-		}
+		Player.AdvanceOrSkipDialogueEffect();
 	}
 
 	protected override int BuildHash()

@@ -97,14 +97,7 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( SkipActionPressed )
 		{
-			if ( !State.IsDialogueFinished )
-			{
-				SkipDialogueEffect();
-			}
-			else if ( State.Choices.Count == 0 )
-			{
-				AdvanceText();
-			}
+			AdvanceOrSkipDialogueEffect();
 		}
 		else if ( IsAutomaticMode )
 		{
@@ -240,5 +233,20 @@ public sealed partial class ScriptPlayer : Component
 		_cts?.Cancel();
 		_cts?.Dispose();
 		_cts = null;
+	}
+
+	/// <summary>
+	/// If the dialogue isn't finished, skip the effect, otherwise just advance if we can.
+	/// </summary>
+	public void AdvanceOrSkipDialogueEffect()
+	{
+		if ( !State.IsDialogueFinished )
+		{
+			SkipDialogueEffect();
+		}
+		else if ( State.Choices.Count == 0 )
+		{
+			AdvanceText();
+		}
 	}
 }
