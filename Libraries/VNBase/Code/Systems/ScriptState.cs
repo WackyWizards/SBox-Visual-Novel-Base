@@ -1,6 +1,7 @@
 ﻿using Sandbox;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using VNBase.Assets;
 using Script = VNScript.Script;
 
@@ -48,6 +49,12 @@ public class ScriptState
 	public List<Assets.Sound> Sounds { get; set; } = [];
 	
 	/// <summary>
+	/// Currently playing background music.
+	/// </summary>
+	[JsonIgnore, Hide]
+	public MusicPlayer? BackgroundMusic { get; set; }
+	
+	/// <summary>
 	/// If the dialogue has finished writing text.
 	/// </summary>
 	[ReadOnly]
@@ -64,6 +71,8 @@ public class ScriptState
 		IsDialogueFinished = false;
 		Characters.Clear();
 		Choices.Clear();
+		BackgroundMusic?.Stop();
+		BackgroundMusic = null;
 	}
 
 	public override int GetHashCode()

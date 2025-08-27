@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Sandbox;
 using Sandbox.Audio;
 using VNScript;
 using VNBase.UI;
@@ -39,19 +40,21 @@ public sealed partial class ScriptPlayer
             foreach ( var sound in label.Assets.OfType<Sound>() )
             {
                 State.Sounds.Add( sound );
-
-                if ( string.IsNullOrEmpty( sound.MixerName ) )
+                if ( sound is Music )
                 {
-                    sound.Play();
+                    State.BackgroundMusic = MusicPlayer.Play( FileSystem.Mounted, sound.EventName );
+                    State.BackgroundMusic.TargetMixer = Mixer.FindMixerByName( "Music" );
                 }
                 else
                 {
-                    sound.Play( sound.MixerName );
-                }
-
-                if ( sound is Music && sound.Handle is not null )
-                {
-                    sound.Handle.TargetMixer = Mixer.FindMixerByName( "Music" );
+	                if ( string.IsNullOrEmpty( sound.MixerName ) )
+	                {
+		                sound.Play();
+	                }
+	                else
+	                {
+		                sound.Play( sound.MixerName );
+	                }
                 }
 
                 if ( LoggingEnabled )

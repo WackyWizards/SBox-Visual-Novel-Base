@@ -154,11 +154,8 @@ public sealed partial class ScriptPlayer : Component
 
 		if ( Settings?.StopMusicPlaybackOnUnload ?? true )
 		{
-			// Stop all previously playing songs.
-			foreach ( var music in State.Sounds.OfType<Music>() )
-			{
-				music.Stop();
-			}
+			// Stop any playing background music.
+			State.BackgroundMusic?.Stop();
 		}
 
 		ActiveScript = script;
