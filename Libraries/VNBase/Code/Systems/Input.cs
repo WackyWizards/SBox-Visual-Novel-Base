@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Text.Json.Serialization;
-using Sandbox;
 
 namespace VNBase;
 

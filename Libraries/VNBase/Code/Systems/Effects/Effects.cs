@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ public static class Effects
 	{
 		public async Task<bool> Play( string text, int delay, Action<string> callback, CancellationToken cancellationToken )
 		{
-			var newText = new System.Text.StringBuilder();
+			var newText = new StringBuilder();
 
 			foreach ( var character in text )
 			{

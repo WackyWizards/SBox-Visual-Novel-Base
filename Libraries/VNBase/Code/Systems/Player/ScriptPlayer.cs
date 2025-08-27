@@ -3,9 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using VNBase.Assets;
 using VNBase.UI;
-using VNScript;
 using Script = VNScript.Script;
 
 namespace VNBase;

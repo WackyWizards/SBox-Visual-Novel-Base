@@ -1,9 +1,9 @@
 using Sandbox;
+using Sandbox.Diagnostics;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Sandbox.Diagnostics;
 using VNScript;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global

@@ -4,11 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.Audio;
-using VNScript;
 using VNBase.UI;
 using VNBase.Assets;
 using Script = VNScript.Script;
-using Sound=VNBase.Assets.Sound;
+using Sound = VNBase.Assets.Sound;
 
 namespace VNBase;
 
