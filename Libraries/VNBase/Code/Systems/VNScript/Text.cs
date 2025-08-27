@@ -8,7 +8,8 @@ namespace VNScript;
 /// </summary>
 public sealed class FormattableText( string text ) : IEquatable<string>
 {
-    public string Text { get; set; } = text;
+	// ReSharper disable once MemberCanBePrivate.Global
+	public string Text { get; set; } = text;
 
     public bool Equals( string? other )
     {
@@ -27,8 +28,10 @@ public sealed class FormattableText( string text ) : IEquatable<string>
     /// <returns>The formatted text.</returns>
     public string Format( IEnvironment environment )
     {
-        return Regex.Replace( Text, @"\{(\w+)\}", match =>
-        {
+#pragma warning disable SYSLIB1045
+	    return Regex.Replace( Text, @"\{(\w+)\}", match =>
+#pragma warning restore SYSLIB1045
+	    {
             var variableName = match.Groups[1].Value;
             return GetVariableValue( environment, variableName ).ToString();
         } );
