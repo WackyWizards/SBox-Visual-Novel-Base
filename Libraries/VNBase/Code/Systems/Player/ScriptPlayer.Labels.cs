@@ -138,6 +138,7 @@ public sealed partial class ScriptPlayer
         }
 
         _currentTextIndex++;
+        OnTextAdvanced?.Invoke( _currentTextIndex );
 
         // If we have more text segments, display the next one
         if ( _currentTextIndex < ActiveLabel.Dialogue.Count )
