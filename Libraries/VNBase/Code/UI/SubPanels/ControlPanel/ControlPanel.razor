@@ -1,6 +1,7 @@
 @namespace VNBase.UI
 @inherits SubPanel
 
+@* ReSharper disable CSharpWarnings::CS8974 *@
 <root>
     <div class="control-buttons" @ref="ControlButtons">
         <button icon="skip_next" class="control-button @( Player?.CanSkip() == true ? "" : "disabled" )" @onclick="@Skip">Skip</button>

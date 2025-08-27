@@ -6,6 +6,7 @@ using VNScript;
 
 namespace VNBase.UI;
 
+// ReSharper disable once InconsistentNaming
 public partial class VNHud
 {
 	[Property, RequireComponent] private ScriptPlayer? Player { get; set; }

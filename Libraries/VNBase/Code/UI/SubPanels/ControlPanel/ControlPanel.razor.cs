@@ -9,10 +9,12 @@ public partial class ControlPanel
 {
 	private Panel? ControlButtons { get; set; }
 
-    private bool UIVisible { get; set; } = true;
+	// ReSharper disable once InconsistentNaming
+	private bool UIVisible { get; set; } = true;
 
     private SubPanel? _activeSubPanel;
 
+#pragma warning disable CA1822
     private bool IsAutomaticMode => Player?.IsAutomaticMode ?? false;
     private bool IsInputPressed => Settings?.HideUIInputs.Any( x => x.Pressed ) ?? false;
 
@@ -80,6 +82,7 @@ public partial class ControlPanel
     }
 
     private SubPanel? GetSubPanelFromId( string id )
+#pragma warning restore CA1822
     {
         return ChildrenOfType<SubPanel>().SingleOrDefault( x => x.ElementName.Equals( id, StringComparison.CurrentCultureIgnoreCase ) );
     }
