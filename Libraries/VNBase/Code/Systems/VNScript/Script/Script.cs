@@ -20,12 +20,15 @@ public partial class Script
 
 	private static Logger Log { get; } = new( "VNScript" );
 
-	public static Script ParseDialogue( List<SParen> codeBlocks )
+	/// <summary>
+	/// Parse a new script from the provided code.
+	/// </summary>
+	public static Script ParseScript( List<SParen> codeBlocks )
 	{
-		var dialogue = new Script();
-		dialogue.Parse( codeBlocks );
+		var script = new Script();
+		script.Parse( codeBlocks );
 
-		return dialogue;
+		return script;
 	}
 
 	private void Parse( List<SParen> codeBlocks )
