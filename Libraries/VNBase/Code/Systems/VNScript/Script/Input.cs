@@ -11,8 +11,6 @@ public partial class Script
 	{
 		public string VariableName { get; set; } = string.Empty;
 
-		public Value? Variable => _environment?.GetVariable( VariableName );
-
 		private IEnvironment? _environment;
 
 		/// <summary>
