@@ -1,0 +1,23 @@
+[
+  {
+    "Key": "Assets\\Scripts",
+    "Value": {
+      "Color": "0.90196,0.85882,0.4549,1",
+      "Icon": "menu_book"
+    }
+  },
+  {
+    "Key": "Assets\\Materials\\Scripts",
+    "Value": {
+      "Color": "0.90196,0.85882,0.4549,1",
+      "Icon": "menu_book"
+    }
+  },
+  {
+    "Key": "Assets\\Materials\\Scripts\\Backgrounds",
+    "Value": {
+      "Color": "0.90196,0.85882,0.4549,1",
+      "Icon": "image"
+    }
+  }
+]
