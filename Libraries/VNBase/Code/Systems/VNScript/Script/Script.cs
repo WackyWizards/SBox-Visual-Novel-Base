@@ -18,7 +18,7 @@ public partial class Script
 
 	internal Dictionary<Value, Value> Variables { get; } = new();
 
-	private static Logger Log { get; } = new( "VNScript" );
+	private static readonly Logger Log = new( "VNScript" );
 
 	/// <summary>
 	/// Parse a new script from the provided code.

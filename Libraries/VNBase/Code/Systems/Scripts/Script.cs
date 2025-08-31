@@ -16,9 +16,6 @@ namespace VNBase.Assets;
 /// </summary>
 public class Script : IAsset
 {
-	/// <summary>
-	/// This is where you want to write your script.
-	/// </summary>
 	// ReSharper disable once MemberCanBeProtected.Global
 	public virtual string Code { get; set; } = string.Empty;
 
