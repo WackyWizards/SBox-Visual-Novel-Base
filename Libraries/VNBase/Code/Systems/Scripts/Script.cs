@@ -16,11 +16,8 @@ namespace VNBase.Assets;
 /// </summary>
 public class Script : IAsset
 {
-	/// <summary>
-	/// This is where you want to write your script.
-	/// </summary>
 	// ReSharper disable once MemberCanBeProtected.Global
-	public virtual string Dialogue { get; set; } = string.Empty;
+	public virtual string Code { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The script to run after this one has finished.
@@ -68,7 +65,7 @@ public class Script : IAsset
 			return;
 		}
 
-		Dialogue = FileSystem.Mounted.ReadAllText( path );
+		Code = FileSystem.Mounted.ReadAllText( path );
 		Path = path;
 	}
 
@@ -102,7 +99,7 @@ public class Script : IAsset
 
 	internal VNScript.Script Parse()
 	{
-		var codeBlocks = SParen.ParseText( Dialogue ).ToList();
-		return VNScript.Script.ParseDialogue( codeBlocks );
+		var codeBlocks = SParen.ParseText( Code ).ToList();
+		return VNScript.Script.ParseScript( codeBlocks );
 	}
 }

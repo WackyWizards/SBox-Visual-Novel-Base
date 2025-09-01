@@ -5,9 +5,6 @@ namespace VNScript;
 
 public partial class Script
 {
-	/// <summary>
-	/// Represents code to execute as well as the new label to direct towards.
-	/// </summary>
 	public class AfterLabel
 	{
 		public List<SParen> CodeBlocks { get; set; } = [];

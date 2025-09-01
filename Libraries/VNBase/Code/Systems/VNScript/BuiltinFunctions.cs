@@ -27,42 +27,74 @@ internal static class BuiltinFunctions
 
 	private static Value.BooleanValue GreaterThanFunction( IEnvironment environment, Value[] values )
 	{
-		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
-		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
+		if ( values.Length != 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
 
-		return new Value.BooleanValue( v1!.Number > v2!.Number );
+		var v1 = values[0].Evaluate( environment );
+		var v2 = values[1].Evaluate( environment );
+
+		if ( v1 is not Value.NumberValue num1 || v2 is not Value.NumberValue num2 )
+		{
+			throw new InvalidParametersException( [v1, v2] );
+		}
+
+		return new Value.BooleanValue( num1.Number > num2.Number );
 	}
 
 	private static Value.BooleanValue LessThanFunction( IEnvironment environment, Value[] values )
 	{
-		var v1 = values[0].Evaluate( environment ) as Value.NumberValue;
-		var v2 = values[1].Evaluate( environment ) as Value.NumberValue;
+		if ( values.Length != 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
 
-		return new Value.BooleanValue( v1!.Number < v2!.Number );
+		var v1 = values[0].Evaluate( environment );
+		var v2 = values[1].Evaluate( environment );
+
+		if ( v1 is not Value.NumberValue num1 || v2 is not Value.NumberValue num2 )
+		{
+			throw new InvalidParametersException( [v1, v2] );
+		}
+
+		return new Value.BooleanValue( num1.Number < num2.Number );
 	}
 
 	private static Value EqualityFunction( IEnvironment environment, Value[] values )
 	{
+		if ( values.Length != 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
+
 		var v1 = values[0].Evaluate( environment );
 		var v2 = values[1].Evaluate( environment );
 
 		if ( v1.GetType() != v2.GetType() )
 		{
-			throw new InvalidParametersException( [v1, v2] );
+			return new Value.BooleanValue( false );
 		}
 
-		return v2 switch
+		return v1 switch
 		{
-			Value.BooleanValue booleanValue => new Value.BooleanValue(
-				((Value.BooleanValue)v1).Boolean.Equals( booleanValue.Boolean ) ),
-			Value.NumberValue number =>
-				new Value.BooleanValue( ((Value.NumberValue)v1).Number.Equals( number.Number ) ),
-			_ => Value.NoneValue.None
+			Value.BooleanValue bool1 => new Value.BooleanValue( 
+				bool1.Boolean.Equals( ((Value.BooleanValue)v2).Boolean ) ),
+			Value.NumberValue num1 => new Value.BooleanValue( 
+				num1.Number.Equals( ((Value.NumberValue)v2).Number ) ),
+			Value.StringValue str1 => new Value.BooleanValue( 
+				str1.Text.Equals( ((Value.StringValue)v2).Text ) ),
+			_ => new Value.BooleanValue( ReferenceEquals( v1, v2 ) )
 		};
 	}
 
 	private static Value ExpressionBodyFunction( IEnvironment environment, Value[] values )
 	{
+		if ( values.Length == 0 )
+		{
+			return Value.NoneValue.None;
+		}
+
 		Value lastValue = Value.NoneValue.None;
 
 		foreach ( var expression in values )
@@ -75,74 +107,127 @@ internal static class BuiltinFunctions
 
 	private static Value IfFunction( IEnvironment environment, Value[] values )
 	{
-		var cond = values[0].Evaluate( environment ) as Value.NumberValue;
-		if ( cond!.Number >= 0 )
-		{
-			return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
-		}
-
-		if ( values.Length == 1 )
+		if ( values.Length is < 2 or > 3 )
 		{
 			throw new InvalidParametersException( values );
 		}
 
-		return values[1].Evaluate( environment );
+		var condition = values[0].Evaluate( environment );
+		
+		// Check if condition is "truthy"
+		var isTruthy = condition switch
+		{
+			Value.BooleanValue boolVal => boolVal.Boolean,
+			Value.NumberValue numVal => numVal.Number != 0,
+			Value.NoneValue => false,
+			_ => true // Other values (strings, lists, etc.) are truthy
+		};
+
+		if ( isTruthy )
+		{
+			return values[1].Evaluate( environment );
+		}
+		else
+		{
+			return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
+		}
 	}
 
 	private static Value.NumberValue MulFunction( IEnvironment environment, Value[] values )
 	{
-		return new Value.NumberValue( values.Select( p => p.Evaluate( environment ) ).Select( p => p switch
+		if ( values.Length == 0 )
 		{
-			Value.NumberValue numberValue => numberValue.Number,
-			_ => throw new InvalidParametersException( [p] )
-		} ).Aggregate( ( acc, v ) => acc + v ) );
+			return new Value.NumberValue( 1 ); // Identity for multiplication
+		}
+
+		var evaluatedValues = values.Select( v => v.Evaluate( environment ) ).ToArray();
+
+		if ( !evaluatedValues.All( v => v is Value.NumberValue ) )
+		{
+			throw new InvalidParametersException( evaluatedValues );
+		}
+
+		var result = evaluatedValues
+			.Cast<Value.NumberValue>()
+			.Select( nv => nv.Number )
+			.Aggregate( (acc, v) => acc * v );
+
+		return new Value.NumberValue( result );
 	}
 
 	private static Value.NumberValue PowFunction( IEnvironment environment, Value[] values )
 	{
-		var baseVal = values[0].Evaluate( environment ) as Value.NumberValue;
-		var exponentVal = values[1].Evaluate( environment ) as Value.NumberValue;
-		return new Value.NumberValue( new decimal( Math.Pow( (double)baseVal!.Number, (double)exponentVal!.Number ) ) );
+		if ( values.Length != 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
+
+		var baseVal = values[0].Evaluate( environment );
+		var exponentVal = values[1].Evaluate( environment );
+
+		if ( baseVal is not Value.NumberValue baseNum || exponentVal is not Value.NumberValue expNum )
+		{
+			throw new InvalidParametersException( [baseVal, exponentVal] );
+		}
+
+		return new Value.NumberValue( new decimal( Math.Pow( (double)baseNum.Number, (double)expNum.Number ) ) );
 	}
 
 	private static Value.NumberValue SqrtFunction( IEnvironment environment, Value[] values )
 	{
-		var val = values[0].Evaluate( environment ) as Value.NumberValue;
-		return new Value.NumberValue( new decimal( Math.Sqrt( (double)val!.Number ) ) );
+		if ( values.Length != 1 )
+		{
+			throw new InvalidParametersException( values );
+		}
+
+		var val = values[0].Evaluate( environment );
+
+		if ( val is not Value.NumberValue numVal || numVal.Number < 0 )
+		{
+			throw new InvalidParametersException( [val] );
+		}
+
+		return new Value.NumberValue( new decimal( Math.Sqrt( (double)numVal.Number ) ) );
 	}
 
 	private static Value.FunctionValue DefineFunction( IEnvironment environment, Value[] values )
 	{
-		var argNames = (values[0] as Value.ListValue)!.ValueList.Select( p => p switch
+		if ( values is not [Value.ListValue paramList, Value.ListValue body] )
+		{
+			throw new InvalidParametersException( values );
+		}
+
+		var argNames = paramList.ValueList.Select( p => p switch
 		{
 			Value.StringValue stringValue => stringValue.Text,
 			Value.VariableReferenceValue variableReferenceValue => variableReferenceValue.Name,
-			_ => throw new ArgumentOutOfRangeException( nameof( p ) )
+			_ => throw new InvalidParametersException( [p] )
 		} ).ToArray();
 
-		var body = (values[1] as Value.ListValue)!.ValueList;
-
-		return new Value.FunctionValue( ( e, arglist ) =>
+		return new Value.FunctionValue( ( env, arglist ) =>
 		{
-			var env = new EnvironmentMap( environment );
-
-			for ( var i = 0; i < MathF.Min( argNames.Length, arglist.Length ); i++ )
+			if ( arglist.Length != argNames.Length )
 			{
-				env.SetVariable( argNames[i], arglist[i].Evaluate( e ) );
+				throw new InvalidParametersException( arglist );
 			}
 
-			return body.Execute( env );
+			var functionEnv = new EnvironmentMap( environment );
+
+			for ( var i = 0; i < argNames.Length; i++ )
+			{
+				functionEnv.SetVariable( argNames[i], arglist[i].Evaluate( env ) );
+			}
+
+			body.Deconstruct( out var valueList );
+			return valueList.Execute( functionEnv );
 		} );
 	}
 
 	private static Value SetFunction( IEnvironment environment, params Value[] values )
 	{
-		if ( values.Length != 2 ) throw new InvalidParametersException( values );
-		var varName = values[0];
-
-		if ( varName is not Value.VariableReferenceValue vrv )
+		if ( values is not [Value.VariableReferenceValue vrv, _] )
 		{
-			throw new InvalidParametersException( [varName] );
+			throw new InvalidParametersException( values );
 		}
 
 		var value = values[1].Evaluate( environment );
@@ -153,37 +238,68 @@ internal static class BuiltinFunctions
 
 	private static Value SubtractFunction( IEnvironment environment, params Value[] values )
 	{
-		values = values.Select( v => v.Evaluate( environment ) ).ToArray();
-
-		if ( !values.All( v => v is Value.NumberValue ) )
+		if ( values.Length == 0 )
 		{
 			throw new InvalidParametersException( values );
 		}
 
-		return values[0] switch
+		var evaluatedValues = new Value[values.Length];
+		
+		for ( int i = 0; i < values.Length; i++ )
 		{
-			Value.NumberValue => new Value.NumberValue( values.Select( v => (v as Value.NumberValue)!.Number )
-				.Aggregate( ( acc, v ) => acc - v ) ),
-			_ => Value.NoneValue.None,
-		};
+			evaluatedValues[i] = values[i].Evaluate( environment );
+			if ( evaluatedValues[i] is not Value.NumberValue )
+			{
+				throw new InvalidParametersException( evaluatedValues );
+			}
+		}
+
+		if ( values.Length == 1 )
+		{
+			// Unary minus: negate the single argument
+			return new Value.NumberValue( -((Value.NumberValue)evaluatedValues[0]).Number );
+		}
+
+		// Binary/n-ary minus: subtract all subsequent values from the first
+		var result = evaluatedValues
+			.Cast<Value.NumberValue>()
+			.Select( nv => nv.Number )
+			.Aggregate( (acc, v) => acc - v );
+
+		return new Value.NumberValue( result );
 	}
 
 	private static Value SumFunction( IEnvironment environment, params Value[] values )
 	{
-		values = values.Select( v => v.Evaluate( environment ) ).ToArray();
-
-		if ( !(values.All( v => v is Value.StringValue ) || values.All( v => v is Value.NumberValue )) )
+		if ( values.Length == 0 )
 		{
-			throw new InvalidParametersException( values );
+			return new Value.NumberValue( 0 ); // Identity for addition
 		}
 
-		return values[0] switch
+		var evaluatedValues = values.Select( v => v.Evaluate( environment ) ).ToArray();
+
+		// Check if all are strings
+		if ( evaluatedValues.All( v => v is Value.StringValue ) )
 		{
-			Value.StringValue => new Value.StringValue( 
-				values.Select( v => (v as Value.StringValue)!.Text ).Aggregate( ( acc, v ) => acc + v ) ),
-			Value.NumberValue => new Value.NumberValue( 
-				values.Select( v => (v as Value.NumberValue)!.Number ).Sum() ),
-			_ => Value.NoneValue.None
-		};
+			var result = evaluatedValues
+				.Cast<Value.StringValue>()
+				.Select( sv => sv.Text )
+				.Aggregate( (acc, v) => acc + v );
+			
+			return new Value.StringValue( result );
+		}
+		
+		// Check if all are numbers
+		if ( evaluatedValues.All( v => v is Value.NumberValue ) )
+		{
+			var result = evaluatedValues
+				.Cast<Value.NumberValue>()
+				.Select( nv => nv.Number )
+				.Sum();
+			
+			return new Value.NumberValue( result );
+		}
+
+		throw new InvalidParametersException( evaluatedValues );
 	}
 }

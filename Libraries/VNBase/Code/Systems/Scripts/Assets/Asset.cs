@@ -15,8 +15,8 @@ public interface IAsset
 }
 
 /// <summary>
-/// A base class for all asset game resources.
-/// You should still mark asset classes that inherit from this with [GameResource(...)]
+/// A base class for all VNBase asset resources.
+/// You should still mark asset classes that inherit from this with [AssetType(...)]
 /// </summary>
 public abstract class AssetResource : GameResource, IAsset
 {

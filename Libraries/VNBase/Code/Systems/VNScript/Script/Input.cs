@@ -9,9 +9,7 @@ public partial class Script
 	/// </summary>
 	public class Input
 	{
-		public string VariableName { get; set; } = string.Empty;
-
-		public Value? Variable => _environment?.GetVariable( VariableName );
+		public string VariableName { get; init; } = string.Empty;
 
 		private IEnvironment? _environment;
 

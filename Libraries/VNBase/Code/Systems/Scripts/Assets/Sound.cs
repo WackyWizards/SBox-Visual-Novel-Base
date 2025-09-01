@@ -21,6 +21,7 @@ public class Sound( string eventName ) : IAsset
 	/// <summary>
 	/// Handle to interface with the playing sound. If this asset isn't playing, this is null.
 	/// </summary>
+	// ReSharper disable once MemberCanBePrivate.Global
 	public SoundHandle? Handle { get; private set; }
 	
 	/// <summary>
