@@ -245,7 +245,7 @@ internal static class BuiltinFunctions
 
 		var evaluatedValues = new Value[values.Length];
 		
-		for ( int i = 0; i < values.Length; i++ )
+		for ( var i = 0; i < values.Length; i++ )
 		{
 			evaluatedValues[i] = values[i].Evaluate( environment );
 			if ( evaluatedValues[i] is not Value.NumberValue )

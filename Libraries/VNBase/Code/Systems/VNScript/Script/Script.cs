@@ -142,10 +142,6 @@ public partial class Script
 
 	private delegate int SoundArgument( SParen argument, int index, Label label, VNBase.Assets.Sound sound );
 
-	private delegate int MusicArgument( SParen argument, int index, Label label );
-
-	private delegate int BackgroundArgument( SParen argument, int index, Label label );
-
 	private delegate int AfterArgument( SParen argument, int index, After after );
 
 	private static void LabelAfterArgument( SParen arguments, Label label )
@@ -248,7 +244,7 @@ public partial class Script
 			Speaker = null
 		};
 
-		for (var i = 2; i < arguments.Count; i++)
+		for ( var i = 2; i < arguments.Count; i++ )
 		{
 			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
 			{
@@ -269,7 +265,7 @@ public partial class Script
 
 	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label, Dialogue dialogue )
 	{
-		var characterName = ((Value.VariableReferenceValue)arguments[3])!.Name;
+		var characterName = ((Value.VariableReferenceValue)arguments[3]).Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
 		dialogue.Speaker = character;
 
@@ -278,7 +274,7 @@ public partial class Script
 
 	private static void LabelCharacterArgument( SParen arguments, Label label )
 	{
-		var characterName = ((Value.VariableReferenceValue)arguments[1])!.Name;
+		var characterName = ((Value.VariableReferenceValue)arguments[1]).Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to add character, character resource with name {characterName} couldn't be found!", characterName );
 		label.Characters.Add( character );
 
