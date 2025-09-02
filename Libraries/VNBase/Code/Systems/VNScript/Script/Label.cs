@@ -27,7 +27,7 @@ public partial class Script
 
 		public List<IAsset> Assets { get; set; } = [];
 
-		public AfterLabel? AfterLabel { get; set; }
+		public After? AfterLabel { get; set; }
 
 		internal IEnvironment Environment { get; set; } = new EnvironmentMap();
 	}
