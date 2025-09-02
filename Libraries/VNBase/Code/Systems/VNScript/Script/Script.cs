@@ -146,11 +146,11 @@ public partial class Script
 
 	private delegate int BackgroundArgument( SParen argument, int index, Label label );
 
-	private delegate int AfterArgument( SParen argument, int index, AfterLabel after );
+	private delegate int AfterArgument( SParen argument, int index, After after );
 
 	private static void LabelAfterArgument( SParen arguments, Label label )
 	{
-		label.AfterLabel = new AfterLabel();
+		label.AfterLabel = new After();
 
 		for ( var i = 1; i < arguments.Count; i++ )
 		{
@@ -175,20 +175,20 @@ public partial class Script
 		}
 	}
 
-	private static int AfterJumpArgument( SParen arguments, int index, AfterLabel after )
+	private static int AfterJumpArgument( SParen arguments, int index, After after )
 	{
 		var labelName = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
 		after.TargetLabel = labelName;
 		return 1;
 	}
 
-	private static int AfterEndDialogueArgument( SParen arguments, int index, AfterLabel after )
+	private static int AfterEndDialogueArgument( SParen arguments, int index, After after )
 	{
 		after.IsLastLabel = true;
 		return 0;
 	}
 
-	private static int AfterLoadScriptArgument( SParen arguments, int index, AfterLabel after )
+	private static int AfterLoadScriptArgument( SParen arguments, int index, After after )
 	{
 		after.ScriptPath = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
 		return 1;

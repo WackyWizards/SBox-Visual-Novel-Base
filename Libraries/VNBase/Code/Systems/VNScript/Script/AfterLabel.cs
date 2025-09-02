@@ -5,7 +5,7 @@ namespace VNScript;
 
 public partial class Script
 {
-	public class AfterLabel
+	public class After
 	{
 		public List<SParen> CodeBlocks { get; set; } = [];
 
