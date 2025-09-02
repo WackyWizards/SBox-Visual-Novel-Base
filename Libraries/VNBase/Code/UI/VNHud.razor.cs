@@ -25,8 +25,7 @@ public partial class VNHud
 		}
 		catch ( InvalidOperationException )
 		{
-			ScriptPlayer.Log.Warning(
-				"No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!" );
+			ScriptPlayer.Log.Warning( "No ScriptPlayer assigned to VNHud and VNHud could not find a ScriptPlayer in the scene!" );
 		}
 	}
 
@@ -38,11 +37,6 @@ public partial class VNHud
 	private void StyleHack()
 	{
 		var root = Panel.FindRootPanel();
-		foreach ( var stylesheet in root.AllStyleSheets.ToList() )
-		{
-			root.StyleSheet.Remove( stylesheet );
-		}
-
 		root.StyleSheet.Load( "/UI/VNHud.razor.scss" );
 	}
 
