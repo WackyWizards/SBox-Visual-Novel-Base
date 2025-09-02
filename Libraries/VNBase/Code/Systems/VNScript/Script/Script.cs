@@ -134,7 +134,7 @@ public partial class Script
 
 	private delegate void LabelArgument( SParen argument, Label label );
 
-	private delegate int DialogueArgument( SParen argument, int index, Label label );
+	private delegate int DialogueArgument( SParen argument, int index, Label label, Dialogue dialogue );
 
 	private delegate int ChoiceArgument( SParen argument, int index, Choice choice );
 
@@ -229,9 +229,9 @@ public partial class Script
 		return 1;
 	}
 
-	private static int ChoiceJumpArgument( SParen arguments, int index, Choice ch )
+	private static int ChoiceJumpArgument( SParen arguments, int index, Choice choice )
 	{
-		ch.TargetLabel = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
+		choice.TargetLabel = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
 		return 1;
 	}
 
@@ -241,10 +241,14 @@ public partial class Script
 		{
 			throw new InvalidParametersException( [arguments[1]] );
 		}
-    
-		label.FormattableDialogue.Add( argument.Text );
 
-		for ( var i = 2; i < arguments.Count; i++ )
+		var entry = new Dialogue
+		{
+			Text = new FormattableText( argument.Text ),
+			Speaker = null
+		};
+
+		for (var i = 2; i < arguments.Count; i++)
 		{
 			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
 			{
@@ -257,15 +261,17 @@ public partial class Script
 				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
 			};
 
-			i += dialogueArgument( arguments, i, label );
+			i += dialogueArgument( arguments, i, label, entry );
 		}
+		
+		label.Dialogues.Add( entry );
 	}
 
-	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label )
+	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label, Dialogue dialogue )
 	{
 		var characterName = ((Value.VariableReferenceValue)arguments[3])!.Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
-		label.SpeakingCharacter = character;
+		dialogue.Speaker = character;
 
 		return 1;
 	}
