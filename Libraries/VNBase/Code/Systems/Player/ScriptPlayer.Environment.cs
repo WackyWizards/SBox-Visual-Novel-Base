@@ -17,6 +17,15 @@ public sealed partial class ScriptPlayer
 	}
 
 	/// <summary>
+	/// Get the current environment.
+	/// Will return an empty environment if there is no active dialogue.
+	/// </summary>
+	public IEnvironment GetEnvironment()
+	{
+		return _environment;
+	}
+
+	/// <summary>
 	/// Sets the active dialogue environment.
 	/// </summary>
 	private void SetEnvironment( Script script )
