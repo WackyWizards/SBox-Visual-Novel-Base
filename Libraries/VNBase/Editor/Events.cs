@@ -60,8 +60,8 @@ public static class EditorEvents
 	private static string GetScriptTemplate()
 	{
 		return """
-		       // This is a basic vnscript template.
-		       // For more information, please refer to the wiki: https://github.com/KUO-Team/SBox-Visual-Novel-Base/wiki/How-To-Write-Your-First-Script
+		       // This is a basic VNScript template.
+		       // For more information, please refer to the wiki: https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/How-To-Write-Your-First-Script
 		       (label beginning
 		           (dialogue "This is a starting example script!")
 		           (after end)
