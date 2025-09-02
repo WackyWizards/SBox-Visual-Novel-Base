@@ -45,7 +45,16 @@ public partial class VNHud
 
 		root.StyleSheet.Load( "/UI/VNHud.razor.scss" );
 	}
-	
+
+	/// <summary>
+	/// Elements to not allow player passthrough from. <br/>
+	/// For example, clicking on a button shouldn't advance the script.
+	/// </summary>
+	private static readonly Type[] IgnoredAdvancePassthroughElements = [
+		typeof(Button),
+		typeof(DropDown)
+	];
+
 	// If the user clicks on the screen, allow advancing the dialogue.
 	protected override void OnMouseDown( MousePanelEvent e )
 	{
@@ -54,8 +63,8 @@ public partial class VNHud
 			return;
 		}
 
-		// Clicking UI buttons shouldn't continue.
-		if ( e.Target.GetType() == typeof(Button) )
+		// Clicking certain UI elements shouldn't advance.
+		if ( IgnoredAdvancePassthroughElements.Contains( e.Target.GetType() ) )
 		{
 			return;
 		}
