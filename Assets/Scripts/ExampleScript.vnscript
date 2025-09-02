@@ -1,4 +1,4 @@
-// This is a single-line comment. It does not get parsed by SandLang.
+// This is a single-line comment. It does not get parsed by VNScript.
 // You can use comments to mark things in your scripts.
 
 /* 
