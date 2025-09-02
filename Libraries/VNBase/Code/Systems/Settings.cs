@@ -110,8 +110,8 @@ public class Settings
 
 	public enum TextSpeed
 	{
-		Slow = 105,
-		Normal = 70,
-		Fast = 30
+		Slow = 120,
+		Normal = 80,
+		Fast = 40
 	}
 }
