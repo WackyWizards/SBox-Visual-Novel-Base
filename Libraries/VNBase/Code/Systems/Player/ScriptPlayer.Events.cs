@@ -11,5 +11,7 @@ public sealed partial class ScriptPlayer
 	
 	public event Action<Script.Label>? OnLabelSet;
 	
+	public event Action<Script.Choice> OnChoiceSelected;
+	
 	public event Action<int>? OnTextAdvanced;
 }

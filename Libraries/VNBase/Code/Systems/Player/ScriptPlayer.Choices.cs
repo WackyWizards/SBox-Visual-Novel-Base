@@ -23,6 +23,7 @@ public sealed partial class ScriptPlayer
 		{
 			SetLabel( targetLabel );
 			ActiveScript.OnChoiceSelected?.Invoke( choice );
+			OnChoiceSelected?.Invoke( choice );
 			State.IsDialogueFinished = false;
 		}
 		else
