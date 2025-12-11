@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.shader": "slang",
+    "*.hlsl": "slang"
+  },
+  "slang.additionalSearchPaths": [],
+  "slang.predefinedMacros": []
+}
