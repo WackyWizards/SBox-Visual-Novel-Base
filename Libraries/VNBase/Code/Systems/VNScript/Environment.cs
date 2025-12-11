@@ -10,8 +10,11 @@ namespace VNScript;
 public interface IEnvironment
 {
 	public Value GetVariable( string name );
+	
 	public void SetVariable( string name, Value value );
+	
 	public IEnumerable<string> VariableSet();
+	
 	public Dictionary<string, Value> GetVariables();
 }
 
@@ -22,9 +25,9 @@ public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironmen
 {
 	private readonly Dictionary<string, Value> _variables = variables;
 	protected static readonly Logger Log = new( "Environment" );
-
+	
 	public EnvironmentMap() : this( new Dictionary<string, Value>() ) { }
-
+	
 	public EnvironmentMap( IEnvironment copy ) : this()
 	{
 		foreach ( var key in copy.VariableSet() )
@@ -32,44 +35,45 @@ public class EnvironmentMap( Dictionary<string, Value> variables ) : IEnvironmen
 			SetVariable( key, copy.GetVariable( key ) );
 		}
 	}
-
+	
 	public override string ToString()
 	{
 		return VariableSet().Select( k => '"' + k + '"' + " = " + GetVariable( k ) )
 			.Aggregate( ( acc, v ) => acc + '\n' + v ).Trim();
 	}
-
+	
 	public Value GetVariable( string name )
 	{
 		if ( GlobalEnvironment.Map.VariableSet().Contains( name ) )
 		{
 			return GlobalEnvironment.Map._variables[name];
 		}
-
+		
 		if ( !_variables.TryGetValue( name, out var value ) )
 		{
 			throw new UndefinedVariableException( name );
 		}
-
+		
 		return value;
 	}
-
+	
 	public void SetVariable( string name, Value value )
 	{
 		if ( name.StartsWith( Value.GlobalPrefix ) )
 		{
 			GlobalEnvironment.Map._variables[name] = value;
+			
 			return;
 		}
-
+		
 		_variables[name] = value;
 	}
-
+	
 	public IEnumerable<string> VariableSet()
 	{
 		return _variables.Keys;
 	}
-
+	
 	public Dictionary<string, Value> GetVariables()
 	{
 		return _variables;
@@ -85,7 +89,7 @@ public static class GlobalEnvironment
 	/// Provides access to the global environment map.
 	/// </summary>
 	public static EnvironmentMap Map { get; private set; } = new();
-
+	
 	/// <summary>
 	/// Clears the global environment.
 	/// </summary>

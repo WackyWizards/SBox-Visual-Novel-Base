@@ -9,7 +9,6 @@ public partial class ControlPanel
 {
 	private Panel? ControlButtons { get; set; }
 
-	// ReSharper disable once InconsistentNaming
 	private bool UIVisible { get; set; } = true;
 
     private SubPanel? _activeSubPanel;
@@ -41,11 +40,10 @@ public partial class ControlPanel
         Player.IsAutomaticMode = !Player.IsAutomaticMode;
     }
 
-    // ReSharper disable once InconsistentNaming
     private void ToggleUI()
     {
         // Panels that should not be hidden
-        var ignoredPanels = new Type[]
+        var ignoredPanels = new[]
         {
             typeof( CharacterPortraits )
         };

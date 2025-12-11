@@ -2,19 +2,19 @@
 @import "UI/Styles/Elements.scss";
 
 VNHud {
-    pointer-events: all;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: bottom;
+  pointer-events: all;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
 
-    .centered {
-        justify-content: center;
-        align-items: center;
-    }
+  .centered {
+    justify-content: center;
+    align-items: center;
+  }
 
-    &.hidden {
-        display: none;
-    }
+  &.hidden {
+    display: none;
+  }
 }

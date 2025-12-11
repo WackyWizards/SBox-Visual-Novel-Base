@@ -10,9 +10,9 @@ public partial class Script
 	public class Input
 	{
 		public string VariableName { get; init; } = string.Empty;
-
+		
 		private IEnvironment? _environment;
-
+		
 		/// <summary>
 		/// Sets the value of the input variable in the environment.
 		/// </summary>
@@ -22,7 +22,7 @@ public partial class Script
 		{
 			environment.SetVariable( VariableName, value );
 			_environment = environment;
-
+			
 			if ( ScriptPlayer.LoggingEnabled )
 			{
 				Log.Info( $"Set value of variable \"{VariableName}\" to \"{_environment.GetVariable( VariableName )}\" through user input." );

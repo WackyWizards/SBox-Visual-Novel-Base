@@ -17,7 +17,7 @@ public sealed partial class ScriptPlayer
 	/// Current text segment index within the active label
 	/// </summary>
 	private int _currentTextIndex = 0;
-
+	
 	private async void SetLabel( Script.Label label )
 	{
 		try
@@ -26,18 +26,19 @@ public sealed partial class ScriptPlayer
 			SkipDialogueEffect();
 			ActiveLabel = label;
 			_currentTextIndex = 0; // Reset text index when setting new label
-
+			
 			if ( LoggingEnabled )
 			{
 				Log.Info( $"Loading Label {label.Name}" );
 			}
-
+			
 			State.Characters.Clear();
 			label.Characters.ForEach( State.Characters.Add );
-
+			
 			foreach ( var sound in label.Assets.OfType<Sound>() )
 			{
 				State.Sounds.Add( sound );
+				
 				if ( sound is Music )
 				{
 					State.BackgroundMusic = MusicPlayer.Play( FileSystem.Mounted, sound.EventName );
@@ -54,13 +55,13 @@ public sealed partial class ScriptPlayer
 						sound.Play( sound.MixerName );
 					}
 				}
-
+				
 				if ( LoggingEnabled )
 				{
 					Log.Info( $"Played SoundAsset {sound} from label {label.Name}" );
 				}
 			}
-
+			
 			try
 			{
 				State.Background = label.Assets.OfType<Background>().SingleOrDefault()?.Path;
@@ -70,12 +71,12 @@ public sealed partial class ScriptPlayer
 				Log.Error( $"There can only be one {nameof(Background)} in label {label.Name}!" );
 				State.Background = null;
 			}
-
+			
 			if ( _currentTextIndex == 0 )
 			{
 				OnLabelSet?.Invoke( label );
 			}
-
+			
 			// Display the current text segment
 			await DisplayCurrentTextSegment();
 		}
@@ -84,7 +85,7 @@ public sealed partial class ScriptPlayer
 			Log.Error( e.Message );
 		}
 	}
-
+	
 	private async Task DisplayCurrentTextSegment()
 	{
 		if ( ActiveLabel is null || ActiveLabel.Dialogues.Count == 0 )
@@ -92,20 +93,20 @@ public sealed partial class ScriptPlayer
 			Log.Error( "No text segments available in current label" );
 			return;
 		}
-
+		
 		if ( _currentTextIndex >= ActiveLabel.Dialogues.Count )
 		{
 			Log.Error( $"Text index {_currentTextIndex} out of range for label {ActiveLabel.Name}" );
 			return;
 		}
-
+		
 		var activeDialogue = ActiveLabel.Dialogues[_currentTextIndex];
 		State.SpeakingCharacter = activeDialogue.Speaker;
-
-		if ( Settings?.TextEffectEnabled ?? false )
+		
+		if ( Settings.TextEffectEnabled )
 		{
 			_cts = new CancellationTokenSource();
-
+			
 			try
 			{
 				var formattedText = activeDialogue.Text.Format( _environment );
@@ -123,7 +124,7 @@ public sealed partial class ScriptPlayer
 			EndDialogue( activeDialogue, ActiveLabel );
 		}
 	}
-
+	
 	/// <summary>
 	/// Advances to the next text segment in the current label, or executes AfterLabel if there are no more segments
 	/// </summary>
@@ -135,10 +136,10 @@ public sealed partial class ScriptPlayer
 			ExecuteAfterLabel();
 			return;
 		}
-
+		
 		_currentTextIndex++;
 		OnTextAdvanced?.Invoke( _currentTextIndex );
-
+		
 		// If we have more text segments, display the next one
 		if ( _currentTextIndex < ActiveLabel.Dialogues.Count )
 		{
@@ -150,75 +151,78 @@ public sealed partial class ScriptPlayer
 			ExecuteAfterLabel();
 		}
 	}
-
+	
 	private void ExecuteAfterLabel()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{
 			Log.Error( $"Unable to execute the AfterLabel, there is either no active script or label!" );
+			
 			return;
 		}
-
+		
 		var afterLabel = ActiveLabel.AfterLabel;
+		
 		if ( afterLabel is null )
 		{
 			return;
 		}
-
+		
 		foreach ( var sound in State.Sounds.Where( sound => sound is not Music ).ToArray() )
 		{
 			sound.Stop();
 			State.Sounds.Remove( sound );
 		}
-
+		
 		foreach ( var codeBlock in afterLabel.CodeBlocks )
 		{
 			codeBlock.Execute( ActiveScript.GetEnvironment() );
 		}
-
+		
 		// Do not let us continue if there is an empty input box.
 		var hasInput = ActiveLabel.ActiveInput is not null;
+		
 		if ( hasInput && Hud is not null )
 		{
 			var input = Hud.GetSubPanel<TextInput>();
-
+			
 			if ( input is null )
 			{
 				return;
 			}
-
+			
 			if ( string.IsNullOrWhiteSpace( input.Entry?.Text ) )
 			{
 				return;
 			}
 		}
-
+		
 		if ( afterLabel.IsLastLabel )
 		{
 			UnloadScript();
 			return;
 		}
-
+		
 		if ( !string.IsNullOrEmpty( afterLabel.ScriptPath ) )
 		{
 			LoadScript( afterLabel.ScriptPath );
 			return;
 		}
-
+		
 		if ( afterLabel.TargetLabel is null )
 		{
 			return;
 		}
-
+		
 		if ( _activeDialogue is null )
 		{
 			Log.Error( "There is no active dialogue set, unable to switch active labels!" );
 			return;
 		}
-
+		
 		SetLabel( _activeDialogue.Labels[afterLabel.TargetLabel] );
 	}
-
+	
 	private async void EndDialogue( Script.Dialogue dialogue, Script.Label label )
 	{
 		try
@@ -227,16 +231,17 @@ public sealed partial class ScriptPlayer
 			{
 				return;
 			}
-
+			
 			// If we are in Automatic Mode and there are no choices, check if we should auto-advance
 			if ( IsAutomaticMode && label.Choices.Count == 0 )
 			{
 				try
 				{
 					await Task.DelaySeconds( Settings.AutoDelay );
-
+					
 					// Auto-advance to next text segment or after label
 					AdvanceText();
+					
 					return;
 				}
 				catch ( OperationCanceledException )
@@ -244,7 +249,7 @@ public sealed partial class ScriptPlayer
 					State.IsDialogueFinished = false;
 				}
 			}
-
+			
 			State.DialogueText = dialogue.Text.Format( _environment );
 			State.Choices = ActiveLabel.Choices;
 			State.IsDialogueFinished = true;
@@ -255,7 +260,7 @@ public sealed partial class ScriptPlayer
 			Log.Error( e.Message );
 		}
 	}
-
+	
 	private void UpdateDialogueText( string text )
 	{
 		State.DialogueText = text;

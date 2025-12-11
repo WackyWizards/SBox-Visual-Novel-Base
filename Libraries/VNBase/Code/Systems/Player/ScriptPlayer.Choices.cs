@@ -11,7 +11,7 @@ public sealed partial class ScriptPlayer
 			Log.Warning( "Unable to execute choice: No active script or label." );
 			return;
 		}
-
+		
 		if ( _activeDialogue is null )
 		{
 			Log.Error( "Unable to execute choice: No active dialogue." );
@@ -19,6 +19,7 @@ public sealed partial class ScriptPlayer
 		}
 		
 		var targetLabel = _activeDialogue.Labels[choice.TargetLabel];
+		
 		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
 		{
 			SetLabel( targetLabel );

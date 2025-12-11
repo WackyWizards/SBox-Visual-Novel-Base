@@ -17,13 +17,14 @@ public static class EditorEvents
 		{
 			return;
 		}
-
+		
 		var newMenu = obj.Menu.FindOrCreateMenu( "New" );
+		
 		if ( !newMenu.IsValid() )
 		{
 			return;
 		}
-
+		
 		var browser = assetList.Browser;
 		var option = new Option( "VNScript", "description", () => CreateNewFile( browser ) );
 		var subMenu = newMenu.FindOrCreateMenu( "VNBase" );
@@ -33,16 +34,19 @@ public static class EditorEvents
 	private static void CreateNewFile( IBrowser browser )
 	{
 		var directoryPath = browser.CurrentLocation.Path;
+		
 		if ( !Directory.Exists( directoryPath ) )
 		{
 			Log.Error( $"Directory does not exist: {directoryPath}" );
 			return;
 		}
-
+		
 		var defaultPath = Path.Combine( directoryPath, DefaultFileName + Extension );
+		
 		try
 		{
 			var chosenPath = EditorUtility.SaveFileDialog( "Save vnscript file...", Extension, defaultPath );
+			
 			if ( string.IsNullOrWhiteSpace( chosenPath ) )
 			{
 				return;
@@ -60,14 +64,14 @@ public static class EditorEvents
 	private static string GetScriptTemplate()
 	{
 		return """
-		       // This is a basic VNScript template.
-		       // For more information, please refer to the wiki: https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/How-To-Write-Your-First-Script
-		       (label beginning
-		           (dialogue "This is a starting example script!")
-		           (after end)
-		       )
-
-		       (start beginning)
-		       """;
+			   // This is a basic VNScript template.
+			   // For more information, please refer to the wiki: https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/How-To-Write-Your-First-Script
+			   (label beginning
+			       (dialogue "This is a starting example script!")
+			       (after end)
+			   )
+			   
+			   (start beginning)
+			   """;
 	}
 }

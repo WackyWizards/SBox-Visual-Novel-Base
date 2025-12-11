@@ -34,17 +34,17 @@ public class InvalidParametersException : Exception
 public class ResourceNotFoundException : FileNotFoundException
 {
 	private string ResourceName { get; set; }
-
-	public ResourceNotFoundException( string message, string? resourceName = null, string? fileName = null, Exception? innerException = null )
-		: base( message, fileName )
+	
+	public ResourceNotFoundException( string message, string? resourceName = null, string? fileName = null, Exception? innerException = null ) : base( message, fileName )
 	{
 		ResourceName = resourceName ?? string.Empty;
+		
 		if ( innerException is not null )
 		{
 			base.Data["InnerException"] = innerException;
 		}
 	}
-
+	
 	public override string Message => $"{base.Message} Resource: {ResourceName}, File: {FileName ?? "N/A"}";
 }
 
@@ -59,37 +59,37 @@ public class SParen : IReadOnlyList<Value>
 	public abstract record Token
 	{
 		public record OpenParen : Token;
-
+		
 		public record Symbol( string Name ) : Token;
-
+		
 		public record String( string Text ) : Token;
-
+		
 		public record Number( string Value ) : Token;
-
+		
 		public record CloseParen : Token;
 	}
-
+	
 	private readonly List<Value> _backingList;
-
+	
 	private SParen( List<Value> backingList )
 	{
 		_backingList = backingList;
 	}
-
+	
 	public IEnumerator<Value> GetEnumerator()
 	{
 		return _backingList.GetEnumerator();
 	}
-
+	
 	IEnumerator IEnumerable.GetEnumerator()
 	{
 		return ((IEnumerable)_backingList).GetEnumerator();
 	}
-
+	
 	public int Count => _backingList.Count;
-
-	public Value this[int index] => _backingList[index];
-
+	
+	public Value this[ int index ] => _backingList[index];
+	
 	/// <summary>
 	/// Tokenizes a string into a list of tokens.
 	/// </summary>
@@ -100,7 +100,7 @@ public class SParen : IReadOnlyList<Value>
 		var isInQuote = false;
 		var isInSingleLineComment = false;
 		var isInMultiLineComment = false;
-
+		
 		for ( var i = 0; i < text.Length; i++ )
 		{
 			if ( isInSingleLineComment )
@@ -111,9 +111,10 @@ public class SParen : IReadOnlyList<Value>
 					isInSingleLineComment = false;
 					symbolStart = i + 1;
 				}
+				
 				continue;
 			}
-
+			
 			if ( isInMultiLineComment )
 			{
 				if ( text[i] == '*' && i + 1 < text.Length && text[i + 1] == '/' )
@@ -123,15 +124,17 @@ public class SParen : IReadOnlyList<Value>
 					i++; // Skip '/'
 					symbolStart = i + 1;
 				}
+				
 				continue;
 			}
-
+			
 			if ( isInQuote )
 			{
 				if ( text[i] != '"' )
 				{
 					continue;
 				}
+				
 				if ( text[i] == '"' )
 				{
 					yield return new Token.String( text.Substring( symbolStart, i - symbolStart + 1 ) );
@@ -146,22 +149,23 @@ public class SParen : IReadOnlyList<Value>
 					if ( i != symbolStart )
 					{
 						var sym = text[symbolStart..i];
+						
 						if ( sym.All( IsFloatChar ) )
 						{
 							yield return new Token.Number( sym );
 						}
-						else yield return new Token.Symbol( sym );
+						else
+							yield return new Token.Symbol( sym );
 					}
-
+					
 					symbolStart = i + 1;
+					
 					continue;
 				}
-
-				switch (text[i])
+				
+				switch ( text[i] )
 				{
-					case '"':
-						isInQuote = true;
-						break;
+					case '"': isInQuote = true; break;
 					case '/' when i + 1 < text.Length && text[i + 1] == '/':
 						isInSingleLineComment = true;
 						i++; // Skip '/'
@@ -172,134 +176,141 @@ public class SParen : IReadOnlyList<Value>
 						continue;
 				}
 			}
-
+			
 			if ( symbolStart != i && IsValidSymbolName( text[symbolStart] ) && !IsValidSymbolName( text[i] ) )
 			{
 				var sym = text[symbolStart..i];
+				
 				if ( sym.All( IsFloatChar ) )
 				{
 					yield return new Token.Number( sym );
 				}
-				else yield return new Token.Symbol( sym );
-
+				else
+				{
+					yield return new Token.Symbol( sym );
+				}
+				
 				symbolStart = i + 1;
 			}
-
+			
 			if ( text[i] == '(' )
 			{
 				yield return new Token.OpenParen();
 				symbolStart = i + 1;
 			}
-
+			
 			if ( text[i] != ')' )
 			{
 				continue;
 			}
-
+			
 			yield return new Token.CloseParen();
 			symbolStart = i + 1;
 		}
-
+		
 		if ( symbolStart >= text.Length )
 		{
 			yield break;
 		}
-
+		
 		// New scope for sym.
 		{
 			var sym = text[symbolStart..];
+			
 			if ( sym.All( IsFloatChar ) )
 			{
 				yield return new Token.Number( sym );
 			}
-			else yield return new Token.Symbol( sym );
+			else
+			{
+				yield return new Token.Symbol( sym );
+			}
 		}
 	}
-
-	private static bool IsFloatChar( char c )
+	
+	private static bool IsFloatChar( char character )
 	{
-		return char.IsDigit( c ) || c is '.' or '-';
+		return char.IsDigit( character ) || character is '.' or '-';
 	}
-
-	private static bool IsValidSymbolName( char symChar )
+	
+	private static bool IsValidSymbolName( char character )
 	{
-		return char.IsLetterOrDigit( symChar ) || symChar is '=' or '<' or '>' or '-' or '+' or '/' or '*' or '.' or '_';
+		return char.IsLetterOrDigit( character ) || character is '=' or '<' or '>' or '-' or '+' or '/' or '*' or '.' or '_';
 	}
-
+	
 	public static IEnumerable<SParen> ParseText( string text )
 	{
 		var tokenList = TokenizeText( text ).ToList();
+		
 		foreach ( var token in ProcessTokens( tokenList ) )
 		{
 			yield return token;
 		}
 	}
-
+	
 	private static IEnumerable<SParen> ProcessTokens( List<Token> tokenList )
 	{
 		SParen? currentParen = null;
 		var tokenDepth = 0;
-
+		
 		for ( var tokenIndex = 0; tokenIndex < tokenList.Count; tokenIndex++ )
 		{
 			var token = tokenList[tokenIndex];
+			
 			switch ( token )
 			{
 				case Token.CloseParen:
 					tokenDepth--;
+					
 					if ( tokenDepth == 0 && currentParen != null )
 					{
 						yield return currentParen;
 						currentParen = null;
 					}
-
+					
 					break;
 				case Token.OpenParen:
 					tokenDepth++;
-
+					
 					if ( tokenDepth == 1 )
 					{
 						currentParen = new SParen( [] );
 					}
-
 					else
 					{
 						var subDepth = 1;
 						var subToken = tokenIndex + 1;
+						
 						for ( ; subToken < tokenList.Count; subToken++ )
 						{
 							subDepth = tokenList[subToken] switch
 							{
-								Token.CloseParen => subDepth - 1,
-								Token.OpenParen => subDepth + 1,
-								_ => subDepth
+								Token.CloseParen => subDepth - 1, Token.OpenParen => subDepth + 1, _ => subDepth
 							};
+							
 							if ( subDepth == 0 ) break;
 						}
-
+						
 						foreach ( var sub in ProcessTokens( tokenList.GetRange( tokenIndex, subToken - tokenIndex + 1 ) ) )
 						{
 							currentParen!._backingList.Add( new Value.ListValue( sub ) );
 						}
-
+						
 						tokenDepth--;
 						tokenIndex = subToken;
 					}
-
+					
 					break;
 				case Token.Number number:
-					currentParen!._backingList.Add( new Value.NumberValue( decimal.Parse( number.Value ) ) );
-					break;
+					currentParen!._backingList.Add( new Value.NumberValue( decimal.Parse( number.Value ) ) ); break;
 				case Token.String str:
-					currentParen!._backingList.Add( new Value.StringValue( str.Text[1..^1] ) );
-					break;
+					currentParen!._backingList.Add( new Value.StringValue( str.Text[1..^1] ) ); break;
 				case Token.Symbol symbol:
-					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) );
-					break;
+					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) ); break;
 			}
 		}
 	}
-
+	
 	public Value Execute( IEnvironment environment )
 	{
 		return new Value.ListValue( this ).Evaluate( environment );
