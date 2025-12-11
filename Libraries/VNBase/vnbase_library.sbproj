@@ -1,7 +1,7 @@
 {
   "Title": "Visual Novel Base",
   "Type": "library",
-  "Org": "spoonstuff",
+  "Org": "wizards",
   "Ident": "vnbase_library",
   "Schema": 1,
   "IncludeSourceFiles": false,
