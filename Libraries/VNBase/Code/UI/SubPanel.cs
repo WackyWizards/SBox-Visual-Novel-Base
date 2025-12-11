@@ -9,20 +9,20 @@ public class SubPanel : Panel
 	
 	[Parameter]
 	public Settings? Settings { get; set; }
-
+	
 	[Parameter]
 	public VNHud? Hud { get; set; }
-
+	
 	public void ToggleVisibility()
 	{
 		SetClass( "hidden", IsVisible );
 	}
-
+	
 	public void Hide()
 	{
 		AddClass( "hidden" );
 	}
-
+	
 	public void Show()
 	{
 		RemoveClass( "hidden" );

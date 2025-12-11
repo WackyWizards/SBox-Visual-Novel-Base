@@ -1,21 +1,21 @@
 @keyframes blink {
-    10% {
-        opacity: 1;
-    }
+  10% {
+    opacity: 1;
+  }
 
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 
-    90% {
-        opacity: 1;
-    }
+  90% {
+    opacity: 1;
+  }
 }
 
 @import "/UI/Styles/Dialogue.scss";
 
 DialogueBox {
-    &.hidden {
-        display: none;
-    }
+  &.hidden {
+    display: none;
+  }
 }

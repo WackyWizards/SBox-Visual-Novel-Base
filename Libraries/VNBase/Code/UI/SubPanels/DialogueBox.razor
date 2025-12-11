@@ -1,6 +1,7 @@
-@using Sandbox;
+@using Sandbox
 
 @namespace VNBase.UI
+
 @inherits SubPanel
 
 @if ( !Player.IsValid() )
@@ -21,7 +22,7 @@
     }
 
     <div class="dialoguePanel">
-        <label class="dialogueText" IsRich="@(true)">@Player?.State.DialogueText</label>
+        <label class="dialogueText" IsRich="@( true )">@Player?.State.DialogueText</label>
 
         @if ( CanContinue )
         {

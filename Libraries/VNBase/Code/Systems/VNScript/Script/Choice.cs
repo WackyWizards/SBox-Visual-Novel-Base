@@ -10,12 +10,12 @@ public partial class Script
 	public class Choice
 	{
 		public FormattableText Text { get; set; } = string.Empty;
-
+		
 		public string TargetLabel { get; set; } = string.Empty;
-
+		
 		[Hide]
 		public SParen? Condition { get; set; }
-
+		
 		/// <summary>
 		/// Returns whether this condition is available to the player.
 		/// </summary>
@@ -25,13 +25,14 @@ public partial class Script
 			{
 				return true;
 			}
-
+			
 			var value = Condition.Execute( environment );
+			
 			if ( value is Value.BooleanValue boolValue )
 			{
 				return boolValue.Boolean;
 			}
-
+			
 			return false;
 		}
 	}

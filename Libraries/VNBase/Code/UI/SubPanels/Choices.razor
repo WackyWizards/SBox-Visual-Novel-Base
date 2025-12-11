@@ -1,6 +1,7 @@
-@using Sandbox;
+@using Sandbox
 
 @namespace VNBase.UI
+
 @inherits SubPanel
 
 @if ( !Player.IsValid() )
@@ -15,9 +16,9 @@
             @foreach ( var choice in Player.State.Choices )
             {
                 var environment = Player.ActiveScript?.GetEnvironment();
-                string text = choice.Text;
                 var isAvailable = environment is not null && choice.IsAvailable( environment );
-
+                string text = choice.Text;
+                
                 <button class="choice @( isAvailable ? "" : "hidden" )" @onclick="@( () => ExecuteChoice( choice ) )">
                     @text
                 </button>

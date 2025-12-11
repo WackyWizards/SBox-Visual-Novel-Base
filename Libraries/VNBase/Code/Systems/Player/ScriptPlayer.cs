@@ -20,79 +20,79 @@ public sealed partial class ScriptPlayer : Component
 	/// The currently active script.
 	/// </summary>
 	public Assets.Script? ActiveScript { get; private set; }
-
+	
 	/// <summary>
 	/// The currently active script label.
 	/// </summary>
 	public Script.Label? ActiveLabel { get; private set; }
-
+	
 	/// <summary>
 	/// If there is an active playing script.
 	/// </summary>
 	[Property]
 	public bool IsScriptActive { get; private set; }
-
+	
 	/// <summary>
 	/// If not empty, will load the script asset at this path on initial component start.
 	/// </summary>
 	[Property, Group( "Script" ), FilePath( Extension = "vnscript" )]
 	public string? InitialScript { get; set; }
-
+	
 	/// <summary>
 	/// The active <see cref="ScriptState"/>.
 	/// </summary>
 	/// <seealso cref="ScriptState"/>
 	[Property, Group( "Script" )]
 	public ScriptState State { get; } = new();
-
-    /// <summary>
-    /// Automatic mode moves through dialogues without choices automatically.
-    /// </summary>
-    [Property, Group( "Dialogue" )]
-    public bool IsAutomaticMode { get; set; }
-
-    /// <summary>
-    /// If automatic mode can be enabled.
-    /// </summary>
-    [Property, Group( "Dialogue" )]
-    public bool IsAutomaticModeAvailable { get; set; } = true;
-
+	
+	/// <summary>
+	/// Automatic mode moves through dialogues without choices automatically.
+	/// </summary>
+	[Property, Group( "Dialogue" )]
+	public bool IsAutomaticMode { get; set; }
+	
+	/// <summary>
+	/// If automatic mode can be enabled.
+	/// </summary>
+	[Property, Group( "Dialogue" )]
+	public bool IsAutomaticModeAvailable { get; set; } = true;
+	
 	[Property, RequireComponent, Group( "Components" )]
 	public VNHud? Hud { get; set; }
-
+	
 	[Property]
 	public Settings Settings { get; } = new();
-
+	
 	private Script? _activeDialogue;
 	private CancellationTokenSource? _cts;
-
+	
 	protected override void OnStart()
 	{
 		if ( !string.IsNullOrEmpty( InitialScript ) )
 		{
 			LoadScript( InitialScript );
 		}
-
+		
 		if ( !Scene.GetAllComponents<VNHud>().Any() )
 		{
 			Log.Warning( "No VNHud Component found, ScriptPlayer will not be immediately visible!" );
 		}
 	}
-
-	private bool SkipActionPressed => Settings?.SkipActions.Any( x => x.Pressed ) ?? false;
-
+	
+	private bool SkipActionPressed => Settings.SkipActions.Any( x => x.Pressed );
+	
 	protected override void OnUpdate()
 	{
 		if ( ActiveScript is null || ActiveLabel is null )
 		{
 			return;
 		}
-
-		if ( !Settings?.SkipActionEnabled ?? false )
+		
+		if ( !Settings.SkipActionEnabled )
 		{
 			return;
 		}
-
+		
 		if ( SkipActionPressed )
 		{
 			AdvanceOrSkipDialogueEffect();
@@ -105,7 +105,7 @@ public sealed partial class ScriptPlayer : Component
 			}
 		}
 	}
-
+	
 	/// <summary>
 	/// Read and load the script at the provided path.
 	/// </summary>
@@ -114,13 +114,13 @@ public sealed partial class ScriptPlayer : Component
 	public void LoadScript( string path )
 	{
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
-
+		
 		if ( dialogue is null )
 		{
 			Log.Error( $"Unable to load script! Script file couldn't be found by path: {path}" );
 			return;
 		}
-
+		
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
 			Assets.Script script = new( path );
@@ -131,7 +131,7 @@ public sealed partial class ScriptPlayer : Component
 			Log.Error( "Unable to load script! The script file is empty." );
 		}
 	}
-
+	
 	/// <summary>
 	/// Load the provided Script object.
 	/// </summary>
@@ -140,34 +140,32 @@ public sealed partial class ScriptPlayer : Component
 	public void LoadScript( Assets.Script script )
 	{
 		var scriptName = string.Empty;
+		
 		if ( script.FromFile )
 		{
 			scriptName = Path.GetFileNameWithoutExtension( script.Path );
 		}
-
+		
 		if ( LoggingEnabled )
 		{
 			Log.Info( $"Loading script: {scriptName}" );
 		}
-
-		if ( Settings?.StopMusicPlaybackOnUnload ?? true )
+		
+		if ( Settings.StopMusicPlaybackOnUnload )
 		{
 			// Stop any playing background music.
 			State.BackgroundMusic?.Stop();
 		}
-
+		
 		ActiveScript = script;
 		_activeDialogue = ActiveScript.Parse();
-
 		script.OnLoad();
 		OnScriptLoad?.Invoke( script );
-		
 		SetEnvironment( _activeDialogue );
 		SetLabel( _activeDialogue.InitialLabel );
-		
 		IsScriptActive = true;
 	}
-
+	
 	/// <summary>
 	/// Unloads the currently active script.
 	/// </summary>
@@ -178,7 +176,7 @@ public sealed partial class ScriptPlayer : Component
 		{
 			return;
 		}
-
+		
 		// Safety check. Should hopefully not cause issues.
 		if ( ActiveScript.OnChoiceSelected is not null )
 		{
@@ -187,12 +185,12 @@ public sealed partial class ScriptPlayer : Component
 				ActiveScript.OnChoiceSelected -= (Action<Script.Choice>)@delegate;
 			}
 		}
-
+		
 		State.Clear();
 		ActiveScript.OnUnload();
 		OnScriptUnload?.Invoke( ActiveScript );
 		IsScriptActive = false;
-
+		
 		var nextScript = ActiveScript.NextScript;
 		if ( nextScript is not null )
 		{
@@ -202,13 +200,13 @@ public sealed partial class ScriptPlayer : Component
 		{
 			ActiveScript = null;
 		}
-
+		
 		if ( LoggingEnabled )
 		{
 			Log.Info( $"Unloaded active script." );
 		}
 	}
-
+	
 	/// <summary>
 	/// Skip the currently active text effect.
 	/// </summary>
@@ -219,7 +217,7 @@ public sealed partial class ScriptPlayer : Component
 		{
 			return;
 		}
-
+		
 		if ( IsAutomaticMode )
 		{
 			return;
@@ -229,7 +227,7 @@ public sealed partial class ScriptPlayer : Component
 		_cts?.Dispose();
 		_cts = null;
 	}
-
+	
 	/// <summary>
 	/// If the dialogue isn't finished, skip the effect, otherwise just advance if we can.
 	/// </summary>

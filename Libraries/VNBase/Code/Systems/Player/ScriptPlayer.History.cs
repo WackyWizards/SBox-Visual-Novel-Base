@@ -9,7 +9,7 @@ public sealed partial class ScriptPlayer
 	/// All previously shown dialogue entries
 	/// </summary>
 	public List<HistoryEntry> DialogueHistory { get; } = [];
-    
+	
 	/// <summary>
 	/// Adds a dialogue entry to history
 	/// </summary>
