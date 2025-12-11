@@ -17,6 +17,7 @@ tools_thumbnail_cache.bin
 *.csproj
 *.csproj.user
 *.sln
+*.slnx
 *.sln.DotSettings.user
 *.code-workspace
 code/obj/
