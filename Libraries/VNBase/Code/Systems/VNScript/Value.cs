@@ -116,7 +116,18 @@ public abstract record Value
 		
 		public override string ToString()
 		{
-			return ValueList?.ToString() ?? "[]";
+			return ValueList.ToString() ?? "[]";
 		}
+	}
+	
+	public bool IsTruthy()
+	{
+		return this switch
+		{
+			BooleanValue boolean => boolean.Boolean,
+			NumberValue number => number.Number != 0,
+			NoneValue => false,
+			_ => true
+		};
 	}
 }
