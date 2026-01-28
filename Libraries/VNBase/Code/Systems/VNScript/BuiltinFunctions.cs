@@ -26,6 +26,9 @@ internal static class BuiltinFunctions
 		["sqrt"] = new Value.FunctionValue( SqrtFunction ),
 		["if"] = new Value.FunctionValue( IfFunction ),
 		["not"] = new Value.FunctionValue( NotFunction ),
+		["and"] = new Value.FunctionValue( AndFunction ),
+		["or"]  = new Value.FunctionValue( OrFunction ),
+		["when"] = new Value.FunctionValue( WhenFunction ),
 		["body"] = new Value.FunctionValue( ExpressionBodyFunction ),
 	};
 	
@@ -73,7 +76,7 @@ internal static class BuiltinFunctions
 			Value.BooleanValue bool1 => new Value.BooleanValue( bool1.Boolean.Equals( ((Value.BooleanValue)v2).Boolean ) ),
 			Value.NumberValue num1 => new Value.BooleanValue( num1.Number.Equals( ((Value.NumberValue)v2).Number ) ),
 			Value.StringValue str1 => new Value.BooleanValue( str1.Text.Equals( ((Value.StringValue)v2).Text ) ),
-			_ => new Value.BooleanValue( ReferenceEquals( v1, v2 ) )
+			_ => new Value.BooleanValue( false )
 		};
 	}
 	
@@ -131,6 +134,58 @@ internal static class BuiltinFunctions
 		var isTruthy = value.IsTruthy();
 		
 		return new Value.BooleanValue( !isTruthy );
+	}
+	
+	private static Value.BooleanValue AndFunction( IEnvironment environment, Value[] values )
+	{
+		foreach ( var expr in values )
+		{
+			var result = expr.Evaluate( environment );
+			if ( !result.IsTruthy() )
+			{
+				return new Value.BooleanValue( false );
+			}
+		}
+		
+		return new Value.BooleanValue( true );
+	}
+	
+	private static Value.BooleanValue OrFunction( IEnvironment environment, Value[] values )
+	{
+		foreach ( var expr in values )
+		{
+			var result = expr.Evaluate( environment );
+			if ( result.IsTruthy() )
+			{
+				return new Value.BooleanValue( true );
+			}
+		}
+		
+		return new Value.BooleanValue( false );
+	}
+	
+	private static Value WhenFunction( IEnvironment environment, Value[] values )
+	{
+		if ( values.Length < 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
+		
+		var condition = values[0].Evaluate( environment );
+		
+		if ( !condition.IsTruthy() )
+		{
+			return Value.NoneValue.None;
+		}
+		
+		Value last = Value.NoneValue.None;
+		
+		for ( int i = 1; i < values.Length; i++ )
+		{
+			last = values[i].Evaluate( environment );
+		}
+		
+		return last;
 	}
 	
 	private static Value.NumberValue MulFunction( IEnvironment environment, Value[] values )
