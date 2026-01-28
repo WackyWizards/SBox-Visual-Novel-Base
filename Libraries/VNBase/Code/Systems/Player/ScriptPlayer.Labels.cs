@@ -250,7 +250,12 @@ public sealed partial class ScriptPlayer
 				}
 			}
 			
-			State.DialogueText = dialogue.Text.Format( _environment );
+			var formattedText = dialogue.Text.Format( _environment );
+			if ( State.DialogueText != formattedText )
+			{
+				State.DialogueText = formattedText;
+			}
+			
 			State.Choices = ActiveLabel.Choices;
 			State.IsDialogueFinished = true;
 			AddToDialogueHistory( dialogue, label );
