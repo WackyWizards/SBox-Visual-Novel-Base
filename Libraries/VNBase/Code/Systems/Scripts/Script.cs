@@ -98,7 +98,7 @@ public class Script : IAsset
 		return _environment ??= new EnvironmentMap( new Dictionary<string, Value>() );
 	}
 	
-	internal VNScript.Script Parse()
+	internal virtual VNScript.Script Parse()
 	{
 		var codeBlocks = SParen.ParseText( Code ).ToList();
 		return VNScript.Script.ParseScript( codeBlocks );
