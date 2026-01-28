@@ -25,6 +25,7 @@ internal static class BuiltinFunctions
 		["pow"] = new Value.FunctionValue( PowFunction ),
 		["sqrt"] = new Value.FunctionValue( SqrtFunction ),
 		["if"] = new Value.FunctionValue( IfFunction ),
+		["not"] = new Value.FunctionValue( NotFunction ),
 		["body"] = new Value.FunctionValue( ExpressionBodyFunction ),
 	};
 	
@@ -109,22 +110,27 @@ internal static class BuiltinFunctions
 		var condition = values[0].Evaluate( environment );
 		
 		// Check if condition is "truthy"
-		var isTruthy = condition switch
-		{
-			Value.BooleanValue boolVal => boolVal.Boolean,
-			Value.NumberValue numVal => numVal.Number != 0,
-			Value.NoneValue => false,
-			_ => true // Other values (strings, lists, etc.) are truthy
-		};
+		var isTruthy = condition.IsTruthy();
 		
 		if ( isTruthy )
 		{
 			return values[1].Evaluate( environment );
 		}
-		else
+		
+		return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
+	}
+	
+	private static Value.BooleanValue NotFunction( IEnvironment environment, Value[] values )
+	{
+		if ( values.Length != 1 )
 		{
-			return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
+			throw new InvalidParametersException( values );
 		}
+		
+		var value = values[0].Evaluate( environment );
+		var isTruthy = value.IsTruthy();
+		
+		return new Value.BooleanValue( !isTruthy );
 	}
 	
 	private static Value.NumberValue MulFunction( IEnvironment environment, Value[] values )
@@ -164,6 +170,7 @@ internal static class BuiltinFunctions
 			throw new InvalidParametersException( [baseVal, exponentVal] );
 		}
 		
+		// This can introduce precision artifacts.
 		return new Value.NumberValue( new decimal( Math.Pow( (double)baseNum.Number, (double)expNum.Number ) ) );
 	}
 	
