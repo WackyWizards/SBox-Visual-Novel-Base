@@ -170,7 +170,7 @@ public class SParen : IReadOnlyList<Value>
 					{
 						var sym = text[symbolStart..i];
 						
-						if ( sym.All( IsFloatChar ) )
+						if ( IsValidNumber( sym ) )
 						{
 							yield return new Token.Number( sym );
 						}
@@ -201,7 +201,7 @@ public class SParen : IReadOnlyList<Value>
 			{
 				var sym = text[symbolStart..i];
 				
-				if ( sym.All( IsFloatChar ) )
+				if ( IsValidNumber( sym ) )
 				{
 					yield return new Token.Number( sym );
 				}
@@ -237,7 +237,7 @@ public class SParen : IReadOnlyList<Value>
 		{
 			var sym = text[symbolStart..];
 			
-			if ( sym.All( IsFloatChar ) )
+			if ( IsValidNumber( sym ) )
 			{
 				yield return new Token.Number( sym );
 			}
@@ -251,6 +251,23 @@ public class SParen : IReadOnlyList<Value>
 	private static bool IsFloatChar( char character )
 	{
 		return char.IsDigit( character ) || character is '.' or '-';
+	}
+	
+	private static bool IsValidNumber( string str )
+	{
+		if ( string.IsNullOrEmpty( str ) )
+		{
+			return false;
+		}
+		
+		// A valid number must contain at least one digit
+		if ( !str.Any( char.IsDigit ) )
+		{
+			return false;
+		}
+		
+		// Try parsing to validate
+		return decimal.TryParse( str, out _ );
 	}
 	
 	private static bool IsValidSymbolName( char character )
