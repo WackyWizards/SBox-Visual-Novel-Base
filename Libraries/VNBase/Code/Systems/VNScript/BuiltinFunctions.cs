@@ -12,8 +12,11 @@ internal static class BuiltinFunctions
 	public static Dictionary<string, Value.FunctionValue> Builtins { get; } = new()
 	{
 		["="] = new Value.FunctionValue( EqualityFunction ),
+		["!="] = new Value.FunctionValue( NotEqualFunction ),
 		[">"] = new Value.FunctionValue( GreaterThanFunction ),
 		["<"] = new Value.FunctionValue( LessThanFunction ),
+		[">="] = new Value.FunctionValue( GreaterThanOrEqualFunction ),
+		["<="] = new Value.FunctionValue( LessThanOrEqualFunction ),
 		["+"] = new Value.FunctionValue( SumFunction ),
 		["-"] = new Value.FunctionValue( SubtractFunction ),
 		["*"] = new Value.FunctionValue( MulFunction ),
@@ -25,43 +28,31 @@ internal static class BuiltinFunctions
 		["body"] = new Value.FunctionValue( ExpressionBodyFunction ),
 	};
 	
-	private static Value.BooleanValue GreaterThanFunction( IEnvironment environment, Value[] values )
+	private static Value.BooleanValue GreaterThanFunction( IEnvironment env, Value[] values )
 	{
-		if ( values.Length != 2 )
-		{
-			throw new InvalidParametersException( values );
-		}
-		
-		var v1 = values[0].Evaluate( environment );
-		var v2 = values[1].Evaluate( environment );
-		
-		if ( v1 is not Value.NumberValue num1 || v2 is not Value.NumberValue num2 )
-		{
-			throw new InvalidParametersException( [v1, v2] );
-		}
-		
-		return new Value.BooleanValue( num1.Number > num2.Number );
+		var ( a, b ) = GetTwoNumbers( env, values );
+		return new Value.BooleanValue( a > b );
 	}
 	
-	private static Value.BooleanValue LessThanFunction( IEnvironment environment, Value[] values )
+	private static Value.BooleanValue LessThanFunction( IEnvironment env, Value[] values )
 	{
-		if ( values.Length != 2 )
-		{
-			throw new InvalidParametersException( values );
-		}
-		
-		var v1 = values[0].Evaluate( environment );
-		var v2 = values[1].Evaluate( environment );
-		
-		if ( v1 is not Value.NumberValue num1 || v2 is not Value.NumberValue num2 )
-		{
-			throw new InvalidParametersException( [v1, v2] );
-		}
-		
-		return new Value.BooleanValue( num1.Number < num2.Number );
+		var ( a, b ) = GetTwoNumbers( env, values );
+		return new Value.BooleanValue( a < b );
 	}
 	
-	private static Value EqualityFunction( IEnvironment environment, Value[] values )
+	private static Value.BooleanValue GreaterThanOrEqualFunction( IEnvironment environment, Value[] values )
+	{
+		var ( a, b ) = GetTwoNumbers( environment, values );
+		return new Value.BooleanValue( a >= b );
+	}
+	
+	private static Value.BooleanValue LessThanOrEqualFunction( IEnvironment environment, Value[] values )
+	{
+		var ( a, b ) = GetTwoNumbers( environment, values );
+		return new Value.BooleanValue( a <= b );
+	}
+	
+	private static Value.BooleanValue EqualityFunction( IEnvironment environment, Value[] values )
 	{
 		if ( values.Length != 2 )
 		{
@@ -83,6 +74,12 @@ internal static class BuiltinFunctions
 			Value.StringValue str1 => new Value.BooleanValue( str1.Text.Equals( ((Value.StringValue)v2).Text ) ),
 			_ => new Value.BooleanValue( ReferenceEquals( v1, v2 ) )
 		};
+	}
+	
+	private static Value.BooleanValue NotEqualFunction( IEnvironment environment, Value[] values )
+	{
+		var eq = EqualityFunction( environment, values );
+		return new Value.BooleanValue( !eq.Boolean );
 	}
 	
 	private static Value ExpressionBodyFunction( IEnvironment environment, Value[] values )
@@ -234,7 +231,7 @@ internal static class BuiltinFunctions
 		return value;
 	}
 	
-	private static Value SubtractFunction( IEnvironment environment, params Value[] values )
+	private static Value.NumberValue SubtractFunction( IEnvironment environment, params Value[] values )
 	{
 		if ( values.Length == 0 )
 		{
@@ -296,5 +293,23 @@ internal static class BuiltinFunctions
 		}
 		
 		throw new InvalidParametersException( evaluatedValues );
+	}
+	
+	private static (decimal a, decimal b) GetTwoNumbers( IEnvironment environment, Value[] values )
+	{
+		if ( values.Length != 2 )
+		{
+			throw new InvalidParametersException( values );
+		}
+		
+		var v1 = values[0].Evaluate( environment );
+		var v2 = values[1].Evaluate( environment );
+		
+		if ( v1 is not Value.NumberValue n1 || v2 is not Value.NumberValue n2 )
+		{
+			throw new InvalidParametersException( [v1, v2] );
+		}
+		
+		return ( n1.Number, n2.Number );
 	}
 }
