@@ -34,25 +34,25 @@ internal static class BuiltinFunctions
 	
 	private static Value.BooleanValue GreaterThanFunction( IEnvironment env, Value[] values )
 	{
-		var ( a, b ) = GetTwoNumbers( env, values );
+		var ( a, b ) = GetTwoNumbers( env, values, ">" );
 		return new Value.BooleanValue( a > b );
 	}
 	
 	private static Value.BooleanValue LessThanFunction( IEnvironment env, Value[] values )
 	{
-		var ( a, b ) = GetTwoNumbers( env, values );
+		var ( a, b ) = GetTwoNumbers( env, values, "<" );
 		return new Value.BooleanValue( a < b );
 	}
 	
 	private static Value.BooleanValue GreaterThanOrEqualFunction( IEnvironment environment, Value[] values )
 	{
-		var ( a, b ) = GetTwoNumbers( environment, values );
+		var ( a, b ) = GetTwoNumbers( environment, values, ">=" );
 		return new Value.BooleanValue( a >= b );
 	}
 	
 	private static Value.BooleanValue LessThanOrEqualFunction( IEnvironment environment, Value[] values )
 	{
-		var ( a, b ) = GetTwoNumbers( environment, values );
+		var ( a, b ) = GetTwoNumbers( environment, values, "<=" );
 		return new Value.BooleanValue( a <= b );
 	}
 	
@@ -107,33 +107,27 @@ internal static class BuiltinFunctions
 	{
 		if ( values.Length is < 2 or > 3 )
 		{
-			throw new InvalidParametersException( values );
+			throw ParamError.Wrong( "if", "(if condition then [else])", values );
 		}
 		
 		var condition = values[0].Evaluate( environment );
 		
-		// Check if condition is "truthy"
-		var isTruthy = condition.IsTruthy();
-		
-		if ( isTruthy )
+		if ( condition.IsTruthy() )
 		{
 			return values[1].Evaluate( environment );
 		}
 		
-		return values.Length > 2 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
+		return values.Length == 3 ? values[2].Evaluate( environment ) : Value.NoneValue.None;
 	}
 	
 	private static Value.BooleanValue NotFunction( IEnvironment environment, Value[] values )
 	{
 		if ( values.Length != 1 )
 		{
-			throw new InvalidParametersException( values );
+			throw ParamError.Wrong( "not", "one value", values );
 		}
 		
-		var value = values[0].Evaluate( environment );
-		var isTruthy = value.IsTruthy();
-		
-		return new Value.BooleanValue( !isTruthy );
+		return new Value.BooleanValue( !values[0].Evaluate( environment ).IsTruthy() );
 	}
 	
 	private static Value.BooleanValue AndFunction( IEnvironment environment, Value[] values )
@@ -282,14 +276,13 @@ internal static class BuiltinFunctions
 	
 	private static Value SetFunction( IEnvironment environment, params Value[] values )
 	{
-		if ( values is not [Value.VariableReferenceValue vrv, _] )
+		if ( values is not [Value.VariableReferenceValue, _] )
 		{
-			throw new InvalidParametersException( values );
+			throw ParamError.Wrong( "set", "(set variable value)", values );
 		}
 		
 		var value = values[1].Evaluate( environment );
-		environment.SetVariable( vrv.Name, value );
-		
+		environment.SetVariable( ((Value.VariableReferenceValue)values[0]).Name, value );
 		return value;
 	}
 	
@@ -357,11 +350,11 @@ internal static class BuiltinFunctions
 		throw new InvalidParametersException( evaluatedValues );
 	}
 	
-	private static (decimal a, decimal b) GetTwoNumbers( IEnvironment environment, Value[] values )
+	private static (decimal a, decimal b) GetTwoNumbers( IEnvironment environment, Value[] values, string opName )
 	{
 		if ( values.Length != 2 )
 		{
-			throw new InvalidParametersException( values );
+			throw ParamError.Wrong( opName, "two numbers", values );
 		}
 		
 		var v1 = values[0].Evaluate( environment );
@@ -369,7 +362,7 @@ internal static class BuiltinFunctions
 		
 		if ( v1 is not Value.NumberValue n1 || v2 is not Value.NumberValue n2 )
 		{
-			throw new InvalidParametersException( [v1, v2] );
+			throw ParamError.Wrong( opName, "two numbers", [v1, v2] );
 		}
 		
 		return ( n1.Number, n2.Number );

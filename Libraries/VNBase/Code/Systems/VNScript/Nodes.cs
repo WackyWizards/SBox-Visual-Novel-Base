@@ -20,11 +20,23 @@ public class UndefinedVariableException : Exception
 /// <summary>
 /// Exception thrown when the parameters passed to a function are invalid.
 /// </summary>
-public class InvalidParametersException : Exception
+public sealed class InvalidParametersException : Exception
 {
-	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types {string.Join( ", ", values.Select( v => v.GetType().Name ) )}!" )
+	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types: {FormatValues( values )}" )
 	{
-		base.Data["Values"] = values;
+		Data["Values"] = values;
+	}
+	
+	public InvalidParametersException( string functionName, string expected, IEnumerable<Value> values ) : base( $"Error in `{functionName}`\n" + $"Expected: {expected}\n" + $"Got: {FormatValues(values)}" )
+	{
+		Data["Function"] = functionName;
+		Data["Expected"] = expected;
+		Data["Values"] = values;
+	}
+	
+	private static string FormatValues( IEnumerable<Value> values )
+	{
+		return string.Join( ", ", values.Select( v => v.ToString() ) );
 	}
 }
 
@@ -46,6 +58,14 @@ public class ResourceNotFoundException : FileNotFoundException
 	}
 	
 	public override string Message => $"{base.Message} Resource: {ResourceName}, File: {FileName ?? "N/A"}";
+}
+
+internal static class ParamError
+{
+	public static InvalidParametersException Wrong( string name, string expected, IEnumerable<Value> values )
+	{
+		return new InvalidParametersException( name, expected, values );
+	}
 }
 
 /// <summary>
