@@ -150,6 +150,13 @@ public class SParen : IReadOnlyList<Value>
 			
 			if ( isInQuote )
 			{
+				// Check for escaped quote
+				if ( text[i] == '\\' && i + 1 < text.Length && text[i + 1] == '"' )
+				{
+					i++; // Skip the escaped quote
+					continue;
+				}
+				
 				if ( text[i] != '"' )
 				{
 					continue;
@@ -157,7 +164,11 @@ public class SParen : IReadOnlyList<Value>
 				
 				if ( text[i] == '"' )
 				{
-					yield return new Token.String( text.Substring( symbolStart, i - symbolStart + 1 ) );
+					// Extract string content without quotes
+					var stringContent = text.Substring( symbolStart, i - symbolStart );
+					// Unescape any escaped quotes
+					stringContent = stringContent.Replace( "\\\"", "\"" );
+					yield return new Token.String( stringContent );
 					symbolStart = i + 1;
 					isInQuote = false;
 				}
@@ -175,7 +186,9 @@ public class SParen : IReadOnlyList<Value>
 							yield return new Token.Number( sym );
 						}
 						else
+						{
 							yield return new Token.Symbol( sym );
+						}
 					}
 					
 					symbolStart = i + 1;
@@ -185,14 +198,19 @@ public class SParen : IReadOnlyList<Value>
 				
 				switch ( text[i] )
 				{
-					case '"': isInQuote = true; break;
+					case '"': 
+						isInQuote = true;
+						symbolStart = i + 1; // Start after the opening quote
+						continue; // Skip rest of loop iteration
 					case '/' when i + 1 < text.Length && text[i + 1] == '/':
 						isInSingleLineComment = true;
 						i++; // Skip '/'
+						symbolStart = i + 1;
 						continue;
 					case '/' when i + 1 < text.Length && text[i + 1] == '*':
 						isInMultiLineComment = true;
 						i++; // Skip '*'
+						symbolStart = i + 1;
 						continue;
 				}
 			}
@@ -341,7 +359,8 @@ public class SParen : IReadOnlyList<Value>
 				case Token.Number number:
 					currentParen!._backingList.Add( new Value.NumberValue( decimal.Parse( number.Value ) ) ); break;
 				case Token.String str:
-					currentParen!._backingList.Add( new Value.StringValue( str.Text[1..^1] ) ); break;
+					// String text no longer includes quotes
+					currentParen!._backingList.Add( new Value.StringValue( str.Text ) ); break;
 				case Token.Symbol symbol:
 					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) ); break;
 			}
