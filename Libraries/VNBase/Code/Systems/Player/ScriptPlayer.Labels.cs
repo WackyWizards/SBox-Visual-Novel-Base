@@ -232,8 +232,14 @@ public sealed partial class ScriptPlayer
 				return;
 			}
 			
+			// Use the same environment as code blocks
+			var environment = ActiveScript.GetEnvironment();
+			
+			// Check if this is the last dialogue in the label
+			var isLastDialogue = _currentTextIndex >= ActiveLabel.Dialogues.Count - 1;
+			
 			// If we are in Automatic Mode and there are no choices, check if we should auto-advance
-			if ( IsAutomaticMode && label.Choices.Count == 0 )
+			if ( IsAutomaticMode && label.Choices.Count == 0 && !isLastDialogue )
 			{
 				try
 				{
@@ -250,13 +256,22 @@ public sealed partial class ScriptPlayer
 				}
 			}
 			
-			var formattedText = dialogue.Text.Format( _environment );
+			var formattedText = dialogue.Text.Format( environment );
 			if ( State.DialogueText != formattedText )
 			{
 				State.DialogueText = formattedText;
 			}
 			
-			State.Choices = ActiveLabel.Choices;
+			// Only set choices if this is the last dialogue
+			if ( isLastDialogue )
+			{
+				State.Choices = ActiveLabel.Choices;
+			}
+			else
+			{
+				State.Choices = [];
+			}
+			
 			State.IsDialogueFinished = true;
 			AddToDialogueHistory( dialogue, label );
 		}
