@@ -242,9 +242,30 @@ internal static class BuiltinFunctions
 	
 	private static Value.FunctionValue DefineFunction( IEnvironment environment, Value[] values )
 	{
-		if ( values is not [Value.ListValue paramList, Value.ListValue body] )
+		// Expect: (defun function-name (param1 param2 ...) (body))
+		if ( values.Length != 3 )
 		{
-			throw new InvalidParametersException( values );
+			throw ParamError.Wrong( "defun", "(defun name (params...) body)", values );
+		}
+		
+		// Extract function name
+		var functionName = values[0] switch
+		{
+			Value.VariableReferenceValue varRef => varRef.Name,
+			Value.StringValue strVal => strVal.Text,
+			_ => throw ParamError.Wrong( "defun", "function name as first parameter", values )
+		};
+		
+		// Extract parameter list
+		if ( values[1] is not Value.ListValue paramList )
+		{
+			throw ParamError.Wrong( "defun", "parameter list as second parameter", values );
+		}
+		
+		// Extract body
+		if ( values[2] is not Value.ListValue body )
+		{
+			throw ParamError.Wrong( "defun", "function body as third parameter", values );
 		}
 		
 		var argNames = paramList.ValueList.Select( p => p switch
@@ -254,7 +275,7 @@ internal static class BuiltinFunctions
 			_ => throw new InvalidParametersException( [p] )
 		} ).ToArray();
 		
-		return new Value.FunctionValue( ( env, arglist ) =>
+		var functionValue = new Value.FunctionValue( ( env, arglist ) =>
 		{
 			if ( arglist.Length != argNames.Length )
 			{
@@ -272,6 +293,11 @@ internal static class BuiltinFunctions
 			
 			return valueList.Execute( functionEnv );
 		} );
+		
+		// Register the function in the environment
+		environment.SetVariable( functionName, functionValue );
+		
+		return functionValue;
 	}
 	
 	private static Value SetFunction( IEnvironment environment, params Value[] values )

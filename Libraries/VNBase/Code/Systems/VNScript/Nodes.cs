@@ -312,7 +312,7 @@ public class SParen : IReadOnlyList<Value>
 				case Token.CloseParen:
 					tokenDepth--;
 					
-					if ( tokenDepth == 0 && currentParen != null )
+					if ( tokenDepth == 0 && currentParen is not null )
 					{
 						yield return currentParen;
 						currentParen = null;
