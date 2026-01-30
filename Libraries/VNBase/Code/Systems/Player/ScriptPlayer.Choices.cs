@@ -19,8 +19,9 @@ public sealed partial class ScriptPlayer
 		}
 		
 		var targetLabel = _activeDialogue.Labels[choice.TargetLabel];
+		var environment = ActiveScript.GetEnvironment();
 		
-		if ( choice.IsAvailable( ActiveScript.GetEnvironment() ) )
+		if ( choice.IsAvailable( environment ) )
 		{
 			SetLabel( targetLabel );
 			ActiveScript.OnChoiceSelected?.Invoke( choice );
