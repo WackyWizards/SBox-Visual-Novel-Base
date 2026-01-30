@@ -1,3 +1,7 @@
+// We store the player's name so we can use it later.
+// The default value here is "Garry".
+(set name "Garry")
+
 (label beginning
     (dialogue "What's your name?")
 
@@ -15,7 +19,4 @@
 	(after load /Scripts/ExampleScript.vnscript)
 )
 
-// We store the player's name so we can use it later.
-// The default value here is "Garry".
-(set name "Garry")
 (start beginning)
