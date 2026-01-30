@@ -266,11 +266,6 @@ public class SParen : IReadOnlyList<Value>
 		}
 	}
 	
-	private static bool IsFloatChar( char character )
-	{
-		return char.IsDigit( character ) || character is '.' or '-';
-	}
-	
 	private static bool IsValidNumber( string str )
 	{
 		if ( string.IsNullOrEmpty( str ) )
