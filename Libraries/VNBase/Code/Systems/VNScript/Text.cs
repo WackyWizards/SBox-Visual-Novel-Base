@@ -1,15 +1,34 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace VNScript;
 
 /// <summary>
-/// Represents text that can be formatted.
+/// Represents text that can be formatted with variables and expressions.
 /// </summary>
 public sealed class FormattableText( string text ) : IEquatable<string>
 {
-	// ReSharper disable once MemberCanBePrivate.Global
 	public string Text { get; set; } = text;
+	
+	// Stores expressions that need to be evaluated at runtime
+	// Key: placeholder index (e.g., "__EXPR_0__"), Value: the expression to evaluate
+	private Dictionary<string, SParen> Expressions { get; } = new();
+	
+	private int _expressionCounter;
+	
+	/// <summary>
+	/// Adds an expression placeholder to the text and stores the expression.
+	/// Returns the placeholder string that was added.
+	/// </summary>
+	public string AddExpression( SParen expression )
+	{
+		var placeholder = $"__EXPR_{_expressionCounter}__";
+		Expressions[placeholder] = expression;
+		_expressionCounter++;
+		
+		return placeholder;
+	}
 	
 	public bool Equals( string? other )
 	{
@@ -28,13 +47,44 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 	/// <returns>The formatted text.</returns>
 	public string Format( IEnvironment environment )
 	{
+		var result = Text;
+		
+		// Replace expression placeholders
+		foreach ( var kvp in Expressions )
+		{
+			var placeholder = kvp.Key;
+			var expression = kvp.Value;
+			
+			try
+			{
+				var value = expression.Execute( environment );
+				result = result.Replace( $"{{{placeholder}}}", value.ToString() );
+			}
+			catch
+			{
+				result = result.Replace( $"{{{placeholder}}}", "[Error]" );
+			}
+		}
+		
+		// Replace variable placeholders
 #pragma warning disable SYSLIB1045
-		return Regex.Replace( Text, @"\{(\w+)\}", match =>
+		result = Regex.Replace( result, @"\{([^\{\}]+)\}", match =>
 #pragma warning restore SYSLIB1045
 		{
-			var variableName = match.Groups[1].Value;
-			return GetVariableValue( environment, variableName ).ToString();
+			var variableName = match.Groups[1].Value.Trim();
+			
+			// Skip expression placeholders (already handled)
+			if ( variableName.StartsWith( "__EXPR_" ) )
+			{
+				return match.Value;
+			}
+			
+			var value = GetVariableValue( environment, variableName );
+			
+			return value.ToString();
 		} );
+		
+		return result;
 	}
 	
 	private static Value GetVariableValue( IEnvironment environment, string variableName )

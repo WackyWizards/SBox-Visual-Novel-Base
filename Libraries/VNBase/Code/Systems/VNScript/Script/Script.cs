@@ -1,6 +1,7 @@
 using Sandbox;
 using Sandbox.Diagnostics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using VNBase;
 using VNBase.Assets;
@@ -50,6 +51,7 @@ public partial class Script
 			{ "label", new Value.FunctionValue( CreateLabel ) },
 			{ "start", new Value.FunctionValue( SetStartDialogue ) },
 			{ "set", new Value.FunctionValue( SetVariable ) },
+			{ "defun", new Value.FunctionValue( DefineFunction ) }
 		};
 		
 		foreach ( var function in functions )
@@ -70,6 +72,70 @@ public partial class Script
 		}
 		
 		return Value.NoneValue.None;
+	}
+	
+	private Value.FunctionValue DefineFunction( IEnvironment environment, Value[] values )
+	{
+		// Expect: (defun function-name (param1 param2 ...) (body))
+		if ( values.Length != 3 )
+		{
+			throw ParamError.Wrong( "defun", "(defun name (params...) body)", values );
+		}
+		
+		// Extract function name
+		var functionName = values[0] switch
+		{
+			Value.VariableReferenceValue varRef => varRef.Name,
+			Value.StringValue strVal => strVal.Text,
+			_ => throw ParamError.Wrong( "defun", "function name as first parameter", values )
+		};
+		
+		// Extract parameter list
+		if ( values[1] is not Value.ListValue paramList )
+		{
+			throw ParamError.Wrong( "defun", "parameter list as second parameter", values );
+		}
+		
+		// Extract body
+		if ( values[2] is not Value.ListValue body )
+		{
+			throw ParamError.Wrong( "defun", "function body as third parameter", values );
+		}
+		
+		var argNames = paramList.ValueList.Select( p => p switch
+		{
+			Value.StringValue stringValue => stringValue.Text,
+			Value.VariableReferenceValue variableReferenceValue => variableReferenceValue.Name,
+			_ => throw new InvalidParametersException( [p] )
+		} ).ToArray();
+		
+		// Create the function value
+		var functionValue = new Value.FunctionValue( ( env, arglist ) =>
+		{
+			if ( arglist.Length != argNames.Length )
+			{
+				throw new InvalidParametersException( arglist );
+			}
+			
+			var functionEnv = new EnvironmentMap( env );
+			
+			for ( var i = 0; i < argNames.Length; i++ )
+			{
+				functionEnv.SetVariable( argNames[i], arglist[i].Evaluate( env ) );
+			}
+			
+			body.Deconstruct( out var valueList );
+			
+			return valueList.Execute( functionEnv );
+		} );
+		
+		// Store the function in script variables so it's available at runtime
+		Variables[new Value.VariableReferenceValue( functionName )] = functionValue;
+		
+		// Also register in the parsing environment for use during parsing
+		environment.SetVariable( functionName, functionValue );
+		
+		return functionValue;
 	}
 	
 	private Value.NoneValue SetStartDialogue( IEnvironment environment, Value[] values )
@@ -105,7 +171,7 @@ public partial class Script
 	{
 		var argumentType = ((Value.VariableReferenceValue)arguments[0]).Name;
 		
-		LabelArgument labelArgument = argumentType switch
+		LabelArgument? labelArgument = argumentType switch
 		{
 			"dialogue" => LabelDialogueArgument,
 			"choice" => LabelChoiceArgument,
@@ -115,10 +181,23 @@ public partial class Script
 			"bg" => LabelBackgroundArgument,
 			"input" => LabelInputArgument,
 			"after" => LabelAfterArgument,
-			_ => throw new ArgumentOutOfRangeException( argumentType )
+			_ => null // Unknown - treat as executable code block
 		};
 		
-		labelArgument( arguments, label );
+		if ( labelArgument != null )
+		{
+			labelArgument( arguments, label );
+		}
+		else
+		{
+			// This is an executable code block (like (if ...), (when ...), (set ...), etc.)
+			// Store it to be executed when the label becomes active
+			if ( label.AfterLabel is null )
+			{
+				label.AfterLabel = new After();
+			}
+			label.AfterLabel.CodeBlocks.Add( arguments );
+		}
 	}
 	
 	private delegate void LabelArgument( SParen argument, Label label );
@@ -135,7 +214,11 @@ public partial class Script
 	
 	private static void LabelAfterArgument( SParen arguments, Label label )
 	{
-		label.AfterLabel = new After();
+		// Don't replace existing AfterLabel - create only if it doesn't exist
+		if ( label.AfterLabel is null )
+		{
+			label.AfterLabel = new After();
+		}
 		
 		for ( var i = 1; i < arguments.Count; i++ )
 		{
@@ -224,18 +307,67 @@ public partial class Script
 	
 	private static void LabelDialogueArgument( SParen arguments, Label label )
 	{
-		if ( arguments[1] is not Value.StringValue argument )
+		// Collect all text parts until we hit a keyword or run out of arguments
+		var textParts = new List<Value>();
+		int i = 1;
+		
+		// Gather all the text components (strings, variables, or expressions)
+		while ( i < arguments.Count )
 		{
-			throw new InvalidParametersException( [arguments[1]] );
+			var arg = arguments[i];
+			
+			// Check if this is a keyword argument (like "speaker")
+			if ( arg is Value.VariableReferenceValue varRef && IsDialogueKeyword( varRef.Name ) )
+			{
+				break;
+			}
+			
+			textParts.Add( arg );
+			i++;
 		}
 		
+		// Need at least one text part
+		if ( textParts.Count == 0 )
+		{
+			throw new InvalidParametersException( arguments.ToArray() );
+		}
+		
+		// Build the formatted text string
+		var textBuilder = new System.Text.StringBuilder();
+		var formattedText = new FormattableText( string.Empty );
+		
+		foreach ( var part in textParts )
+		{
+			switch ( part )
+			{
+				case Value.StringValue str:
+					textBuilder.Append( str.Text );
+					break;
+				case Value.VariableReferenceValue varRef:
+					// Add as a format placeholder: {variableName}
+					textBuilder.Append( $"{{{varRef.Name}}}" );
+					break;
+				case Value.ListValue listVal:
+					// Add expression placeholder and store the expression
+					var placeholder = formattedText.AddExpression( listVal.ValueList );
+					textBuilder.Append( $"{{{placeholder}}}" );
+					break;
+				default:
+					throw new InvalidParametersException( [part] );
+			}
+		}
+		
+		formattedText.Text = textBuilder.ToString();
+		
+		// Create the dialogue entry with the built text
 		var entry = new Dialogue
 		{
-			Text = new FormattableText( argument.Text ),
+			Text = formattedText,
 			Speaker = null
 		};
 		
-		for ( var i = 2; i < arguments.Count; i++ )
+		// Process any remaining keyword arguments
+		while ( i < arguments.Count )
 		{
 			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
 			{
@@ -254,9 +386,14 @@ public partial class Script
 		label.Dialogues.Add( entry );
 	}
 	
+	private static bool IsDialogueKeyword( string name )
+	{
+		return name == "speaker";
+	}
+	
 	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label, Dialogue dialogue )
 	{
-		var characterName = ((Value.VariableReferenceValue)arguments[3]).Name;
+		var characterName = ((Value.VariableReferenceValue)arguments[index + 1]).Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
 		dialogue.Speaker = character;
 		
@@ -288,9 +425,9 @@ public partial class Script
 	
 	private static int LabelCharacterExpressionArgument( SParen arguments, int index, Label label, Character character )
 	{
-		if ( arguments[3] is not Value.VariableReferenceValue argument )
+		if ( arguments[index + 1] is not Value.VariableReferenceValue argument )
 		{
-			throw new InvalidParametersException( [arguments[3]] );
+			throw new InvalidParametersException( [arguments[index + 1]] );
 		}
 		
 		character.ActivePortrait = argument.Name;

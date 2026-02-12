@@ -1,3 +1,5 @@
+(set secret-ending-unlocked false)
+
 (label beginning
     (dialogue "What Now?")
     (choice "Unlock Secret Ending" cond (= secret-ending-unlocked false) jump unlock-secret)
@@ -25,5 +27,4 @@
 	(after load /Scripts/ExampleScript.vnscript)
 )
 
-(set secret-ending-unlocked false)
 (start beginning)

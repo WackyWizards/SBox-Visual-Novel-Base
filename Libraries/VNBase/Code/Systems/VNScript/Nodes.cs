@@ -20,11 +20,23 @@ public class UndefinedVariableException : Exception
 /// <summary>
 /// Exception thrown when the parameters passed to a function are invalid.
 /// </summary>
-public class InvalidParametersException : Exception
+public sealed class InvalidParametersException : Exception
 {
-	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types {string.Join( ", ", values.Select( v => v.GetType().Name ) )}!" )
+	public InvalidParametersException( IEnumerable<Value> values ) : base( $"Invalid parameter types: {FormatValues( values )}" )
 	{
-		base.Data["Values"] = values;
+		Data["Values"] = values;
+	}
+	
+	public InvalidParametersException( string functionName, string expected, IEnumerable<Value> values ) : base( $"Error in `{functionName}`\n" + $"Expected: {expected}\n" + $"Got: {FormatValues(values)}" )
+	{
+		Data["Function"] = functionName;
+		Data["Expected"] = expected;
+		Data["Values"] = values;
+	}
+	
+	private static string FormatValues( IEnumerable<Value> values )
+	{
+		return string.Join( ", ", values.Select( v => v.ToString() ) );
 	}
 }
 
@@ -46,6 +58,14 @@ public class ResourceNotFoundException : FileNotFoundException
 	}
 	
 	public override string Message => $"{base.Message} Resource: {ResourceName}, File: {FileName ?? "N/A"}";
+}
+
+internal static class ParamError
+{
+	public static InvalidParametersException Wrong( string name, string expected, IEnumerable<Value> values )
+	{
+		return new InvalidParametersException( name, expected, values );
+	}
 }
 
 /// <summary>
@@ -130,6 +150,13 @@ public class SParen : IReadOnlyList<Value>
 			
 			if ( isInQuote )
 			{
+				// Check for escaped quote
+				if ( text[i] == '\\' && i + 1 < text.Length && text[i + 1] == '"' )
+				{
+					i++; // Skip the escaped quote
+					continue;
+				}
+				
 				if ( text[i] != '"' )
 				{
 					continue;
@@ -137,7 +164,11 @@ public class SParen : IReadOnlyList<Value>
 				
 				if ( text[i] == '"' )
 				{
-					yield return new Token.String( text.Substring( symbolStart, i - symbolStart + 1 ) );
+					// Extract string content without quotes
+					var stringContent = text.Substring( symbolStart, i - symbolStart );
+					// Unescape any escaped quotes
+					stringContent = stringContent.Replace( "\\\"", "\"" );
+					yield return new Token.String( stringContent );
 					symbolStart = i + 1;
 					isInQuote = false;
 				}
@@ -150,12 +181,14 @@ public class SParen : IReadOnlyList<Value>
 					{
 						var sym = text[symbolStart..i];
 						
-						if ( sym.All( IsFloatChar ) )
+						if ( IsValidNumber( sym ) )
 						{
 							yield return new Token.Number( sym );
 						}
 						else
+						{
 							yield return new Token.Symbol( sym );
+						}
 					}
 					
 					symbolStart = i + 1;
@@ -165,14 +198,19 @@ public class SParen : IReadOnlyList<Value>
 				
 				switch ( text[i] )
 				{
-					case '"': isInQuote = true; break;
+					case '"': 
+						isInQuote = true;
+						symbolStart = i + 1; // Start after the opening quote
+						continue; // Skip rest of loop iteration
 					case '/' when i + 1 < text.Length && text[i + 1] == '/':
 						isInSingleLineComment = true;
 						i++; // Skip '/'
+						symbolStart = i + 1;
 						continue;
 					case '/' when i + 1 < text.Length && text[i + 1] == '*':
 						isInMultiLineComment = true;
 						i++; // Skip '*'
+						symbolStart = i + 1;
 						continue;
 				}
 			}
@@ -181,7 +219,7 @@ public class SParen : IReadOnlyList<Value>
 			{
 				var sym = text[symbolStart..i];
 				
-				if ( sym.All( IsFloatChar ) )
+				if ( IsValidNumber( sym ) )
 				{
 					yield return new Token.Number( sym );
 				}
@@ -217,7 +255,7 @@ public class SParen : IReadOnlyList<Value>
 		{
 			var sym = text[symbolStart..];
 			
-			if ( sym.All( IsFloatChar ) )
+			if ( IsValidNumber( sym ) )
 			{
 				yield return new Token.Number( sym );
 			}
@@ -228,9 +266,21 @@ public class SParen : IReadOnlyList<Value>
 		}
 	}
 	
-	private static bool IsFloatChar( char character )
+	private static bool IsValidNumber( string str )
 	{
-		return char.IsDigit( character ) || character is '.' or '-';
+		if ( string.IsNullOrEmpty( str ) )
+		{
+			return false;
+		}
+		
+		// A valid number must contain at least one digit
+		if ( !str.Any( char.IsDigit ) )
+		{
+			return false;
+		}
+		
+		// Try parsing to validate
+		return decimal.TryParse( str, out _ );
 	}
 	
 	private static bool IsValidSymbolName( char character )
@@ -262,7 +312,7 @@ public class SParen : IReadOnlyList<Value>
 				case Token.CloseParen:
 					tokenDepth--;
 					
-					if ( tokenDepth == 0 && currentParen != null )
+					if ( tokenDepth == 0 && currentParen is not null )
 					{
 						yield return currentParen;
 						currentParen = null;
@@ -304,7 +354,8 @@ public class SParen : IReadOnlyList<Value>
 				case Token.Number number:
 					currentParen!._backingList.Add( new Value.NumberValue( decimal.Parse( number.Value ) ) ); break;
 				case Token.String str:
-					currentParen!._backingList.Add( new Value.StringValue( str.Text[1..^1] ) ); break;
+					// String text no longer includes quotes
+					currentParen!._backingList.Add( new Value.StringValue( str.Text ) ); break;
 				case Token.Symbol symbol:
 					currentParen!._backingList.Add( new Value.VariableReferenceValue( symbol.Name ) ); break;
 			}

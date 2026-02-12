@@ -45,6 +45,9 @@ public class Script : IAsset
 	[Hide]
 	private IEnvironment? _environment;
 	
+	[Hide]
+	private VNScript.Script? _parsedScript;
+	
 	[JsonIgnore, Hide]
 	private static readonly Logger Log = new( "Script" );
 	
@@ -95,12 +98,47 @@ public class Script : IAsset
 	/// </summary>
 	public virtual IEnvironment GetEnvironment()
 	{
-		return _environment ??= new EnvironmentMap( new Dictionary<string, Value>() );
+		if ( _environment is not null )
+		{
+			return _environment;
+		}
+		
+		// Create new environment
+		_environment = new EnvironmentMap( new Dictionary<string, Value>() );
+		
+		// If we have a parsed script, load its variables into the environment
+		if ( _parsedScript is not null )
+		{
+			foreach ( var kvp in _parsedScript.Variables )
+			{
+				// Extract variable name from the key
+				var varName = kvp.Key switch
+				{
+					Value.VariableReferenceValue varRef => varRef.Name, Value.StringValue str => str.Text, _ => null
+				};
+				
+				if ( string.IsNullOrEmpty( varName ) )
+				{
+					continue;
+				}
+				
+				// Evaluate the value in the current environment and store it
+				var evaluatedValue = kvp.Value.Evaluate( _environment );
+				_environment.SetVariable( varName, evaluatedValue );
+			}
+		}
+		
+		return _environment;
 	}
 	
-	internal VNScript.Script Parse()
+	internal virtual VNScript.Script Parse()
 	{
 		var codeBlocks = SParen.ParseText( Code ).ToList();
-		return VNScript.Script.ParseScript( codeBlocks );
+		_parsedScript = VNScript.Script.ParseScript( codeBlocks );
+		
+		// Reset environment so it gets rebuilt
+		_environment = null;
+		
+		return _parsedScript;
 	}
 }
