@@ -21,9 +21,10 @@
             <div class="dialogue">
                 @if ( entry.Dialogue.Speaker.IsValid() )
                 {
-                    <div class="character" style="color: @entry.Dialogue.Speaker.NameColor.Rgba">@(entry.Dialogue.Speaker.Name):</div>
+                    <div class="character" style="color: @entry.Dialogue.Speaker.NameColor.Rgba">@( entry.Dialogue.Speaker.Name ):</div>
                 }
-                <div class="text">@(entry.Dialogue.Text)</div>
+                
+                <div class="text">@( entry.Dialogue.Text.Format( Player.GetEnvironment() ) )</div>
             </div>
         }
     </div>
