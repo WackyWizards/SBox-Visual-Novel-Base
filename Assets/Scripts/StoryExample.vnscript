@@ -1,5 +1,5 @@
 // This file is mostly undocumented.
-// More information available on the vnbase wiki page: https://github.com/KUO-Team/SBox-Visual-Novel-Base/wiki
+// More information available on the vnbase wiki page: https://github.com/wackywizards/SBox-Visual-Novel-Base/wiki
 
 (label breezing-wind
 	(dialogue "A gentle breeze rustles through your hair, birds chirp melodiously, and the sun shines brightly. It's a perfect day.")
