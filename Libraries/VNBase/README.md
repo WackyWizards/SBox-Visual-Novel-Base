@@ -2,7 +2,9 @@
 
 VNBase is a library for creating visual novels or dialogue systems for S&Box Games.
 
-Scripts are written using a LISP-styled language called VNScript, a user-friendly DSL (Domain-Specific Language) designed for building VNBase scripts with ease.
+Scripts are written using a LISP-styled language called VNScript, an user-friendly DSL designed for building VNBase scripts with ease.
+
+For further information about VNBase, please visit the [wiki.](https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/What-is-VNBase%3F)
 
 ## Showcase
 
@@ -10,16 +12,30 @@ Below is a video showcase of a simple example project made with VNBase.
 
 https://www.youtube.com/watch?v=X50jqOHCtVs
 
+To try out VNBase, you may download and extract the files from this repository to your S&Box game projects folder.
+
+## How to make your own Visual Novel
+
+To get started on making your own Visual Novel, please refer to the documentation provided in the wiki that details the several ways to write the code to get started through the link below.
+
+[How To Write Your First Script](https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/How-to-write-your-first-script)
+
 ## Contributing
 
 > [!NOTE]
 > Contributors are **strongly recommended** to read the following wiki page before contributing:
-> https://github.com/kEllieGit/SBox-Visual-Novel-Base/wiki/Contributors
+>
+> https://github.com/WackyWizards/SBox-Visual-Novel-Base/wiki/Contributors
 
-Anyone is free to contribute to the base by creating a pull request. Contributions are always welcome if you have any improvements, bug fixes or just wish to add some cool new features to the base. Any and all help is appreciated.
+Anyone is free to contribute to the base by creating a pull request. Contributions are always welcome. Any and all help is appreciated.
 
-For technical support and/or questions related to VNBase, please either create a new issue, or join the discord server found below.
-https://discord.gg/kKU6a4AYNk
+For technical support and/or questions related to VNBase, please either create a new issue, or join the [discord server](https://discord.gg/kKU6a4AYNk)!
+
+## License
+
+This code is all public and MIT licensed, which means you are free to copy, redistribute or modify it for your own use, even commercially, as long as you provide the original license in your project.
+
+If you love it, we would love to have your support! [https://www.ko-fi.com/kelliedev](https://www.ko-fi.com/kelliedev)
 
 ## SandLang
 
