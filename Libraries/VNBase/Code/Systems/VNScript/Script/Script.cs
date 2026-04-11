@@ -15,7 +15,7 @@ public partial class Script
 {
 	public Dictionary<string, Label> Labels { get; } = new();
 	
-	public Label InitialLabel { get; private set; } = new();
+	public Label InitialLabel { get; internal set; } = new();
 	
 	internal Dictionary<Value, Value> Variables { get; } = new();
 	

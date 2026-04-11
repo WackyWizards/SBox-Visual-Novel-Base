@@ -35,7 +35,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// If not empty, will load the script asset at this path on initial component start.
 	/// </summary>
-	[Property, Group( "Script" ), FilePath( Extension = "vnscript" )]
+	[Property, Group( "Script" ), FilePath( Extension = SupportedExtensions )]
 	public string? InitialScript { get; set; }
 	
 	/// <summary>
@@ -65,6 +65,11 @@ public sealed partial class ScriptPlayer : Component
 	
 	private Script? _activeDialogue;
 	private CancellationTokenSource? _cts;
+	
+	/// <summary>
+	/// Value-separated by comma, list of supported script files by extension.
+	/// </summary>
+	private const string SupportedExtensions = "vnscript,json";
 	
 	protected override void OnStart()
 	{
@@ -113,6 +118,18 @@ public sealed partial class ScriptPlayer : Component
 	// ReSharper disable once MemberCanBePrivate.Global
 	public void LoadScript( string path )
 	{
+		var extension = Path.GetExtension( path )?.ToLowerInvariant();
+
+		Assets.Script script;
+		if ( extension == ".json" )
+		{
+			script = new Assets.JsonScript( path );
+		}
+		else
+		{
+			script = new Assets.Script( path );
+		}
+
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
 		
 		if ( dialogue is null )
@@ -123,7 +140,6 @@ public sealed partial class ScriptPlayer : Component
 		
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			Assets.Script script = new( path );
 			LoadScript( script );
 		}
 		else

@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using System.Text.Json.Serialization;
+using Sandbox;
 
 namespace VNScript;
 
@@ -9,8 +10,10 @@ public partial class Script
 	/// </summary>
 	public class Choice
 	{
+		[JsonPropertyName( "text" )]
 		public FormattableText Text { get; set; } = string.Empty;
 		
+		[JsonPropertyName( "targetLabel" )]
 		public string TargetLabel { get; set; } = string.Empty;
 		
 		[Hide]

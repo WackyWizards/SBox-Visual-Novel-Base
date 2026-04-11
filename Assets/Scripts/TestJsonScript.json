@@ -1,0 +1,58 @@
+{
+    "initialLabel": "start",
+    "labels": [
+        {
+            "name": "start",
+            "lines": [
+                {
+                    "type": "dialogue",
+                    "text": [
+                        "Hello, welcome to the test script!",
+                        "How are you today?"
+                    ]
+                },
+                {
+                    "type": "choice",
+                    "choices": [
+                        {
+                            "text": "I'm doing well.",
+                            "targetLabel": "well"
+                        },
+                        {
+                            "text": "Not so great.",
+                            "targetLabel": "not_well"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "well",
+            "lines": [
+                {
+                    "type": "dialogue",
+                    "text": [
+                        "That's great to hear!"
+                    ]
+                }
+            ],
+            "after": {
+                "isLastLabel": true
+            }
+        },
+        {
+            "name": "not_well",
+            "lines": [
+                {
+                    "type": "dialogue",
+                    "text": [
+                        "I'm sorry to hear that. I hope things get better soon."
+                    ]
+                }
+            ],
+            "after": {
+                "isLastLabel": true
+            }
+        }
+    ]
+}
