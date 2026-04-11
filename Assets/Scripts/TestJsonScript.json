@@ -53,17 +53,6 @@
             "after": {
                 "isLastLabel": true
             }
-        },
-        {
-            "name": "end",
-            "lines": [
-                {
-                    "type": "dialogue",
-                    "text": [
-                        "Goodbye!"
-                    ]
-                }
-            ]
         }
     ]
 }
