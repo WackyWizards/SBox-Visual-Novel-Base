@@ -35,7 +35,7 @@ public sealed partial class ScriptPlayer : Component
 	/// <summary>
 	/// If not empty, will load the script asset at this path on initial component start.
 	/// </summary>
-	[Property, Group( "Script" ), FilePath]
+	[Property, Group( "Script" ), FilePath( Extension = SupportedExtensions )]
 	public string? InitialScript { get; set; }
 	
 	/// <summary>
@@ -65,6 +65,11 @@ public sealed partial class ScriptPlayer : Component
 	
 	private Script? _activeDialogue;
 	private CancellationTokenSource? _cts;
+	
+	/// <summary>
+	/// Value-separated by comma, list of supported script files by extension.
+	/// </summary>
+	private const string SupportedExtensions = "vnscript,json";
 	
 	protected override void OnStart()
 	{
