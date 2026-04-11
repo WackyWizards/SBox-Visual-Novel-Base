@@ -244,7 +244,8 @@
       "AgentMaxSlope": 40,
       "ExcludedBodies": "",
       "IncludedBodies": ""
-    }
+    },
+    "GameObjectSystems": []
   },
   "ResourceVersion": 3,
   "Title": "example",

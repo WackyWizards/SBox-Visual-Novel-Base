@@ -113,6 +113,18 @@ public sealed partial class ScriptPlayer : Component
 	// ReSharper disable once MemberCanBePrivate.Global
 	public void LoadScript( string path )
 	{
+		var extension = Path.GetExtension( path )?.ToLowerInvariant();
+
+		Assets.Script script;
+		if ( extension == ".json" )
+		{
+			script = new Assets.JsonScript( path );
+		}
+		else
+		{
+			script = new Assets.Script( path );
+		}
+
 		var dialogue = FileSystem.Mounted.ReadAllText( path );
 		
 		if ( dialogue is null )
@@ -123,7 +135,6 @@ public sealed partial class ScriptPlayer : Component
 		
 		if ( !string.IsNullOrEmpty( dialogue ) )
 		{
-			Assets.Script script = new( path );
 			LoadScript( script );
 		}
 		else
