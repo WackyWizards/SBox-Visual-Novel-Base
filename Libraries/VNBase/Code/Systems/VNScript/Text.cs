@@ -50,11 +50,8 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 		var result = Text;
 		
 		// Replace expression placeholders
-		foreach ( var kvp in Expressions )
+		foreach ( var (placeholder, expression) in Expressions )
 		{
-			var placeholder = kvp.Key;
-			var expression = kvp.Value;
-			
 			try
 			{
 				var value = expression.Execute( environment );
