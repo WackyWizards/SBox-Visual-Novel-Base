@@ -1,5 +1,5 @@
 // We store the player's name so we can use it later.
-// The default value here is "Garry".
+// The default value here is a string with the value of "Garry".
 (set name "Garry")
 
 (label beginning
@@ -14,8 +14,8 @@
 
 (label display
     // We interpolate the variable "name" into the text.
-    // This is done by using curly braces around the variable name.
-    (dialogue "So your name is {name}, huh? Nice to meet you!")
+    // This is done by using curly braces prefixed with $ around the variable name.
+    (dialogue "So your name is ${name}, huh? Nice to meet you!")
 	(after load /Scripts/ExampleScript.vnscript)
 )
 

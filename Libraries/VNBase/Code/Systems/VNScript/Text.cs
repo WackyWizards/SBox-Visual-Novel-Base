@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace VNScript;
@@ -41,6 +42,64 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 	}
 	
 	/// <summary>
+	/// Parses a raw string, extracting ${...} expressions into stored SParen entries.
+	/// </summary>
+	private static FormattableText Parse( string rawText )
+	{
+		var result = new FormattableText( string.Empty );
+		var sb = new System.Text.StringBuilder();
+		var i = 0;
+		
+		while ( i < rawText.Length )
+		{
+			if ( rawText[i] == '$' && i + 1 < rawText.Length && rawText[i + 1] == '{' )
+			{
+				var depth = 1;
+				var j = i + 2;
+				
+				while ( j < rawText.Length && depth > 0 )
+				{
+					if ( rawText[j] == '{' )
+					{
+						depth++;
+					}
+					else if ( rawText[j] == '}' )
+					{
+						depth--;
+					}
+					if ( depth > 0 )
+					{
+						j++;
+					}
+				}
+				
+				var exprText = rawText[(i + 2)..j];
+				var sparens = SParen.ParseText( $"({exprText})" ).ToList();
+				
+				if ( sparens.Count > 0 )
+				{
+					var placeholder = result.AddExpression( sparens[0] );
+					sb.Append( "${" ).Append( placeholder ).Append( '}' );
+				}
+				else
+				{
+					sb.Append( "[Invalid: " ).Append( exprText ).Append( ']' );
+				}
+				
+				i = j + 1;
+			}
+			else
+			{
+				sb.Append( rawText[i] );
+				i++;
+			}
+		}
+		
+		result.Text = sb.ToString();
+		return result;
+	}
+	
+	/// <summary>
 	/// Formats the text using the given environment.
 	/// </summary>
 	/// <param name="environment">The environment to format the text with.</param>
@@ -55,29 +114,27 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 			try
 			{
 				var value = expression.Execute( environment );
-				result = result.Replace( $"{{{placeholder}}}", value.ToString() );
+				result = result.Replace( $"${{{placeholder}}}", value.ToString() );
 			}
 			catch
 			{
-				result = result.Replace( $"{{{placeholder}}}", "[Error]" );
+				result = result.Replace( $"${{{placeholder}}}", "[Error]" );
 			}
 		}
 		
 		// Replace variable placeholders
 #pragma warning disable SYSLIB1045
-		result = Regex.Replace( result, @"\{([^\{\}]+)\}", match =>
+		result = Regex.Replace( result, @"\$\{([^\{\}]+)\}", match =>
 #pragma warning restore SYSLIB1045
 		{
 			var variableName = match.Groups[1].Value.Trim();
 			
-			// Skip expression placeholders (already handled)
 			if ( variableName.StartsWith( "__EXPR_" ) )
 			{
 				return match.Value;
 			}
 			
 			var value = GetVariableValue( environment, variableName );
-			
 			return value.ToString();
 		} );
 		
@@ -97,5 +154,5 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 	}
 	
 	public static implicit operator string( FormattableText formattableText ) => formattableText.Text;
-	public static implicit operator FormattableText( string text ) => new( text );
+	public static implicit operator FormattableText( string text ) => Parse( text );
 }
