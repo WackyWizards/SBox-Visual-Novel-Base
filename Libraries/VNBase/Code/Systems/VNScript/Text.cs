@@ -42,7 +42,7 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 	}
 	
 	/// <summary>
-	/// Parses a raw string, extracting ${...} expressions into stored SParen entries.
+	/// Parses a raw string, extracting ${...} expressions
 	/// </summary>
 	private static FormattableText Parse( string rawText )
 	{
@@ -123,6 +123,7 @@ public sealed class FormattableText( string text ) : IEquatable<string>
 		}
 		
 		// Replace variable placeholders
+		// Disabled SYSLIB1045 because s&box doesn't like us generating the regex at compile time.
 #pragma warning disable SYSLIB1045
 		result = Regex.Replace( result, @"\$\{([^\{\}]+)\}", match =>
 #pragma warning restore SYSLIB1045

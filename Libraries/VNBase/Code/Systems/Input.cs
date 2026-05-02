@@ -6,8 +6,7 @@ namespace VNBase;
 
 public class Input : IEquatable<InputAction>
 {
-	// This needs to be public, apparently.
-	// ReSharper disable once MemberCanBePrivate.Global
+	// This needs to be public for serialization
 	[InputAction]
 	public string Action { get; set; } = string.Empty;
 	
