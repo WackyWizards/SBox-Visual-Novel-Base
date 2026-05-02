@@ -18,17 +18,24 @@ public static class EditorEvents
 			return;
 		}
 		
-		var newMenu = obj.Menu.FindOrCreateMenu( "New" );
-		
-		if ( !newMenu.IsValid() )
+		Action? handler = null;
+		handler = () =>
 		{
-			return;
-		}
+			obj.Menu.AboutToShow -= handler;
+			
+			var newMenu = obj.Menu.FindOrCreateMenu( "New" );
+			
+			if ( newMenu is null || !newMenu.IsValid() )
+			{
+				return;
+			}
+			
+			var browser = assetList.Browser;
+			var subMenu = newMenu.FindOrCreateMenu( "VNBase" );
+			subMenu.AddOption( new Option( "VNScript", "description", () => CreateNewFile( browser ) ) );
+		};
 		
-		var browser = assetList.Browser;
-		var option = new Option( "VNScript", "description", () => CreateNewFile( browser ) );
-		var subMenu = newMenu.FindOrCreateMenu( "VNBase" );
-		subMenu.AddOption( option );
+		obj.Menu.AboutToShow += handler;
 	}
 	
 	private static void CreateNewFile( IBrowser browser )
