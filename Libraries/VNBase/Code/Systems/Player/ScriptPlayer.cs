@@ -111,9 +111,22 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 	
-	private static string ReadScript( Assets.Script script )
+	/// <summary>
+	/// Attempts to read the script from the provided script asset.
+	/// </summary>
+	/// <param name="script">The script asset to read from.</param>
+	/// <param name="dialogue">When this method returns, contains the script file contents if found, or an empty string if not.</param>
+	/// <returns><see langword="true"/> if the script file was found and read successfully; otherwise <see langword="false"/>.</returns>
+	private static bool TryReadScript( Assets.Script script, out string dialogue )
 	{
-		return FileSystem.Mounted.ReadAllText( script.Path );
+		if ( FileSystem.Mounted.FileExists( script.Path ) )
+		{
+			dialogue = FileSystem.Mounted.ReadAllText( script.Path );
+			return true;
+		}
+		
+		dialogue = string.Empty;
+		return false;
 	}
 	
 	/// <summary>
@@ -124,22 +137,20 @@ public sealed partial class ScriptPlayer : Component
 	public void LoadScript( string path )
 	{
 		var extension = Path.GetExtension( path ).ToLowerInvariant();
-
-		Assets.Script script;
-		if ( extension == ".json" )
+		
+		var script = extension == ".json"
+			? new Assets.JsonScript( path )
+			: new Assets.Script( path );
+		
+		if ( !TryReadScript( script, out var dialogue ) )
 		{
-			script = new Assets.JsonScript( path );
+			Log.Error( $"Unable to load script! File not found: {path}" );
+			return;
 		}
-		else
-		{
-			script = new Assets.Script( path );
-		}
-
-		var dialogue = ReadScript( script );
 		
 		if ( string.IsNullOrEmpty( dialogue ) )
 		{
-			Log.Error( $"Unable to load script! Script file is empty. Are you sure the file exists?" );
+			Log.Error( "Unable to load script! The script file is empty." );
 			return;
 		}
 		
