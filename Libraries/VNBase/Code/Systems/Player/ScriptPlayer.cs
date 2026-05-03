@@ -111,6 +111,11 @@ public sealed partial class ScriptPlayer : Component
 		}
 	}
 	
+	private static string ReadScript( Assets.Script script )
+	{
+		return FileSystem.Mounted.ReadAllText( script.Path );
+	}
+	
 	/// <summary>
 	/// Read and load the script at the provided path.
 	/// </summary>
@@ -118,7 +123,7 @@ public sealed partial class ScriptPlayer : Component
 	// ReSharper disable once MemberCanBePrivate.Global
 	public void LoadScript( string path )
 	{
-		var extension = Path.GetExtension( path )?.ToLowerInvariant();
+		var extension = Path.GetExtension( path ).ToLowerInvariant();
 
 		Assets.Script script;
 		if ( extension == ".json" )
@@ -130,22 +135,15 @@ public sealed partial class ScriptPlayer : Component
 			script = new Assets.Script( path );
 		}
 
-		var dialogue = FileSystem.Mounted.ReadAllText( path );
+		var dialogue = ReadScript( script );
 		
-		if ( dialogue is null )
+		if ( string.IsNullOrEmpty( dialogue ) )
 		{
-			Log.Error( $"Unable to load script! Script file couldn't be found by path: {path}" );
+			Log.Error( $"Unable to load script! Script file is empty. Are you sure the file exists?" );
 			return;
 		}
 		
-		if ( !string.IsNullOrEmpty( dialogue ) )
-		{
-			LoadScript( script );
-		}
-		else
-		{
-			Log.Error( "Unable to load script! The script file is empty." );
-		}
+		LoadScript( script );
 	}
 	
 	/// <summary>
