@@ -50,7 +50,7 @@ DialogueHistory {
 
       .character {
         font-weight: bold;
-        font-size: $text-font-size;
+        font-size: $text-font-size-medium;
         color: lighten($dialogue-color, 20%);
         margin-bottom: 4px;
       }

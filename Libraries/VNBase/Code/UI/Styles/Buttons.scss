@@ -1,7 +1,7 @@
 @import "Fonts.scss";
 
 $button-font: $text-font;
-$button-font-size: $text-font-size;
+$button-font-size: $text-font-size-medium;
 $button-primary-color: #FFFFFF;
 $button-hover-color: #FF4C4C;
 $button-background-color: #232323;
@@ -40,7 +40,7 @@ $button-border-radius: 8px;
     }
 
     &:active {
-      transform: scale(0.95);
+      transform: scale(0.98);
       sound-in: "ui-click";
     }
   }

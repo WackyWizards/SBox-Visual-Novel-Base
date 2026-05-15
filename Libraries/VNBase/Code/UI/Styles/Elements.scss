@@ -49,6 +49,7 @@
 .dropdown {
   margin: 0;
   border-radius: 6px;
+  background-color: #333;
   transition: background-color 0.1s ease;
 
   > .option {
@@ -61,6 +62,10 @@
 
   &:hover {
     background-color: #444;
+  }
+  
+  &:active {
+    transform: none;
   }
 }
 

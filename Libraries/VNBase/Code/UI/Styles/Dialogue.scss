@@ -2,7 +2,7 @@
 
 $dialogue-color: white;
 $dialogue-text-shadow: 0 2px 2px black;
-$dialogue-font-size: 35px;
+$dialogue-font-size-medium: 35px;
 $dialogue-font-size-small: 30px;
 $dialogue-text-padding: 5px;
 
@@ -60,7 +60,7 @@ DialogueBox {
     .dialogueText {
       color: $dialogue-color;
       font-family: $dialogue-font;
-      font-size: $dialogue-font-size;
+      font-size: $dialogue-font-size-medium;
       text-shadow: $dialogue-text-shadow;
     }
 
