@@ -1,6 +1,9 @@
 @import "/UI/Styles/Choices.scss";
 
 Choices {
+  justify-content: center;
+  align-items: center;
+  
   &.hidden {
     display: none;
   }
