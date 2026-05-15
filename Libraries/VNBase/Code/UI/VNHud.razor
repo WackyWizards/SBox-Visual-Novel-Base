@@ -12,6 +12,16 @@
         <CharacterPortraits Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         <Choices Player="@Player" Settings="@Player.Settings" Hud="@this"/>
         <DialogueBox Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+        
+        <!-- Anything in this container div will be centered on the hud -->
+        <div class="center-container" @ref="_centerContainer">
+            <DialogueHistory class="hidden" Player="@Player" Settings="@Player.Settings" Hud="@this" @ref="DialogueHistory"/>
+        
+            @if ( Player.Settings.SettingsEnabled )
+            {
+                <SettingsPanel class="hidden" Player="@Player" Settings="@Player.Settings" Hud="@this"/>
+            }
+        </div>
 
         @if ( ShouldShowInput )
         {

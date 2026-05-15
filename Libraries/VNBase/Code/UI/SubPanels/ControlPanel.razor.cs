@@ -11,12 +11,11 @@ public partial class ControlPanel
 
 	private bool UIVisible { get; set; } = true;
 
-    private SubPanel? _activeSubPanel;
-
-#pragma warning disable CA1822
     private bool IsAutomaticMode => Player?.IsAutomaticMode ?? false;
     private bool IsInputPressed => Settings?.HideUIInputs.Any( x => x.Pressed ) ?? false;
-
+    
+    private SubPanel? _activeSubPanel;
+    
     public override void Tick()
     {
         if ( IsInputPressed )
@@ -60,9 +59,9 @@ public partial class ControlPanel
         UIVisible = !UIVisible;
     }
 
-    private void ToggleSubPanel( string id )
+    private void ToggleHudSubPanel( string id )
     {
-        var panel = GetSubPanelFromId( id );
+        var panel = GetHudSubPanelFromId( id );
 
         if ( !panel.IsValid() )
         {
@@ -79,33 +78,14 @@ public partial class ControlPanel
         panel.ToggleVisibility();
     }
 
-    private SubPanel? GetSubPanelFromId( string id )
-#pragma warning restore CA1822
+    private SubPanel? GetHudSubPanelFromId( string id )
     {
-        return ChildrenOfType<SubPanel>().SingleOrDefault( x => x.ElementName.Equals( id, StringComparison.CurrentCultureIgnoreCase ) );
-    }
-
-    protected override void OnAfterTreeRender( bool firstTime )
-    {
-        if ( !firstTime )
+        if ( !Hud.IsValid() )
         {
-            return;
+            return null;
         }
-
-        if ( !ControlButtons.IsValid() )
-        {
-            return;
-        }
-
-        foreach ( var button in ControlButtons.ChildrenOfType<Button>() )
-        {
-            if ( button.Id is null )
-            {
-                continue;
-            }
-
-            button.AddEventListener( "onclick", panelEvent => ToggleSubPanel( panelEvent.This.Id ) );
-        }
+        
+        return Hud.GetSubPanels().SingleOrDefault( x => x.ElementName.Equals( id, StringComparison.CurrentCultureIgnoreCase ) );
     }
 
     protected override int BuildHash()

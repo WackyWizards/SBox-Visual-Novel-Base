@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sandbox;
 using Sandbox.UI;
@@ -10,6 +11,13 @@ public partial class VNHud
 {
 	[Property, RequireComponent]
 	private ScriptPlayer? Player { get; set; }
+	
+	public DialogueHistory? DialogueHistory { get; private set; }
+	
+	/// <summary>
+	/// Anything in this container div will be centered on the hud
+	/// </summary>
+	private Panel? _centerContainer;
 	
 	private Script.Input? Input => Player?.ActiveLabel?.ActiveInput;
 	private bool ShouldShowInput => Player?.State.IsDialogueFinished == true && Input is not null;
@@ -31,7 +39,22 @@ public partial class VNHud
 	
 	public T? GetSubPanel<T>() where T : SubPanel
 	{
-		return Panel.ChildrenOfType<T>().FirstOrDefault();
+		var subPanels = GetSubPanels();
+		return subPanels.OfType<T>().FirstOrDefault();
+	}
+	
+	public List<SubPanel> GetSubPanels()
+	{
+		List<SubPanel> list = [];
+		
+		if ( _centerContainer.IsValid() )
+		{
+			list.AddRange( _centerContainer.ChildrenOfType<SubPanel>() );
+		}
+		
+		list.AddRange( Panel.ChildrenOfType<SubPanel>() );
+		
+		return list;
 	}
 	
 	private void StyleHack()

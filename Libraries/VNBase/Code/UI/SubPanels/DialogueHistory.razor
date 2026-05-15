@@ -15,13 +15,13 @@
         <label class="title">History</label>
     </div>
 
-    <div class="history">
+    <div class="history" @ref="_historyPanel">
         @foreach ( var entry in Player.DialogueHistory )
         {
             <div class="dialogue">
                 @if ( entry.Dialogue.Speaker.IsValid() )
                 {
-                    <div class="character" style="color: @entry.Dialogue.Speaker.NameColor.Rgba">@( entry.Dialogue.Speaker.Name ):</div>
+                    <label class="character" style="color: @entry.Dialogue.Speaker.NameColor.Rgba">@( entry.Dialogue.Speaker.Name ):</label>
                 }
                 
                 <label class="text" IsRich="@true">@( entry.Dialogue.Text.Format( Player.GetEnvironment() ) )</label>
@@ -30,6 +30,6 @@
     </div>
 
     <div class="footer">
-        <button icon="close" @onclick="@ToggleVisibility">Close</button>
+        <button icon="close" onclick="@ToggleVisibility">Close</button>
     </div>
 </root>
