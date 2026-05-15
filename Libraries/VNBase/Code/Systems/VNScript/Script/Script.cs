@@ -309,7 +309,7 @@ public partial class Script
 	{
 		// Collect all text parts until we hit a keyword or run out of arguments
 		var textParts = new List<Value>();
-		int i = 1;
+		var i = 1;
 		
 		// Gather all the text components (strings, variables, or expressions)
 		while ( i < arguments.Count )
@@ -380,7 +380,7 @@ public partial class Script
 				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
 			};
 			
-			i += dialogueArgument( arguments, i, label, entry );
+			i += dialogueArgument( arguments, i, label, entry ) + 1;
 		}
 		
 		label.Dialogues.Add( entry );
