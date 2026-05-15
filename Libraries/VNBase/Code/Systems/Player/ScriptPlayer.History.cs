@@ -1,5 +1,6 @@
 ﻿using VNScript;
 using System.Collections.Generic;
+using Sandbox;
 
 namespace VNBase;
 
@@ -16,6 +17,19 @@ public sealed partial class ScriptPlayer
 	private void AddToDialogueHistory( Script.Dialogue dialogue, Script.Label label )
 	{
 		DialogueHistory.Add( new HistoryEntry( dialogue, label ) );
+		
+		if ( !Hud.IsValid() )
+		{
+			return;
+		}
+		
+		var dialogueHistoryPanel = Hud.DialogueHistory;
+		if ( !dialogueHistoryPanel.IsValid() )
+		{
+			return;
+		}
+		
+		dialogueHistoryPanel.TryScrollHistoryToBottom();
 	}
 	
 	/// <summary>
