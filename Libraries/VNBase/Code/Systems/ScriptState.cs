@@ -74,10 +74,4 @@ public class ScriptState
 		BackgroundMusic?.Stop();
 		BackgroundMusic = null;
 	}
-	
-	public override int GetHashCode()
-	{
-		// ReSharper disable NonReadonlyMemberInGetHashCode
-		return HashCode.Combine( DialogueText, Background, SpeakingCharacter, Characters.Count, Choices.Count );
-	}
 }
