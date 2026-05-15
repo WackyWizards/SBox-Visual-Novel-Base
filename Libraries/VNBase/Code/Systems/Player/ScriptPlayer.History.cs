@@ -19,9 +19,9 @@ public sealed partial class ScriptPlayer
 	}
 	
 	/// <summary>
-	/// Represents dialogue that was actually displayed to the player
+	/// Represents dialogue actually displayed to the player
 	/// </summary>
-	public readonly struct HistoryEntry( Script.Dialogue dialogue, Script.Label label )
+	public class HistoryEntry( Script.Dialogue dialogue, Script.Label label )
 	{
 		public Script.Dialogue Dialogue { get; } = dialogue;
 		public Script.Label Label { get; } = label;
