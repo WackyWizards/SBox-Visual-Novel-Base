@@ -9,7 +9,7 @@
     return;
 }
 
-<root class="centered @( HasChoices ? "" : "hidden" )">
+<root class="@( HasChoices ? "" : "hidden" )">
     @if ( HasChoices && Player.State.IsDialogueFinished )
     {
         <div class="choicePanel">
