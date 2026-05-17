@@ -80,7 +80,7 @@ public class Settings
 	public bool ControlPanelEnabled { get; set; } = true;
 	
 	/// <summary>
-	/// If we should show the settings UI button.
+	/// If we should show the vnbase settings UI button.
 	/// If your game implements its own settings menu, you can disable this.
 	/// </summary>
 	[Property]
@@ -104,7 +104,7 @@ public class Settings
 	/// <summary>
 	/// The amount of time to wait if we are in automatic mode before switching labels.
 	/// </summary>
-	public const float AutoDelay = 3f;
+	public const float AutoLabelDelay = 3f;
 	
 	public enum TextSpeed
 	{

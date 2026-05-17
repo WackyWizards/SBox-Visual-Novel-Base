@@ -265,7 +265,7 @@ public sealed partial class ScriptPlayer
 			{
 				try
 				{
-					await Task.DelaySeconds( Settings.AutoDelay );
+					await Task.DelaySeconds( Settings.AutoLabelDelay );
 					
 					// Auto-advance to next text segment or after label
 					AdvanceText();
