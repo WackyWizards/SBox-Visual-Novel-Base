@@ -19,6 +19,18 @@ public partial class Script
 	
 	internal Dictionary<Value, Value> Variables { get; } = new();
 	
+	private static readonly Dictionary<string, LabelArgument> BuiltInLabelArguments = new()
+	{
+		["dialogue"] = LabelDialogueArgument,
+		["choice"] = LabelChoiceArgument,
+		["char"] = LabelCharacterArgument,
+		["sound"] = LabelSoundArgument,
+		["music"] = LabelMusicArgument,
+		["bg"] = LabelBackgroundArgument,
+		["input"] = LabelInputArgument,
+		["after"] = LabelAfterArgument
+	};
+	
 	private static readonly Logger Log = new( "VNScript" );
 	
 	/// <summary>
@@ -34,7 +46,7 @@ public partial class Script
 	
 	private void Parse( List<SParen> codeBlocks )
 	{
-		var parsingFunctions = CreateParsingFunctions();
+		var parsingFunctions = CreateFunctionEnvironment();
 		
 		foreach ( var sParen in codeBlocks )
 		{
@@ -42,10 +54,11 @@ public partial class Script
 		}
 	}
 	
-	private EnvironmentMap CreateParsingFunctions()
+	private EnvironmentMap CreateFunctionEnvironment()
 	{
 		var functionEnvironment = new EnvironmentMap();
 		
+		// Map
 		var functions = new Dictionary<string, Value.FunctionValue>
 		{
 			{ "label", new Value.FunctionValue( CreateLabel ) },
@@ -64,6 +77,7 @@ public partial class Script
 	
 	private Value.NoneValue SetVariable( IEnvironment environment, Value[] values )
 	{
+		// Find the key value pair
 		for ( var i = 0; i < values.Length - 1; i += 2 )
 		{
 			var key = values[i];
@@ -171,22 +185,9 @@ public partial class Script
 	{
 		var argumentType = ((Value.VariableReferenceValue)arguments[0]).Name;
 		
-		LabelArgument? labelArgument = argumentType switch
+		if ( BuiltInLabelArguments.TryGetValue( argumentType, out var builtInArgument ) )
 		{
-			"dialogue" => LabelDialogueArgument,
-			"choice" => LabelChoiceArgument,
-			"char" => LabelCharacterArgument,
-			"sound" => LabelSoundArgument,
-			"music" => LabelMusicArgument,
-			"bg" => LabelBackgroundArgument,
-			"input" => LabelInputArgument,
-			"after" => LabelAfterArgument,
-			_ => null // Unknown - treat as executable code block
-		};
-		
-		if ( labelArgument != null )
-		{
-			labelArgument( arguments, label );
+			builtInArgument( arguments, label );
 		}
 		else
 		{
@@ -196,143 +197,124 @@ public partial class Script
 			{
 				label.AfterLabel = new After();
 			}
+			
 			label.AfterLabel.CodeBlocks.Add( arguments );
 		}
 	}
 	
 	private delegate void LabelArgument( SParen argument, Label label );
-	
-	private delegate int DialogueArgument( SParen argument, int index, Label label, Dialogue dialogue );
-	
-	private delegate int ChoiceArgument( SParen argument, int index, Choice choice );
-	
-	private delegate int CharacterArgument( SParen argument, int index, Label label, Character character );
-	
-	private delegate int SoundArgument( SParen argument, int index, Label label, VNBase.Assets.Sound sound );
-	
-	private delegate int AfterArgument( SParen argument, int index, After after );
+	private delegate void DialogueArgument( ArgumentReader reader, Label label, Dialogue dialogue );
+	private delegate void ChoiceArgument( ArgumentReader reader, Choice choice );
+	private delegate void CharacterArgument( ArgumentReader reader, Label label, Character character );
+	private delegate void SoundArgument( ArgumentReader reader, Label label, VNBase.Assets.Sound sound );
+	private delegate void AfterArgument( ArgumentReader reader, After after );
 	
 	private static void LabelAfterArgument( SParen arguments, Label label )
 	{
-		// Don't replace existing AfterLabel - create only if it doesn't exist
 		if ( label.AfterLabel is null )
 		{
 			label.AfterLabel = new After();
 		}
 		
-		for ( var i = 1; i < arguments.Count; i++ )
+		var reader = new ArgumentReader( arguments, startIndex: 1 );
+		
+		while ( reader.HasMore )
 		{
-			switch ( arguments[i] )
+			switch ( reader.Read() )
 			{
 				case Value.ListValue listValue:
 					label.AfterLabel.CodeBlocks.Add( listValue.ValueList );
 					break;
-				case Value.VariableReferenceValue variableReferenceValue:
-					AfterArgument afterArgument = variableReferenceValue.Name switch
+				
+				case Value.VariableReferenceValue { Name: var name }:
+					AfterArgument afterArgument = name switch
 					{
 						"end" => AfterEndDialogueArgument,
 						"jump" => AfterJumpArgument,
 						"load" => AfterLoadScriptArgument,
-						_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
+						_ => throw new ArgumentOutOfRangeException( name )
 					};
-					
-					i += afterArgument( arguments, i, label.AfterLabel );
+					afterArgument( reader, label.AfterLabel );
 					break;
+				
 				default:
-					throw new InvalidParametersException( [arguments[i]] );
+					throw new InvalidParametersException( [reader.Peek()] );
 			}
 		}
 	}
 	
-	private static int AfterJumpArgument( SParen arguments, int index, After after )
+	private static void AfterJumpArgument( ArgumentReader reader, After after )
 	{
-		var labelName = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
-		after.TargetLabel = labelName;
-		
-		return 1;
+		after.TargetLabel = reader.Read<Value.VariableReferenceValue>().Name;
 	}
 	
-	private static int AfterEndDialogueArgument( SParen arguments, int index, After after )
+	private static void AfterEndDialogueArgument( ArgumentReader reader, After after )
 	{
 		after.IsLastLabel = true;
-		return 0;
 	}
 	
-	private static int AfterLoadScriptArgument( SParen arguments, int index, After after )
+	private static void AfterLoadScriptArgument( ArgumentReader reader, After after )
 	{
-		after.ScriptPath = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
-		return 1;
+		after.ScriptPath = reader.Read<Value.VariableReferenceValue>().Name;
 	}
 	
 	private static void LabelChoiceArgument( SParen arguments, Label label )
 	{
-		if ( arguments[1] is not Value.StringValue argument )
+		var choice = new Choice
 		{
-			throw new InvalidParametersException( [arguments[1]] );
-		}
-		
-		var choice = new Choice();
+			Text = ((Value.StringValue)arguments[1]).Text
+		};
 		label.Choices.Add( choice );
-		choice.Text = argument.Text;
 		
-		for ( var i = 2; i < arguments.Count; i++ )
+		var reader = new ArgumentReader( arguments, startIndex: 2 );
+		
+		while ( reader.HasMore )
 		{
-			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
-			{
-				throw new InvalidParametersException( [arguments[i]] );
-			}
+			var keyword = reader.Read<Value.VariableReferenceValue>().Name;
 			
-			ChoiceArgument choiceArgument = variableReferenceValue.Name switch
+			ChoiceArgument choiceArgument = keyword switch
 			{
 				"jump" => ChoiceJumpArgument,
 				"cond" => ChoiceConditionArgument,
-				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
+				_ => throw new ArgumentOutOfRangeException( keyword )
 			};
 			
-			i += choiceArgument( arguments, i, choice );
+			choiceArgument( reader, choice );
 		}
 	}
 	
-	private static int ChoiceConditionArgument( SParen arguments, int index, Choice choice )
+	private static void ChoiceConditionArgument( ArgumentReader reader, Choice choice )
 	{
-		choice.Condition = (arguments[index + 1] as Value.ListValue)!.ValueList;
-		return 1;
+		choice.Condition = reader.Read<Value.ListValue>().ValueList;
 	}
 	
-	private static int ChoiceJumpArgument( SParen arguments, int index, Choice choice )
+	private static void ChoiceJumpArgument( ArgumentReader reader, Choice choice )
 	{
-		choice.TargetLabel = (arguments[index + 1] as Value.VariableReferenceValue)!.Name;
-		return 1;
+		choice.TargetLabel = reader.Read<Value.VariableReferenceValue>().Name;
 	}
 	
 	private static void LabelDialogueArgument( SParen arguments, Label label )
 	{
-		// Collect all text parts until we hit a keyword or run out of arguments
+		var reader = new ArgumentReader( arguments, startIndex: 1 );
 		var textParts = new List<Value>();
-		var i = 1;
 		
-		// Gather all the text components (strings, variables, or expressions)
-		while ( i < arguments.Count )
+		// Collect text parts until we hit a keyword
+		while ( reader.HasMore )
 		{
-			var arg = arguments[i];
-			
-			// Check if this is a keyword argument (like "speaker")
+			var arg = reader.Peek();
 			if ( arg is Value.VariableReferenceValue varRef && IsDialogueKeyword( varRef.Name ) )
 			{
 				break;
 			}
 			
-			textParts.Add( arg );
-			i++;
+			textParts.Add( reader.Read() );
 		}
 		
-		// Need at least one text part
 		if ( textParts.Count == 0 )
 		{
 			throw new InvalidParametersException( arguments.ToArray() );
 		}
 		
-		// Build the formatted text string
 		var textBuilder = new System.Text.StringBuilder();
 		var formattedText = new FormattableText( string.Empty );
 		
@@ -359,28 +341,24 @@ public partial class Script
 		
 		formattedText.Text = textBuilder.ToString();
 		
-		// Create the dialogue entry with the built text
 		var entry = new Dialogue
 		{
 			Text = formattedText,
 			Speaker = null
 		};
 		
-		// Process any remaining keyword arguments
-		while ( i < arguments.Count )
+		// Process keyword arguments
+		while ( reader.HasMore )
 		{
-			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
-			{
-				throw new InvalidParametersException( [arguments[i]] );
-			}
+			var keyword = reader.Read<Value.VariableReferenceValue>().Name;
 			
-			DialogueArgument dialogueArgument = variableReferenceValue.Name switch
+			DialogueArgument dialogueArgument = keyword switch
 			{
 				"speaker" => DialogueSpeakerArgument,
-				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
+				_ => throw new ArgumentOutOfRangeException( keyword )
 			};
 			
-			i += dialogueArgument( arguments, i, label, entry ) + 1;
+			dialogueArgument( reader, label, entry );
 		}
 		
 		label.Dialogues.Add( entry );
@@ -391,87 +369,65 @@ public partial class Script
 		return name == "speaker";
 	}
 	
-	private static int DialogueSpeakerArgument( SParen arguments, int index, Label label, Dialogue dialogue )
+	private static void DialogueSpeakerArgument( ArgumentReader reader, Label label, Dialogue dialogue )
 	{
-		var characterName = ((Value.VariableReferenceValue)arguments[index + 1]).Name;
-		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
-		dialogue.Speaker = character;
-		
-		return 1;
+		var characterName = reader.Read<Value.VariableReferenceValue>().Name;
+		dialogue.Speaker = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to set speaking character, character resource with name {characterName} couldn't be found!", characterName );
 	}
 	
 	private static void LabelCharacterArgument( SParen arguments, Label label )
 	{
 		var characterName = ((Value.VariableReferenceValue)arguments[1]).Name;
 		var character = GetCharacterResource( characterName ) ?? throw new ResourceNotFoundException( $"Unable to add character, character resource with name {characterName} couldn't be found!", characterName );
+		
 		label.Characters.Add( character );
 		
-		for ( var i = 2; i < arguments.Count; i++ )
+		var reader = new ArgumentReader( arguments, startIndex: 2 );
+		
+		while ( reader.HasMore )
 		{
-			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
-			{
-				throw new InvalidParametersException( [arguments[i]] );
-			}
+			var keyword = reader.Read<Value.VariableReferenceValue>().Name;
 			
-			CharacterArgument characterArgument = variableReferenceValue.Name switch
+			CharacterArgument characterArgument = keyword switch
 			{
 				"exp" => LabelCharacterExpressionArgument,
-				_ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
+				_ => throw new ArgumentOutOfRangeException( keyword )
 			};
 			
-			i += characterArgument( arguments, i, label, character );
+			characterArgument( reader, label, character );
 		}
 	}
 	
-	private static int LabelCharacterExpressionArgument( SParen arguments, int index, Label label, Character character )
+	private static void LabelCharacterExpressionArgument( ArgumentReader reader, Label label, Character character )
 	{
-		if ( arguments[index + 1] is not Value.VariableReferenceValue argument )
-		{
-			throw new InvalidParametersException( [arguments[index + 1]] );
-		}
-		
-		character.ActivePortrait = argument.Name;
-		
-		return 1;
+		character.ActivePortrait = reader.Read<Value.VariableReferenceValue>().Name;
 	}
 	
 	private static void LabelSoundArgument( SParen arguments, Label label )
 	{
-		if ( arguments[1] is not Value.StringValue argument )
-		{
-			throw new InvalidParametersException( [arguments[1]] );
-		}
-		
-		var soundName = argument.Text;
+		var soundName = ((Value.StringValue)arguments[1]).Text;
 		var sound = new VNBase.Assets.Sound( soundName );
 		label.Assets.Add( sound );
 		
-		for ( var i = 2; i < arguments.Count; i++ )
+		var reader = new ArgumentReader( arguments, startIndex: 2 );
+		
+		while ( reader.HasMore )
 		{
-			if ( arguments[i] is not Value.VariableReferenceValue variableReferenceValue )
-			{
-				throw new InvalidParametersException( [arguments[i]] );
-			}
+			var keyword = reader.Read<Value.VariableReferenceValue>().Name;
 			
-			SoundArgument soundArgument = variableReferenceValue.Name switch
+			SoundArgument soundArgument = keyword switch
 			{
-				"mixer" => SoundMixerArgument, _ => throw new ArgumentOutOfRangeException( variableReferenceValue.Name )
+				"mixer" => SoundMixerArgument,
+				_ => throw new ArgumentOutOfRangeException( keyword )
 			};
 			
-			i += soundArgument( arguments, i, label, sound );
+			soundArgument( reader, label, sound );
 		}
 	}
 	
-	private static int SoundMixerArgument( SParen arguments, int index, Label label, VNBase.Assets.Sound sound )
+	private static void SoundMixerArgument( ArgumentReader reader, Label label, VNBase.Assets.Sound sound )
 	{
-		if ( arguments[index + 1] is not Value.StringValue argument )
-		{
-			throw new InvalidParametersException( [arguments[1]] );
-		}
-		
-		sound.MixerName = argument.Text;
-		
-		return 1;
+		sound.MixerName = reader.Read<Value.StringValue>().Text;
 	}
 	
 	private static void LabelMusicArgument( SParen arguments, Label label )
